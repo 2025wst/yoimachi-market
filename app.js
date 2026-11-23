@@ -23,26 +23,26 @@
 
   var TASKS = {
     tiger: {
-      act: 2, group: '第二幕 · 入市', label: '布老虎 · 拼装',
-      title: '拼一只布老虎', kicker: '集市 · 布老虎摊',
+      act: 2, group: '第二幕 · 入市', label: '瑞虎坊 · 拼装',
+      title: '拼一只布老虎', kicker: '集市 · 瑞虎坊',
       body: '从托盘里把裁片拖到虚线位置，七片摆好，一只小布老虎就做好了。做好的布老虎会收进背包。',
       need: 1, art: 'tiger', stage: 'none'
     },
     bun: {
-      act: 2, group: '第二幕 · 入市', label: '压缩馍 · 吃掉',
-      title: '吃一个压缩馍', kicker: '集市 · 压缩馍摊',
+      act: 2, group: '第二幕 · 入市', label: '馍香坊 · 吃掉',
+      title: '吃一个压缩馍', kicker: '集市 · 馍香坊',
       body: '“压缩馍，压缩馍，小孩吃了考大学。”刚出炉的压缩馍，一口一口吃掉，最后会剩一个挂件。',
       need: 1, art: 'bun', stage: 'none'
     },
     sachet: {
-      act: 3, group: '第三幕 · 朝门', label: '香囊 · 配香',
-      title: '配一只香囊', kicker: '内街 · 香囊摊',
+      act: 3, group: '第三幕 · 朝门', label: '香薰坊 · 配香',
+      title: '配一只香囊', kicker: '内街 · 香薰坊',
       body: '六味香药摆在摊上：薰衣草、玫瑰、柠檬、薄荷叶、檀香、洋甘菊。挑三味拖进香囊，再选一只喜欢的囊袋颜色，系上袋口。',
       need: 1, art: 'sachet', stage: 'choices', choices: ['薰衣草', '玫瑰', '柠檬', '薄荷叶', '檀香', '洋甘菊']
     },
     sugar: {
-      act: 3, group: '第三幕 · 朝门', label: '泥泥狗 · 听故事',
-      title: '听泥泥狗讲自己', kicker: '内街 · 泥泥狗铺',
+      act: 3, group: '第三幕 · 朝门', label: '泥泥狗工坊 · 听故事',
+      title: '听泥泥狗讲自己', kicker: '内街 · 泥泥狗工坊',
       body: '店里一排手工泥泥狗，点一只，它会用第一人称讲讲自己身上的花纹；六只都听过，就能收下泥泥狗挂件。',
       need: 1, art: 'sugar', stage: 'choices', choices: ['阿黑', '小白', '小玉', '红红', '小翠', '阿黄']
     },
@@ -61,7 +61,7 @@
     bagua: {
       act: 4, group: '第四幕 · 陵庙', label: '八卦坛 · 观卦', spot: true,
       title: '在八卦坛观一卦', kicker: '陵庙 · 八卦坛',
-      body: '八卦坛在太始门之后，传为伏羲画卦之处。乾、坤、震、巽各选一卦，看看这一趟的卦象。',
+      body: '八卦坛在太始门之后，传为伏羲画卦之处。点开八卦图上的卦象，看看每一卦的含义与解释。',
       need: 1, art: 'bagua', stage: 'choices', choices: ['乾', '坤', '震', '巽']
     },
     tomb: {
@@ -120,15 +120,19 @@
     muted: false
   };
 
-  try {
-    var saved = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
-    if (saved && typeof saved === 'object') {
-      if (Array.isArray(saved.tasks)) state.tasks = saved.tasks.filter(function (id) { return TASKS[id]; });
-      if (Array.isArray(saved.visited)) state.visited = saved.visited.filter(function (n) { return n >= 1 && n <= 4; });
-      if (typeof saved.name === 'string' && saved.name.trim()) state.name = saved.name.slice(0, 18);
-      state.muted = !!saved.muted;
-    }
-  } catch (err) { /* ignore */ }
+  // 每次重新进入游戏都重置打卡与互动进度，只保留静音设置
+  (function resetOnEntry() {
+    var mutedPref = false;
+    try {
+      var old = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
+      if (old && typeof old === 'object') mutedPref = !!old.muted;
+      localStorage.removeItem(SAVE_KEY);
+    } catch (err) { /* ignore */ }
+    state.tasks = [];
+    state.visited = [1];
+    state.name = '羲皇故都探索者';
+    state.muted = mutedPref;
+  })();
 
   function save() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (err) { /* ignore */ }
@@ -686,12 +690,15 @@
   }
 
   function openTask(id) {
+    if (id === 'bagua') { if (window.__openBaguaAltar) window.__openBaguaAltar(); return; }
     var t = TASKS[id];
     if (!t) return;
     if (id === 'tiger' || id === 'bun') { openShopDetail(id); return; }
   if (id === 'sachet') { openSachet(); return; }
   if (id === 'sugar') { openClay(); return; }
     if (id === 'gate') { openGateway(); return; }
+    if (id === 'beilin') { openBeilin(); return; }
+    if (id === 'tongtian') { openTongtian(); return; }
 
     $('#panelKicker').textContent = t.kicker;
     $('#panelTitle').textContent = t.title;
@@ -921,6 +928,135 @@
   }
 
 
+
+
+  /* ---------------- 祈福 ---------------- */
+  var PRAY_WORDS = [
+    '平安喜乐', '万事顺遂', '岁岁平安', '心想事成', '吉祥如意', '福寿绵长',
+    '喜乐安康', '顺遂无忧', '诸事顺遂', '福星高照', '好运常在', '四季平安',
+    '平安顺遂', '福运绵长', '安康喜乐', '万事胜意', '如愿以偿', '喜乐无忧',
+    '福满人间', '吉星高照', '平安如意', '诸事皆宜', '所愿皆成', '顺遂安康',
+    '五福临门', '福寿安康', '前程似锦', '步步高升', '财源广进', '合家安康',
+    '幸福美满', '团团圆圆', '年年有余', '好事成双', '岁岁欢愉', '朝朝如愿'
+  ];
+  var prayCardBound = false;
+  function openPrayTree() {
+    var tp = document.getElementById('prayTree');
+    if (!tp) return;
+    tp.hidden = false;
+    tp.setAttribute('aria-hidden', 'false');
+    if (!tp.dataset.bound) {
+      tp.dataset.bound = '1';
+      var knot = document.getElementById('prayKnot');
+      var close = document.getElementById('prayTreeClose');
+      if (knot) knot.addEventListener('click', openPrayCard);
+      if (close) close.addEventListener('click', closePrayTree);
+    }
+  }
+  function closePrayTree() {
+    var tp = document.getElementById('prayTree');
+    if (tp) { tp.hidden = true; tp.setAttribute('aria-hidden', 'true'); }
+  }
+  function rollPray() {
+    if (PRAY_WORDS.length < 2) return;
+    var a = Math.floor(Math.random() * PRAY_WORDS.length);
+    var b = Math.floor(Math.random() * (PRAY_WORDS.length - 1));
+    if (b >= a) b++;
+    var r = document.getElementById('prayPhraseR');
+    var l = document.getElementById('prayPhraseL');
+    if (r) r.textContent = PRAY_WORDS[a];
+    if (l) l.textContent = PRAY_WORDS[b];
+  }
+  function openPrayCard() {
+    var cp = document.getElementById('prayCard');
+    if (!cp) return;
+    closePrayTree();
+    cp.hidden = false;
+    cp.setAttribute('aria-hidden', 'false');
+    rollPray();
+    if (!prayCardBound) {
+      prayCardBound = true;
+      var again = document.getElementById('prayAgain');
+      var keep = document.getElementById('prayKeep');
+      var close = document.getElementById('prayCardClose');
+      if (again) again.addEventListener('click', rollPray);
+      if (keep) keep.addEventListener('click', function () {
+        closePrayCard();
+        toast('福牌已收下 · 平安喜乐');
+      });
+      if (close) close.addEventListener('click', closePrayCard);
+    }
+  }
+  function closePrayCard() {
+    var cp = document.getElementById('prayCard');
+    if (cp) { cp.hidden = true; cp.setAttribute('aria-hidden', 'true'); }
+  }
+  window.__openPrayTree = openPrayTree;
+  (function bindPrayBtn() {
+    var btn = document.getElementById('prayBtn');
+    if (btn) btn.addEventListener('click', openPrayTree);
+  })();
+
+  /* ---------------- 八卦坛 ---------------- */
+  var BAGUA = {
+    qian: { name: '乾', sym: '☰', nature: '天', text: '乾为天，纯阳之卦。刚健、创始，元亨利贞。象曰：天行健，君子以自强不息。' },
+    dui: { name: '兑', sym: '☱', nature: '泽', text: '兑为泽，喜悦之卦。主沟通、和悦。象曰：丽泽兑，君子以朋友讲习。' },
+    li: { name: '离', sym: '☲', nature: '火', text: '离为火，光明之卦。主依附、明亮。象曰：明两作离，大人以继明照于四方。' },
+    zhen: { name: '震', sym: '☳', nature: '雷', text: '震为雷，震动之卦。主奋起、惊动。象曰：洊雷震，君子以恐惧修省。' },
+    xun: { name: '巽', sym: '☴', nature: '风', text: '巽为风，顺入之卦。主顺从、渗入。象曰：随风巽，君子以申命行事。' },
+    kan: { name: '坎', sym: '☵', nature: '水', text: '坎为水，险陷之卦。主智慧、磨砺。象曰：水洊至习坎，君子以常德行。' },
+    gen: { name: '艮', sym: '☶', nature: '山', text: '艮为山，止静之卦。主安定、知止。象曰：兼山艮，君子以思不出其位。' },
+    kun: { name: '坤', sym: '☷', nature: '地', text: '坤为地，纯阴之卦。柔顺、承载，厚德载物。象曰：地势坤，君子以厚德载物。' }
+  };
+  var baguaSeen = {};
+  function openBaguaAltar() {
+    var bp = document.getElementById('baguaPhoto');
+    if (!bp) return;
+    bp.hidden = false;
+    bp.setAttribute('aria-hidden', 'false');
+    if (!bp.dataset.bound) {
+      bp.dataset.bound = '1';
+      document.querySelectorAll('.bagua-photo__gua', bp).forEach(function (btn) {
+        btn.addEventListener('click', function () { showBagua(btn.getAttribute('data-gua'), btn); });
+      });
+      var infoClose = document.getElementById('baguaInfoClose');
+      var photoClose = document.getElementById('baguaPhotoClose');
+      if (infoClose) infoClose.addEventListener('click', function () {
+        document.getElementById('baguaInfo').hidden = true;
+      });
+      if (photoClose) photoClose.addEventListener('click', closeBaguaAltar);
+    }
+  }
+  function closeBaguaAltar() {
+    var bp = document.getElementById('baguaPhoto');
+    if (bp) { bp.hidden = true; bp.setAttribute('aria-hidden', 'true'); }
+    var info = document.getElementById('baguaInfo');
+    if (info) info.hidden = true;
+  }
+  function showBagua(id, btn) {
+    var g = BAGUA[id];
+    if (!g) return;
+    var info = document.getElementById('baguaInfo');
+    document.getElementById('baguaInfoName').textContent = g.name + '卦 · ' + g.nature;
+    document.getElementById('baguaInfoSym').textContent = g.sym;
+    document.getElementById('baguaInfoText').textContent = g.text;
+    if (info) info.hidden = false;
+    if (btn) btn.classList.add('is-seen');
+    if (!baguaSeen[id]) {
+      baguaSeen[id] = true;
+      var n = Object.keys(baguaSeen).length;
+      var hint = document.getElementById('baguaHint');
+      if (hint) hint.textContent = '点击八卦 · 看卦象（已看 ' + n + ' / 8）';
+      if (n >= 8) {
+        completeTask('bagua');
+        renderBag();
+        updateHUD();
+        toast('八卦 · 八卦坛打卡完成');
+      }
+    }
+  }
+  window.__openBaguaAltar = openBaguaAltar;
+
   /* ---------------- 午朝门近景 / 开门 ---------------- */
   function openGatePhoto() {
     var gp = document.getElementById('gatePhoto');
@@ -951,14 +1087,16 @@
     sfx.whoosh();
     completeTask('gate');
     setTimeout(function () {
+      veil.classList.add('veil--warm');
       veil.classList.add('is-on');
       setTimeout(function () {
         closeGatePhoto();
         setAct(4);
         veil.classList.remove('is-on');
         toast('入陵 · 点开五处场景，把这一趟走完');
-      }, 480);
-    }, 1150);
+        setTimeout(function () { veil.classList.remove('veil--warm'); }, 900);
+      }, 900);
+    }, 1900);
   }
   window.__openGatePhoto = openGatePhoto;
   (function bindGatePhoto() {
@@ -1382,7 +1520,7 @@
     if (_st0) _st0.classList.remove('is-stuffing');
     var _cue0 = document.getElementById('plushStuffCue');
     if (_cue0) _cue0.remove();
-    $('#shopDetailKicker').textContent = '集市 · 布老虎摊';
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '拼一只布老虎';
     $('#shopDetailDesc').innerHTML = '把左边需要的裁片从托盘拖到虚线位置；七片摆好，小布老虎就做好了。 <a class="shop-pattern-link" href="assets/pattern/tiger-pattern.png" target="_blank" rel="noopener">看 DIY 裁片图纸 →</a>';
     shopProgressLabel.textContent = '拼装';
@@ -1530,9 +1668,9 @@
       '<defs><linearGradient id="tigerRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c4483c"/><stop offset="1" stop-color="#982f27"/></linearGradient></defs>' +
       '<ellipse cx="120" cy="198" rx="86" ry="13" fill="#3e2b20" opacity=".14"/>' +
       '<path d="M172 132C202 124 220 102 216 78C214 62 222 52 232 48" fill="none" stroke="#6e2a22" stroke-width="16" stroke-linecap="round"/>' +
-      '<path d="M172 132C202 124 220 102 216 78C214 62 222 52 232 48" fill="none" stroke="#b83a32" stroke-width="11" stroke-linecap="round"/>' +
+      '<path d="M172 132C202 124 220 102 216 78C214 62 222 52 232 48" fill="none" stroke="#744439" stroke-width="11" stroke-linecap="round"/>' +
       '<path d="M186 112q12-8 16-22" fill="none" stroke="#2c5f9e" stroke-width="3" stroke-linecap="round"/>' +
-      '<path d="M120 160L120 190M144 158L144 190M166 156L166 188M190 152L190 184" stroke="#b83a32" stroke-width="13" stroke-linecap="round"/>' +
+      '<path d="M120 160L120 190M144 158L144 190M166 156L166 188M190 152L190 184" stroke="#744439" stroke-width="13" stroke-linecap="round"/>' +
       '<path d="M114 186h14M138 186h14M160 184h14M184 182h14" stroke="#e9b84c" stroke-width="7" stroke-linecap="round"/>' +
       '<ellipse cx="146" cy="128" rx="64" ry="42" fill="url(#tigerRed)" stroke="#6e2a22" stroke-width="3"/>' +
       '<path d="M108 148q38 22 78 0" fill="#f6ebd6" opacity=".95"/>' +
@@ -1557,7 +1695,7 @@
   }
 
   function showPlushDone() {
-    $('#shopDetailKicker').textContent = '集市 · 布老虎摊';
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '布老虎做好了';
     $('#shopDetailDesc').textContent = '布老虎已经收进你的背包。';
     shopProgressLabel.textContent = '收藏';
@@ -1589,7 +1727,7 @@
     shopDetail.classList.add('is-open');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
-    $('#shopDetailKicker').textContent = '集市 · 布老虎摊';
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '缝一只布老虎';
     $('#shopDetailDesc').textContent = '按顺序点虚线针脚，把布老虎一点点缝起来；全部缝完，就能收下这只小布老虎。';
     shopProgressLabel.textContent = '针脚';
@@ -1667,7 +1805,7 @@
     shopDetail.classList.add('is-open');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
-    $('#shopDetailKicker').textContent = '集市 · 布老虎摊';
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '拼一只布老虎';
     $('#shopDetailDesc').textContent = '左边是布老虎设计图：把下面七片布片拖到对应编号位置上；拼好就会出现一只小布老虎。';
     shopProgressLabel.textContent = '布片';
@@ -1823,74 +1961,78 @@
   ];
 
   function bunSVG() {
-    var seeds = '';
-    for (var i = 0; i < 58; i++) {
-      var a = i * 2.39996;
-      var rr = Math.sqrt((i % 23) / 23);
-      var sx = 320 + Math.cos(a) * rr * 156;
-      var sy = 276 + Math.sin(a) * rr * 82;
-      var sr = 2.2 + (i % 4) * 0.8;
-      var sc = ['#f6e7c5', '#ecd49c', '#d9b478', '#fff1d2'][i % 4];
-      seeds += '<ellipse cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" rx="' + sr.toFixed(1) + '" ry="' + (sr * 0.62).toFixed(1) + '" fill="' + sc + '" opacity=".92" transform="rotate(' + ((i * 37) % 180 - 90) + ' ' + sx.toFixed(1) + ' ' + sy.toFixed(1) + ')"/>';
+    // 水彩压缩馍：螺旋纹、千层边、咬痕遮罩
+    var spiral = (function () {
+      var pts = [], turns = 5.4, r0 = 20, r1 = 150;
+      for (var i = 0; i <= 320; i++) {
+        var t = i / 320;
+        var a = t * turns * Math.PI * 2;
+        var r = r0 + (r1 - r0) * t;
+        var x = 320 + Math.cos(a) * r;
+        var y = 300 + Math.sin(a) * r * 0.92;
+        pts.push((i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1));
+      }
+      return pts.join(' ');
+    })();
+    var washes = '';
+    var spots = [
+      [242, 226, 48, 30, .20], [404, 218, 40, 26, .17], [382, 336, 54, 30, .14],
+      [222, 350, 42, 26, .13], [310, 398, 38, 20, .11], [456, 306, 46, 26, .12]
+    ];
+    spots.forEach(function (s) {
+      washes += '<ellipse cx="' + s[0] + '" cy="' + s[1] + '" rx="' + s[2] + '" ry="' + s[3] + '" fill="#d98b3f" opacity="' + s[4] + '"/>';
+    });
+    var speckles = '';
+    for (var i = 0; i < 44; i++) {
+      var a = i * 2.39996, rr = Math.sqrt((i % 19) / 19);
+      var sx = 320 + Math.cos(a) * rr * 152, sy = 300 + Math.sin(a) * rr * 122;
+      speckles += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + (1.3 + (i % 3) * 0.7) + '" fill="#b56a2e" opacity=".26"/>';
     }
-    var steam = '<g id="bunSteam" fill="none" stroke="#fff4df" stroke-width="8" stroke-linecap="round" opacity=".5">' +
-      '<path d="M256 142c-16-24 10-36 0-58"/><path d="M320 122c-18-28 12-42 0-64"/><path d="M384 142c-16-24 10-36 0-58"/></g>';
     return '<div class="bun-wrap">' +
       '<svg id="bunSvg" viewBox="0 0 640 520" role="group" aria-label="压缩馍：点一下咬一口">' +
       '<defs>' +
       '<mask id="bunMask"><rect x="0" y="0" width="640" height="520" fill="#fff"/><g id="bunBites"></g></mask>' +
-      '<radialGradient id="bunCrust" cx=".42" cy=".30" r=".72"><stop offset="0" stop-color="#f6dfae"/><stop offset=".38" stop-color="#e2b46c"/><stop offset=".72" stop-color="#c4883f"/><stop offset="1" stop-color="#99602b"/></radialGradient>' +
-      '<linearGradient id="bunSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a45"/><stop offset=".6" stop-color="#a86a32"/><stop offset="1" stop-color="#7d4a22"/></linearGradient>' +
-      '<radialGradient id="bunCrumb" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#fbf0d8"/><stop offset=".7" stop-color="#efdcb6"/><stop offset="1" stop-color="#d8bd8c"/></radialGradient>' +
-      '<radialGradient id="bunGloss" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7e4" stop-opacity=".55"/><stop offset="1" stop-color="#fff7e4" stop-opacity="0"/></radialGradient>' +
-      '<filter id="bunShadow" x="-30%" y="-30%" width="170%" height="170%"><feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#3e2b20" flood-opacity=".28"/></filter>' +
+      '<radialGradient id="bunTop" cx=".42" cy=".34" r=".74"><stop offset="0" stop-color="#fbf3df"/><stop offset=".45" stop-color="#f6e6c4"/><stop offset=".78" stop-color="#e9cfa4"/><stop offset="1" stop-color="#d6b487"/></radialGradient>' +
+      '<linearGradient id="bunSide" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2c194"/><stop offset=".55" stop-color="#c99a63"/><stop offset="1" stop-color="#a97442"/></linearGradient>' +
+      '<filter id="bunShadow" x="-30%" y="-30%" width="170%" height="170%"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#4a3020" flood-opacity=".26"/></filter>' +
       '</defs>' +
-      '<rect x="0" y="0" width="640" height="520" fill="#e9ddcb"/>' +
-      '<rect x="22" y="22" width="596" height="476" rx="22" fill="#f4e9d6" stroke="#c9b497" stroke-width="2"/>' +
-      '<path d="M40 180h560M40 330h560" stroke="#ddcbb2" stroke-width="1" stroke-dasharray="3 7"/>' +
+      '<rect x="0" y="0" width="640" height="520" fill="#efe3cf"/>' +
+      '<rect x="22" y="22" width="596" height="476" rx="18" fill="#f7eeda" stroke="#d3bb94" stroke-width="1.6"/>' +
       '<g id="bunPlate">' +
-      '<ellipse cx="320" cy="398" rx="214" ry="60" fill="#3e2b20" opacity=".16"/>' +
-      '<ellipse cx="320" cy="356" rx="238" ry="86" fill="#c7d0c4" stroke="#8e9a8c" stroke-width="3"/>' +
-      '<ellipse cx="320" cy="344" rx="202" ry="66" fill="#eef0e8" stroke="#aeb8aa" stroke-width="2"/>' +
-      '<g id="bunPlateMark"><ellipse cx="320" cy="340" rx="128" ry="38" fill="none" stroke="#b9c3b6" stroke-width="2" stroke-dasharray="4 7"/></g>' +
+      '<ellipse cx="320" cy="404" rx="212" ry="52" fill="#4a3020" opacity=".12"/>' +
+      '<ellipse cx="320" cy="392" rx="196" ry="46" fill="none" stroke="#cdb98f" stroke-width="1.4" stroke-dasharray="2 6" opacity=".8"/>' +
       '</g>' +
-      '<g id="bunGroup" filter="url(#bunShadow)" style="transform-origin:320px 260px;transition:transform .28s cubic-bezier(.2,.8,.2,1)">' +
-      '<ellipse cx="320" cy="292" rx="182" ry="94" fill="url(#bunCrumb)"/>' +
+      '<g id="bunGroup" filter="url(#bunShadow)" style="transform-origin:320px 300px;transition:transform .28s cubic-bezier(.2,.8,.2,1)">' +
       '<g mask="url(#bunMask)">' +
-      '<ellipse cx="320" cy="308" rx="188" ry="92" fill="url(#bunSide)" stroke="#6e4422" stroke-width="3"/>' +
-      '<ellipse cx="320" cy="268" rx="182" ry="102" fill="url(#bunCrust)" stroke="#8a5a2e" stroke-width="3"/>' +
-      '<ellipse cx="320" cy="284" rx="196" ry="88" fill="none" stroke="#7a4a24" stroke-width="2" opacity=".35"/>' +
-      '<ellipse cx="248" cy="230" rx="82" ry="34" fill="url(#bunGloss)" transform="rotate(-14 248 230)"/>' +
-      '<ellipse cx="398" cy="238" rx="52" ry="20" fill="url(#bunGloss)" opacity=".7" transform="rotate(12 398 238)"/>' +
-      '<path d="M286 292q34 18 68 0" fill="none" stroke="#9a5c2c" stroke-width="5" opacity=".55" stroke-linecap="round"/>' +
-      '<path d="M292 256q28-14 56 0" fill="none" stroke="#f6dfae" stroke-width="4" opacity=".6" stroke-linecap="round"/>' +
-      '<ellipse cx="320" cy="270" rx="56" ry="24" fill="#8f5626" opacity=".32"/>' +
-      '<path d="M290 268q30 14 60 0" fill="none" stroke="#7a4420" stroke-width="3" opacity=".5"/>' +
-      '<path d="M300 258q20-9 40 0" fill="none" stroke="#f3dcb0" stroke-width="3" opacity=".5"/>' +
-      seeds +
+      '<ellipse cx="320" cy="332" rx="200" ry="124" fill="url(#bunSide)" stroke="#7d4a22" stroke-width="3.4"/>' +
+      '<ellipse cx="320" cy="300" rx="196" ry="132" fill="url(#bunTop)" stroke="#7d4a22" stroke-width="3.6"/>' +
+      washes +
+      '<path d="' + spiral + '" fill="none" stroke="#8a4a22" stroke-width="4.2" stroke-linecap="round" opacity=".6"/>' +
+      '<path d="' + spiral + '" fill="none" stroke="#fdf6e6" stroke-width="1.3" stroke-linecap="round" opacity=".3" transform="translate(0 1.6)"/>' +
+      speckles +
       '</g>' +
       '</g>' +
-      steam +
       '<g id="bunCrumbs"></g>' +
       '<g id="bunCharm" class="bun-charm" opacity="0">' +
-      '<path d="M320 300V270" stroke="#9d4a36" stroke-width="3"/>' +
-      '<circle cx="320" cy="266" r="5" fill="#9d4a36"/>' +
-      '<ellipse cx="320" cy="352" rx="46" ry="24" fill="#c98a45" stroke="#7d4a22" stroke-width="3"/>' +
-      '<ellipse cx="320" cy="344" rx="40" ry="18" fill="#e2b46c" stroke="#8a5a2e" stroke-width="2"/>' +
-      '<path d="M296 334q24 8 48 0" fill="none" stroke="#f6dfae" stroke-width="3"/>' +
-      '<g fill="#f6e7c5"><circle cx="304" cy="342" r="2"/><circle cx="316" cy="338" r="2"/><circle cx="330" cy="340" r="2"/><circle cx="342" cy="345" r="2"/><circle cx="310" cy="350" r="2"/><circle cx="334" cy="352" r="2"/></g>' +
+      '<path d="M320 320V288" stroke="#744439" stroke-width="3"/>' +
+      '<circle cx="320" cy="284" r="5" fill="#744439"/>' +
+      '<ellipse cx="320" cy="382" rx="44" ry="22" fill="#c99a63" stroke="#7d4a22" stroke-width="2.6"/>' +
+      '<ellipse cx="320" cy="376" rx="42" ry="20" fill="url(#bunTop)" stroke="#8a5a2e" stroke-width="2"/>' +
+      '<path d="M292 376c10-10 46-10 56 0-10 10-46 10-56 0z" fill="none" stroke="#8a4a22" stroke-width="2" opacity=".6"/>' +
+      '<path d="M300 372c8-6 32-6 40 0" fill="none" stroke="#8a4a22" stroke-width="1.6" opacity=".5"/>' +
+      '<path d="M306 382c6-5 22-5 28 0" fill="none" stroke="#8a4a22" stroke-width="1.4" opacity=".45"/>' +
       '</g>' +
-      '<text x="320" y="484" text-anchor="middle" font-family="Kaiti, STKaiti, serif" font-size="17" fill="#9a8066" letter-spacing="3">点一下 · 咬一口 · 芝麻香</text>' +
+      '<text x="320" y="486" text-anchor="middle" font-family="Kaiti, STKaiti, serif" font-size="16" fill="#9a8066" letter-spacing="4">点一下 · 咬一口 · 共五口</text>' +
       '</svg>' +
       '</div>';
   }
 
   function buildBun() {
-    $('#shopDetailKicker').textContent = '集市 · 压缩馍摊';
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
     $('#shopDetailTitle').textContent = '吃一个压缩馍';
     $('#shopDetailDesc').textContent = '刚出炉的压缩馍，放在盘子里。点一下咬一口，一共五口，吃完会剩一个小挂件。';
     shopProgressLabel.textContent = '已吃';
-    shopProgress.textContent = '0 / 5 口';
+    shopProgress.textContent = '0 / 6 口';
     shopActions.innerHTML = '';
     shopStage.innerHTML = bunSVG();
     bunGame = { count: 0, busy: false, done: false, svg: $('#bunSvg') };
@@ -1900,101 +2042,99 @@
     svg.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); biteBun(e); } });
   }
 
+  var BUN5_BITES = [
+    { a: -16, r: 116, off: 0.58 },
+    { a: 50, r: 120, off: 0.58 },
+    { a: 122, r: 124, off: 0.58 },
+    { a: 196, r: 128, off: 0.58 },
+    { a: 268, r: 132, off: 0.6 },
+    { final: true }
+  ];
   function biteBun(e) {
-    if (!bunGame || bunGame.busy || bunGame.done || bunGame.count >= 5) return;
-    var svg = bunGame.svg;
-    var p = { x: 320, y: 266 };
+    if (!bun5Game || bun5Game.busy || bun5Game.done) return;
+    if (bun5Game.count >= 6) return;
+    var svg = document.getElementById('bun5Svg');
+    var card = document.getElementById('bun5Card');
+    var r = svg.getBoundingClientRect();
+    var sy = 853 / r.height;
+    var x = BUN5_CX, y = BUN5_CY;
     if (e && typeof e.clientX === 'number' && e.clientX > 0) {
-      try {
-        var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-        var ctm = svg.getScreenCTM();
-        if (ctm) { var q = pt.matrixTransform(ctm.inverse()); p = { x: q.x, y: q.y }; }
-      } catch (err) { }
+      x = (e.clientX - r.left) * (903 / r.width);
+      y = (e.clientY - r.top) * sy;
+      // 只认馍身上的点击
+      var hx = (x - BUN5_CX) / BUN5_RX, hy = (y - BUN5_CY) / BUN5_RY;
+      if (hx * hx + hy * hy > 1.0) { toast('点在馍上才有得吃'); return; }
     }
-    var nx = (p.x - 320) / 192, ny = (p.y - 272) / 112;
-    if (nx * nx + ny * ny > 1.12) return; // 没点在馍上
-    bunGame.busy = true;
-    var idx = bunGame.count;
-    var b = { x: p.x, y: p.y, r: 62 };
-    var maskGroup = $('#bunBites');
+    var n = bun5Game.count;
+    var spec = BUN5_BITES[n];
     var ns = 'http://www.w3.org/2000/svg';
-    var c = document.createElementNS(ns, 'circle');
-    c.setAttribute('cx', b.x); c.setAttribute('cy', b.y); c.setAttribute('r', b.r);
-    c.setAttribute('fill', '#000');
-    maskGroup.appendChild(c);
-    // 牙印：沿咬口边缘做 5 个扇贝形缺口
-    for (var i = 0; i < 5; i++) {
-      var a = (i / 5) * Math.PI * 2 + idx * 0.6;
-      var s = document.createElementNS(ns, 'circle');
-      s.setAttribute('cx', b.x + Math.cos(a) * b.r * 0.85);
-      s.setAttribute('cy', b.y + Math.sin(a) * b.r * 0.85);
-      s.setAttribute('r', b.r * 0.36);
-      s.setAttribute('fill', '#000');
-      maskGroup.appendChild(s);
-    }
-    // 咬下去时出现卡通口型
-    var ang = Math.atan2(b.y - 278, b.x - 320) * 180 / Math.PI;
-    var mouth = document.createElementNS(ns, 'g');
-    mouth.setAttribute('transform', 'translate(' + b.x + ',' + b.y + ') rotate(' + ang + ')');
-    var mg = document.createElementNS(ns, 'g');
-    mg.setAttribute('class', 'bun-mouth');
-    function mel(tag, attrs) {
-      var el = document.createElementNS(ns, tag);
-      Object.keys(attrs).forEach(function (k) { el.setAttribute(k, attrs[k]); });
-      mg.appendChild(el);
-    }
-    mel('ellipse', { cx: 0, cy: 0, rx: 36, ry: 24, fill: '#7d3228' });
-    mel('ellipse', { cx: 0, cy: 0, rx: 27, ry: 16, fill: '#3a1a16' });
-    mel('path', { d: 'M-22 -8Q0 -18 22 -8L17 -3Q0 -10 -17 -3Z', fill: '#f6ebd6' });
-    mel('path', { d: 'M-20 8Q0 16 20 8L15 3Q0 10 -15 3Z', fill: '#f6ebd6' });
-    mel('ellipse', { cx: 0, cy: 7, rx: 12, ry: 7, fill: '#b75a4a' });
-    mouth.appendChild(mg);
-    svg.appendChild(mouth);
-    setTimeout(function () { if (mouth.parentNode) mouth.parentNode.removeChild(mouth); }, 800);
-    // 馍缩一下 + Q 弹回弹
-    var g = $('#bunGroup');
-    if (g) {
-      g.style.transform = 'scale(' + (1 - (idx + 1) * 0.032) + ') rotate(' + ((idx % 2 ? -1 : 1) * (idx + 1) * 1.1) + 'deg)';
-      g.classList.remove('is-spring');
-      void g.getBoundingClientRect();
-      g.classList.add('is-spring');
-      setTimeout(function () { if (g.parentNode) g.classList.remove('is-spring'); }, 560);
-    }
-    var plate = $('#bunPlate');
-    if (plate) { plate.classList.remove('is-jiggle'); void plate.getBoundingClientRect(); plate.classList.add('is-jiggle'); setTimeout(function () { plate.classList.remove('is-jiggle'); }, 420); }
-    // 碎屑 + 飞出的芝麻
-    var crumbs = $('#bunCrumbs');
-    for (var k = 0; k < 7; k++) {
-      var cr = document.createElementNS(ns, 'circle');
-      var ang2 = Math.random() * Math.PI * 2, dist = 30 + Math.random() * 60;
-      cr.setAttribute('cx', b.x); cr.setAttribute('cy', b.y); cr.setAttribute('r', 2 + Math.random() * 3);
-      cr.setAttribute('fill', k % 3 ? '#c79a5e' : '#f0d6a4');
-      cr.style.setProperty('--dx', Math.cos(ang2) * dist + 'px');
-      cr.style.setProperty('--dy', Math.sin(ang2) * dist + 'px');
-      cr.classList.add('bun-crumb');
-      crumbs.appendChild(cr);
-      setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, cr), 720);
-      if (k < 5) {
-        var sd = document.createElementNS(ns, 'ellipse');
-        var sdAng = Math.random() * Math.PI * 2, sdDist = 36 + Math.random() * 48;
-        sd.setAttribute('cx', b.x); sd.setAttribute('cy', b.y);
-        sd.setAttribute('rx', 3.6); sd.setAttribute('ry', 1.9);
-        sd.setAttribute('fill', k % 2 ? '#f6e7c5' : '#d9b478');
-        sd.style.setProperty('--dx', Math.cos(sdAng) * sdDist + 'px');
-        sd.style.setProperty('--dy', Math.sin(sdAng) * sdDist + 'px');
-        sd.classList.add('bun-seed');
-        crumbs.appendChild(sd);
-        setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, sd), 820);
+    var circles = [];
+    var bx, by, rad;
+    if (spec.final) {
+      bx = BUN5_CX; by = BUN5_CY; rad = 205;
+      circles.push({ x: bx, y: by, r: rad });
+      for (var i = 0; i < 6; i++) {
+        var aa = (i / 6) * Math.PI * 2;
+        circles.push({ x: bx + Math.cos(aa) * rad * 0.8, y: by + Math.sin(aa) * rad * 0.8, r: rad * 0.3 });
+      }
+    } else {
+      var ang = spec.a * Math.PI / 180;
+      var rimX = BUN5_CX + Math.cos(ang) * BUN5_RX;
+      var rimY = BUN5_CY + Math.sin(ang) * BUN5_RY;
+      bx = rimX + Math.cos(ang) * spec.r * spec.off;
+      by = rimY + Math.sin(ang) * spec.r * spec.off;
+      rad = spec.r;
+      circles.push({ x: bx, y: by, r: rad });
+      // 咬痕：沿咬口内缘排一圈牙印
+      var inA = Math.atan2(BUN5_CY - by, BUN5_CX - bx);
+      for (var k = 0; k < 7; k++) {
+        var off2 = (k - 3) * 0.28;
+        circles.push({
+          x: bx + Math.cos(inA + off2) * rad * 0.86,
+          y: by + Math.sin(inA + off2) * rad * 0.86,
+          r: rad * 0.3
+        });
       }
     }
+    // 遮罩洞
+    var hole = document.createElementNS(ns, 'g');
+    hole.setAttribute('class', 'bun5-bite-pop');
+    circles.forEach(function (c) {
+      var el = document.createElementNS(ns, 'circle');
+      el.setAttribute('cx', c.x.toFixed(1)); el.setAttribute('cy', c.y.toFixed(1)); el.setAttribute('r', c.r.toFixed(1));
+      el.setAttribute('fill', '#000');
+      hole.appendChild(el);
+    });
+    document.getElementById('bun5Holes').appendChild(hole);
+    // 馍缩小
+    var bun = document.getElementById('bun5Bun');
+    if (bun) bun.style.transform = 'scale(' + (1 - (n + 1) * 0.03) + ')';
+    // 抖动 + 碎屑（从咬口位置飞出）
+    if (card) { card.classList.remove('is-biting'); void card.offsetWidth; card.classList.add('is-biting'); }
+    var ca = card.getBoundingClientRect();
+    var px = ((spec.final ? BUN5_CX : bx) / 903) * ca.width;
+    var py = ((spec.final ? BUN5_CY : by) / 853) * ca.height;
+    for (var i2 = 0; i2 < (spec.final ? 12 : 8); i2++) {
+      var cr = document.createElement('i');
+      cr.className = 'bun5-crumb';
+      cr.style.left = px + 'px';
+      cr.style.top = py + 'px';
+      var a2 = Math.random() * Math.PI * 2, dist = 28 + Math.random() * 70;
+      cr.style.setProperty('--dx', Math.cos(a2) * dist + 'px');
+      cr.style.setProperty('--dy', (Math.sin(a2) * dist + 22) + 'px');
+      cr.style.animationDelay = (Math.random() * 0.06) + 's';
+      card.appendChild(cr);
+      setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, cr), 760);
+    }
     sfx.crunch();
-    bunGame.count++;
-    shopProgress.textContent = bunGame.count + ' / 5 口';
+    bun5Game.count++;
+    if (shopProgress) shopProgress.textContent = bun5Game.count + ' / 6 口';
     setTimeout(function () {
-      if (!bunGame) return;
-      bunGame.busy = false;
-      if (bunGame.count >= 5) finishBun();
-    }, 260);
+      if (!bun5Game) return;
+      bun5Game.busy = false;
+      if (card) card.classList.remove('is-biting');
+      if (bun5Game.count >= 6) finishBun();
+    }, 460);
   }
 
   function finishBun() {
@@ -2014,8 +2154,8 @@
       '<radialGradient id="miniBun" cx=".4" cy=".3" r=".7"><stop offset="0" stop-color="#f4dba4"/><stop offset=".55" stop-color="#dfad62"/><stop offset="1" stop-color="#a86a32"/></radialGradient>' +
       '</defs>' +
       '<ellipse cx="120" cy="190" rx="76" ry="12" fill="#3e2b20" opacity=".12"/>' +
-      '<path d="M120 38V16" stroke="#9d4a36" stroke-width="4"/>' +
-      '<circle cx="120" cy="14" r="5" fill="#9d4a36"/>' +
+      '<path d="M120 38V16" stroke="#744439" stroke-width="4"/>' +
+      '<circle cx="120" cy="14" r="5" fill="#744439"/>' +
       '<ellipse cx="120" cy="150" rx="82" ry="24" fill="#c7d0c4" stroke="#8e9a8c" stroke-width="3"/>' +
       '<ellipse cx="120" cy="144" rx="70" ry="18" fill="#eef0e8"/>' +
       '<ellipse cx="120" cy="120" rx="54" ry="30" fill="#a86a32" stroke="#6e4422" stroke-width="3"/>' +
@@ -2060,8 +2200,7 @@
     }, 2200);
   }
   function showBunDone() {
-    showReward('压缩馍挂件', '集市 · 一口一口吃掉', bagBunSVG());
-    $('#shopDetailKicker').textContent = '集市 · 压缩馍摊';
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
     $('#shopDetailTitle').textContent = '吃得干干净净';
     $('#shopDetailDesc').textContent = '最后一口也吃完了，盘子里只剩一点渣。压缩馍挂件已经收进你的背包。';
     shopProgressLabel.textContent = '收藏';
@@ -2131,8 +2270,8 @@
   function bagBunSVG() {
     return '<svg viewBox="0 0 80 80" aria-hidden="true">' +
       '<ellipse cx="40" cy="70" rx="24" ry="5" fill="#3e2b20" opacity=".13"/>' +
-      '<path d="M40 18V6" stroke="#9d4a36" stroke-width="3"/>' +
-      '<circle cx="40" cy="5" r="3.4" fill="#9d4a36"/>' +
+      '<path d="M40 18V6" stroke="#744439" stroke-width="3"/>' +
+      '<circle cx="40" cy="5" r="3.4" fill="#744439"/>' +
       '<ellipse cx="40" cy="58" rx="30" ry="10" fill="#c7d0c4" stroke="#8e9a8c" stroke-width="2"/>' +
       '<ellipse cx="40" cy="48" rx="22" ry="12" fill="#a86a32" stroke="#6e4422" stroke-width="2"/>' +
       '<ellipse cx="40" cy="42" rx="21" ry="13" fill="#e2b46c" stroke="#8a5a2e" stroke-width="2"/>' +
@@ -2149,7 +2288,7 @@
   }
 
   function bagClaySVG() {
-    return '<svg viewBox="0 0 80 80" aria-hidden="true"><ellipse cx="40" cy="73" rx="25" ry="4" fill="#3e2b20" opacity=".13"/><path d="M18 30Q10 12 24 8Q32 18 30 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M62 30Q70 12 56 8Q48 18 50 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M24 28Q30 16 40 16Q50 16 56 28L54 58Q53 68 40 68Q27 68 26 58Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M30 30Q34 24 38 30M42 30Q46 24 50 30" stroke="#e3b54a" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="33" cy="34" r="3" fill="#e3b54a"/><circle cx="47" cy="34" r="3" fill="#e3b54a"/><path d="M34 48h12M30 56h20" stroke="#b83a32" stroke-width="2.6"/></svg>';
+    return '<svg viewBox="0 0 80 80" aria-hidden="true"><ellipse cx="40" cy="73" rx="25" ry="4" fill="#3e2b20" opacity=".13"/><path d="M18 30Q10 12 24 8Q32 18 30 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M62 30Q70 12 56 8Q48 18 50 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M24 28Q30 16 40 16Q50 16 56 28L54 58Q53 68 40 68Q27 68 26 58Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M30 30Q34 24 38 30M42 30Q46 24 50 30" stroke="#e3b54a" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="33" cy="34" r="3" fill="#e3b54a"/><circle cx="47" cy="34" r="3" fill="#e3b54a"/><path d="M34 48h12M30 56h20" stroke="#744439" stroke-width="2.6"/></svg>';
   }
 
   function renderBag() {
@@ -2245,7 +2384,7 @@ var bagBtn = $('#bagBtn');
     shopDetail.classList.add('is-open');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
-    $('#shopDetailKicker').textContent = '内街 · 香囊摊';
+    $('#shopDetailKicker').textContent = '内街 · 香薰坊';
     $('#shopDetailDesc').textContent = '把右边的香药拖进左边香囊里，再在下面选囊袋颜色；装够三味，系上袋口。';
     sachetGame = { mats: [], hue: 0, colorName: '藕粉' };
     $('#shopDetailTitle').textContent = '配一只香囊';
@@ -2403,10 +2542,10 @@ var bagBtn = $('#bagBtn');
   }
 
   var CLAY_PALETTES = [
-    { base: '#2b2320', accent: '#e3b54a', red: '#b83a32', light: '#f6e7c8' },
+    { base: '#2b2320', accent: '#e3b54a', red: '#744439', light: '#f6e7c8' },
     { base: '#8e3a2a', accent: '#f0c86a', red: '#2b2320', light: '#f6e7c8' },
     { base: '#c9973e', accent: '#f6e7c8', red: '#2b2320', light: '#f2c86a' },
-    { base: '#3d5a6e', accent: '#f0c86a', red: '#b83a32', light: '#f6e7c8' }
+    { base: '#3d5a6e', accent: '#f0c86a', red: '#744439', light: '#f6e7c8' }
   ];
   var CLAY_DOGS = [
     { name: '阿黑', pattern: '黑地彩纹 · 正面蹲姿',
@@ -2551,7 +2690,7 @@ var bagBtn = $('#bagBtn');
     <!-- 店招与后墙 -->
     <rect x="38" y="56" width="1204" height="500" rx="8" fill="#f1e2c2" stroke="#c9a063" stroke-width="2"/>
     <rect x="38" y="56" width="1204" height="26" fill="#8f6038"/>
-    <rect x="38" y="82" width="1204" height="8" fill="#c8952e" opacity=".7"/>
+    <rect x="38" y="82" width="1204" height="8" fill="#B88549" opacity=".7"/>
 
     <!-- 后窗与远山 -->
     <rect x="936" y="112" width="278" height="268" rx="4" fill="url(#windowLight)" stroke="#8f6038" stroke-width="4"/>
@@ -2594,7 +2733,7 @@ var bagBtn = $('#bagBtn');
     <g id="roofDetails">
       <rect x="38" y="82" width="1204" height="10" fill="#5a3e2a"/>
       <path d="M40 92H930V104C918 124 900 124 888 104C876 124 858 124 846 104C834 124 816 124 804 104C792 124 774 124 762 104C750 124 732 124 720 104C708 124 690 124 678 104C666 124 648 124 636 104C624 124 606 124 594 104C582 124 564 124 552 104C540 124 522 124 510 104C498 124 480 124 468 104C456 124 438 124 426 104C414 124 396 124 384 104C372 124 354 124 342 104C330 124 312 124 300 104C288 124 270 124 258 104C246 124 228 124 216 104C204 124 186 124 174 104C162 124 144 124 132 104C120 124 102 124 90 104C78 124 60 124 48 104Z" fill="#f4e8cf" stroke="#c9a063" stroke-width="1.6"/>
-      <path d="M40 92H930" stroke="#b8453a" stroke-width="3"/>
+      <path d="M40 92H930" stroke="#7C4D30" stroke-width="3"/>
       <g fill="#8f6038" stroke="#5a3e2a" stroke-width="1.4">
         <path d="M180 92h34v18h-34Z"/><path d="M168 102h58v8h-58Z"/>
         <path d="M520 92h34v18h-34Z"/><path d="M508 102h58v8h-58Z"/>
@@ -2604,16 +2743,16 @@ var bagBtn = $('#bagBtn');
       <g transform="translate(420 106)">
         <path d="M-16 -6h32v10h-32Z" fill="#8f6038"/>
         <rect x="-13" y="4" width="26" height="104" fill="#f8edd6" stroke="#c9a063"/>
-        <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#9e2b26" letter-spacing="2">人祖</text>
-        <text x="0" y="52" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#9e2b26" letter-spacing="2">庙前</text>
-        <path d="M-13 96h26" stroke="#b8453a" stroke-width="3"/>
+        <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#662C18" letter-spacing="2">人祖</text>
+        <text x="0" y="52" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#662C18" letter-spacing="2">庙前</text>
+        <path d="M-13 96h26" stroke="#7C4D30" stroke-width="3"/>
       </g>
       <g transform="translate(640 106)">
         <path d="M-16 -6h32v10h-32Z" fill="#8f6038"/>
         <rect x="-13" y="4" width="26" height="104" fill="#f8edd6" stroke="#c9a063"/>
-        <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#9e2b26" letter-spacing="2">手作</text>
-        <text x="0" y="52" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#9e2b26" letter-spacing="2">泥塑</text>
-        <path d="M-13 96h26" stroke="#b8453a" stroke-width="3"/>
+        <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#662C18" letter-spacing="2">手作</text>
+        <text x="0" y="52" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#662C18" letter-spacing="2">泥塑</text>
+        <path d="M-13 96h26" stroke="#7C4D30" stroke-width="3"/>
       </g>
     </g>
     <!-- 货架 -->
@@ -2624,32 +2763,32 @@ var bagBtn = $('#bagBtn');
       <rect x="100" y="150" width="10" height="252" fill="#a8784a"/>
       <rect x="834" y="150" width="10" height="252" fill="#a8784a"/>
       <!-- 上层 -->
-      <use href="#cd" class="dogUse" x="126" y="76" width="74" height="92" style="--body:#2a211c;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="208" y="80" width="68" height="84" style="--body:#9e2b26;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="126" y="76" width="74" height="92" style="--body:#2a211c;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="208" y="80" width="68" height="84" style="--body:#662C18;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="286" y="78" width="72" height="90" style="--body:#c99a52;--accent:#f6e7c8;--red:#2a211c;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="370" y="80" width="66" height="84" style="--body:#5d6f61;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="452" y="76" width="74" height="92" style="--body:#2a211c;--accent:#9e2b26;--red:#d5ab4e;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="370" y="80" width="66" height="84" style="--body:#5d6f61;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="452" y="76" width="74" height="92" style="--body:#2a211c;--accent:#662C18;--red:#d5ab4e;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="540" y="80" width="68" height="84" style="--body:#7a4a34;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="622" y="78" width="72" height="90" style="--body:#2a211c;--accent:#d5ab4e;--red:#5d6f61;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="708" y="80" width="66" height="84" style="--body:#9e2b26;--accent:#f6e7c8;--red:#2a211c;--light:#f8e7c0"/>
+      <use href="#cd" class="dogUse" x="708" y="80" width="66" height="84" style="--body:#662C18;--accent:#f6e7c8;--red:#2a211c;--light:#f8e7c0"/>
       <!-- 中层 -->
-      <use href="#cd" class="dogUse" x="120" y="186" width="76" height="94" style="--body:#2a211c;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="212" y="190" width="68" height="84" style="--body:#5d6f61;--accent:#f6e7c8;--red:#9e2b26;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="292" y="188" width="72" height="90" style="--body:#9e2b26;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="376" y="190" width="66" height="84" style="--body:#c99a52;--accent:#2a211c;--red:#9e2b26;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="458" y="186" width="76" height="94" style="--body:#2a211c;--accent:#9e2b26;--red:#d5ab4e;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="120" y="186" width="76" height="94" style="--body:#2a211c;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="212" y="190" width="68" height="84" style="--body:#5d6f61;--accent:#f6e7c8;--red:#662C18;--light:#f8e7c0"/>
+      <use href="#cd" class="dogUse" x="292" y="188" width="72" height="90" style="--body:#662C18;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="376" y="190" width="66" height="84" style="--body:#c99a52;--accent:#2a211c;--red:#662C18;--light:#f8e7c0"/>
+      <use href="#cd" class="dogUse" x="458" y="186" width="76" height="94" style="--body:#2a211c;--accent:#662C18;--red:#d5ab4e;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="546" y="190" width="68" height="84" style="--body:#7a4a34;--accent:#d5ab4e;--red:#2a211c;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="628" y="188" width="72" height="90" style="--body:#2a211c;--accent:#f6e7c8;--red:#5d6f61;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="712" y="190" width="66" height="84" style="--body:#9e2b26;--accent:#d5ab4e;--red:#2a211c;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="712" y="190" width="66" height="84" style="--body:#662C18;--accent:#d5ab4e;--red:#2a211c;--light:#f6e7c8"/>
       <!-- 下层 -->
-      <use href="#cd" class="dogUse" x="128" y="298" width="74" height="92" style="--body:#2a211c;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="216" y="300" width="70" height="86" style="--body:#9e2b26;--accent:#f6e7c8;--red:#2a211c;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="298" y="298" width="74" height="92" style="--body:#5d6f61;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="384" y="300" width="68" height="84" style="--body:#c99a52;--accent:#2a211c;--red:#9e2b26;--light:#f8e7c0"/>
-      <use href="#cd" class="dogUse" x="466" y="298" width="74" height="92" style="--body:#2a211c;--accent:#9e2b26;--red:#d5ab4e;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="128" y="298" width="74" height="92" style="--body:#2a211c;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="216" y="300" width="70" height="86" style="--body:#662C18;--accent:#f6e7c8;--red:#2a211c;--light:#f8e7c0"/>
+      <use href="#cd" class="dogUse" x="298" y="298" width="74" height="92" style="--body:#5d6f61;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="384" y="300" width="68" height="84" style="--body:#c99a52;--accent:#2a211c;--red:#662C18;--light:#f8e7c0"/>
+      <use href="#cd" class="dogUse" x="466" y="298" width="74" height="92" style="--body:#2a211c;--accent:#662C18;--red:#d5ab4e;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="554" y="300" width="68" height="84" style="--body:#7a4a34;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
       <use href="#cd" class="dogUse" x="636" y="298" width="74" height="92" style="--body:#2a211c;--accent:#d5ab4e;--red:#5d6f61;--light:#f6e7c8"/>
-      <use href="#cd" class="dogUse" x="722" y="300" width="68" height="84" style="--body:#9e2b26;--accent:#f6e7c8;--red:#2a211c;--light:#f6e7c8"/>
+      <use href="#cd" class="dogUse" x="722" y="300" width="68" height="84" style="--body:#662C18;--accent:#f6e7c8;--red:#2a211c;--light:#f6e7c8"/>
     </g>
 
 
@@ -2673,23 +2812,23 @@ var bagBtn = $('#bagBtn');
     <!-- 悬挂招牌 -->
     <path d="M470 60L500 48M650 60L620 48" stroke="#5a3e2a" stroke-width="2"/>
     <g transform="translate(560 48)">
-      <rect x="-132" y="-16" width="264" height="54" rx="6" fill="#4a2f22" stroke="#c8952e" stroke-width="2"/>
+      <rect x="-132" y="-16" width="264" height="54" rx="6" fill="#4a2f22" stroke="#B88549" stroke-width="2"/>
       <text x="0" y="17" text-anchor="middle" font-family="Songti SC,serif" font-size="26" font-weight="800" fill="#f6e7c2" letter-spacing="10">泥 泥 狗</text>
-      <rect x="168" y="-10" width="34" height="34" rx="4" fill="#9e2b26"/>
+      <rect x="168" y="-10" width="34" height="34" rx="4" fill="#662C18"/>
       <text x="185" y="12" text-anchor="middle" font-family="Songti SC,serif" font-size="16" fill="#f6e7c2">人</text>
     </g>
 
     <!-- 灯笼 -->
     <g transform="translate(930 92)" class="swing">
       <path d="M0 0V30" stroke="#6b4326" stroke-width="3"/>
-      <ellipse cx="0" cy="58" rx="24" ry="30" fill="#b8453a" stroke="#6b4326" stroke-width="2"/>
-      <path d="M0 28V58M-18 44H18" stroke="#c8952e" stroke-width="2" opacity=".8"/>
-      <path d="M-6 88h12v12h-12Z" fill="#9e2b26"/>
+      <ellipse cx="0" cy="58" rx="24" ry="30" fill="#7C4D30" stroke="#6b4326" stroke-width="2"/>
+      <path d="M0 28V58M-18 44H18" stroke="#B88549" stroke-width="2" opacity=".8"/>
+      <path d="M-6 88h12v12h-12Z" fill="#662C18"/>
     </g>
     <g transform="translate(86 92)" class="swing">
       <path d="M0 0V30" stroke="#6b4326" stroke-width="3"/>
-      <ellipse cx="0" cy="58" rx="22" ry="28" fill="#b8453a" stroke="#6b4326" stroke-width="2"/>
-      <path d="M0 30V58M-16 44H16" stroke="#c8952e" stroke-width="2" opacity=".8"/>
+      <ellipse cx="0" cy="58" rx="22" ry="28" fill="#7C4D30" stroke="#6b4326" stroke-width="2"/>
+      <path d="M0 30V58M-16 44H16" stroke="#B88549" stroke-width="2" opacity=".8"/>
     </g>
 
     <!-- 绿植与竹篮 -->
@@ -2709,7 +2848,7 @@ var bagBtn = $('#bagBtn');
       <path d="M296 296C296 254 316 232 340 232C364 232 384 254 384 296C384 306 380 312 376 314C372 286 360 270 340 270C320 270 306 286 302 314C298 312 296 306 296 296Z" fill="#2a211c" stroke="#2a1410" stroke-width="2"/>
       <path d="M340 232C338 214 346 204 360 202" fill="none" stroke="#2a211c" stroke-width="8" stroke-linecap="round"/>
       <path d="M360 202C382 196 392 214 384 230C376 244 360 240 354 228" fill="#2a211c" stroke="#2a1410" stroke-width="2"/>
-      <path d="M354 228C366 230 374 238 374 248" fill="none" stroke="#9e2b26" stroke-width="3"/>
+      <path d="M354 228C366 230 374 238 374 248" fill="none" stroke="#662C18" stroke-width="3"/>
       <!-- 五官 -->
       <path d="M316 292q10-7 20 0M344 292q10-7 20 0" fill="none" stroke="#3a241c" stroke-width="2.2" stroke-linecap="round"/>
       <ellipse cx="326" cy="304" rx="4" ry="5" fill="#2a1410"/>
@@ -2735,7 +2874,7 @@ var bagBtn = $('#bagBtn');
       <path d="M400 530C404 548 398 560 380 562" fill="url(#skinWash)" stroke="#3a241c" stroke-width="2"/>
       <path d="M292 530q10 10 22 6M388 530q-10 10-22 6" fill="none" stroke="#3a241c" stroke-width="2"/>
       <!-- 手中小泥泥狗 -->
-      <use href="#cd" x="398" y="480" width="58" height="72" style="--body:#2a211c;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
+      <use href="#cd" x="398" y="480" width="58" height="72" style="--body:#2a211c;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
       <!-- 木质椅背 -->
       <path d="M238 392V560M238 392C238 372 258 360 282 360" fill="none" stroke="#6e1f1c" stroke-width="8" stroke-linecap="round"/>
       <path d="M238 470h44" stroke="#6e1f1c" stroke-width="6"/>
@@ -2752,7 +2891,7 @@ var bagBtn = $('#bagBtn');
       <!-- 发丝/发带/玉簪 -->
       <path d="M306 292C304 268 318 250 340 248C362 248 378 264 380 286" fill="none" stroke="#3a241c" stroke-width="2" opacity=".7"/>
       <path d="M334 246q10-8 22-2" fill="none" stroke="#3a241c" stroke-width="1.4" opacity=".6"/>
-      <path d="M360 202l16-8" stroke="#c8952e" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M360 202l16-8" stroke="#B88549" stroke-width="2.6" stroke-linecap="round"/>
       <circle cx="378" cy="192" r="3.4" fill="#8f9d7a" stroke="#3a241c" stroke-width="1"/>
       <!-- 衣褶与玉坠 -->
       <path d="M296 438C306 452 308 480 304 508M384 438C374 452 372 480 376 508" fill="none" stroke="#7c8a69" stroke-width="2" opacity=".45"/>
@@ -2783,23 +2922,23 @@ var bagBtn = $('#bagBtn');
       </g>
       <rect x="520" y="516" width="92" height="14" rx="2" fill="#f4e8cf" stroke="#8f6038" stroke-width="1.4"/>
       <path d="M528 522h76M532 528h68" stroke="#c9a063" stroke-width="1.2"/>
-      <rect x="560" y="500" width="16" height="10" rx="1" fill="#9e2b26"/>
+      <rect x="560" y="500" width="16" height="10" rx="1" fill="#662C18"/>
     </g>
 
     <g transform="translate(690 404)">
       <path d="M-34 0h68v98h-68Z" fill="#f4e8cf" stroke="#c9a063" stroke-width="1.6"/>
-      <path d="M-34 0h68" stroke="#b8453a" stroke-width="4"/>
-      <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#9e2b26" letter-spacing="3">泥</text>
-      <text x="0" y="54" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#9e2b26" letter-spacing="3">塑</text>
-      <text x="0" y="74" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#9e2b26" letter-spacing="3">人</text>
+      <path d="M-34 0h68" stroke="#7C4D30" stroke-width="4"/>
+      <text x="0" y="34" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#662C18" letter-spacing="3">泥</text>
+      <text x="0" y="54" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#662C18" letter-spacing="3">塑</text>
+      <text x="0" y="74" text-anchor="middle" font-family="Songti SC,serif" font-size="14" fill="#662C18" letter-spacing="3">人</text>
     </g>
     <!-- 柜台 -->
     <g id="counter">
       <path d="M46 566H1234V660H46Z" fill="url(#counterFace)" stroke="#4a2f22" stroke-width="2"/>
       <path d="M46 566H1234V584H46Z" fill="url(#woodGrain)" stroke="#4a2f22" stroke-width="2"/>
-      <path d="M46 584H1234" stroke="#c8952e" stroke-width="2" opacity=".75"/>
-      <rect x="72" y="602" width="1136" height="40" rx="4" fill="#9e2b26" opacity=".9"/>
-      <path d="M86 622H1194" stroke="#c8952e" stroke-width="2" opacity=".65"/>
+      <path d="M46 584H1234" stroke="#B88549" stroke-width="2" opacity=".75"/>
+      <rect x="72" y="602" width="1136" height="40" rx="4" fill="#662C18" opacity=".9"/>
+      <path d="M86 622H1194" stroke="#B88549" stroke-width="2" opacity=".65"/>
       <text x="640" y="700" text-anchor="middle" font-family="Songti SC,serif" font-size="17" fill="#f6e7c2" letter-spacing="9">手 工 泥 塑 · 人 祖 庙 前</text>
       <path d="M64 566V760M1216 566V760" stroke="#5a3e2a" stroke-width="3"/>
     </g>
@@ -2808,13 +2947,13 @@ var bagBtn = $('#bagBtn');
     <g id="display">
       <ellipse cx="816" cy="556" rx="92" ry="10" fill="#3a2418" opacity=".12"/>
       <circle cx="816" cy="520" r="76" fill="#f6e7c8" opacity=".18"/>
-      <circle cx="816" cy="520" r="76" fill="none" stroke="#c8952e" stroke-width="1.4" opacity=".55"/>
+      <circle cx="816" cy="520" r="76" fill="none" stroke="#B88549" stroke-width="1.4" opacity=".55"/>
       <g class="float">
-        <use class="clayDogHit" data-clay="0" href="#cd" x="742" y="414" width="148" height="184" style="--body:#2a211c;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
+        <use class="clayDogHit" data-clay="0" href="#cd" x="742" y="414" width="148" height="184" style="--body:#2a211c;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
       </g>
-      <use class="clayDogHit" data-clay="1" href="#cd" x="552" y="466" width="78" height="96" style="--body:#9e2b26;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
-      <use class="clayDogHit" data-clay="2" href="#cd" x="638" y="470" width="72" height="88" style="--body:#c99a52;--accent:#2a211c;--red:#9e2b26;--light:#f6e7c8"/>
-      <use class="clayDogHit" data-clay="3" href="#cd" x="906" y="468" width="80" height="96" style="--body:#5d6f61;--accent:#d5ab4e;--red:#9e2b26;--light:#f6e7c8"/>
+      <use class="clayDogHit" data-clay="1" href="#cd" x="552" y="466" width="78" height="96" style="--body:#662C18;--accent:#e7c16a;--red:#2a211c;--light:#f6e7c8"/>
+      <use class="clayDogHit" data-clay="2" href="#cd" x="638" y="470" width="72" height="88" style="--body:#c99a52;--accent:#2a211c;--red:#662C18;--light:#f6e7c8"/>
+      <use class="clayDogHit" data-clay="3" href="#cd" x="906" y="468" width="80" height="96" style="--body:#5d6f61;--accent:#d5ab4e;--red:#662C18;--light:#f6e7c8"/>
       <use class="clayDogHit" data-clay="4" href="#cd" x="994" y="472" width="70" height="86" style="--body:#2a211c;--accent:#f6e7c8;--red:#5d6f61;--light:#f8e7c0"/>
       <text x="816" y="588" text-anchor="middle" font-family="Songti SC,serif" font-size="13" fill="#6f4a3a" letter-spacing="4">镇 店 · 阿 黑</text>
     </g>
@@ -2824,10 +2963,10 @@ var bagBtn = $('#bagBtn');
       <ellipse cx="0" cy="22" rx="30" ry="7" fill="#3a2418" opacity=".12"/>
       <path d="M-24 0C-24 -18 24 -18 24 0L20 16H-20Z" fill="#8f9d7a" stroke="#3a241c" stroke-width="2"/>
       <path d="M24 0C40 -4 42 12 28 12" fill="none" stroke="#8f9d7a" stroke-width="4"/>
-      <circle cx="0" cy="-18" r="4" fill="#c8952e"/>
+      <circle cx="0" cy="-18" r="4" fill="#B88549"/>
     </g>
     <g transform="translate(1112 610)">
-      <rect x="-22" y="-22" width="44" height="44" rx="4" fill="#9e2b26"/>
+      <rect x="-22" y="-22" width="44" height="44" rx="4" fill="#662C18"/>
       <text x="0" y="7" text-anchor="middle" font-family="Songti SC,serif" font-size="18" fill="#f6e7c2">泥</text>
     </g>
   </svg>`;
@@ -2844,8 +2983,8 @@ var bagBtn = $('#bagBtn');
     shopDetail.classList.add('is-open', 'is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
-    $('#shopDetailKicker').textContent = '内街 · 泥泥狗铺';
-    $('#shopDetailTitle').textContent = '泥泥狗铺';
+    $('#shopDetailKicker').textContent = '内街 · 泥泥狗工坊';
+    $('#shopDetailTitle').textContent = '泥泥狗工坊';
     $('#shopDetailDesc').textContent = '';
     shopProgressLabel.textContent = '泥泥狗';
     shopProgress.textContent = '听 6 只';
@@ -2857,7 +2996,7 @@ var bagBtn = $('#bagBtn');
       '<div class="clay-shop">' +
         '<p class="clay-shop__hint">点击前台小狗有惊喜 <span>↓</span></p>' +
         '<div class="clay-shop__frame">' +
-          '<img class="clay-shop__img" src="assets/clay-shop-web.jpg" alt="泥泥狗铺">' +
+          '<img class="clay-shop__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
           dogs +
         '</div>' +
         '<div class="clay-shop__info" id="clayShopInfo" hidden>' +
@@ -2920,7 +3059,7 @@ var bagBtn = $('#bagBtn');
     for (var i = 0; i < 6; i++) {
       x.beginPath(); x.arc(256, 256, 60 + i * 34, 0, Math.PI * 2); x.stroke();
     }
-    x.strokeStyle = '#b83a32'; x.lineWidth = 8;
+    x.strokeStyle = '#744439'; x.lineWidth = 8;
     for (var k = 0; k < 8; k++) {
       var a = k / 8 * Math.PI * 2;
       x.beginPath(); x.moveTo(256 + Math.cos(a) * 50, 256 + Math.sin(a) * 50); x.lineTo(256 + Math.cos(a) * 236, 256 + Math.sin(a) * 236); x.stroke();
@@ -3086,6 +3225,18 @@ var bagBtn = $('#bagBtn');
     try {
       var checkin = document.getElementById('clayCheckin');
       if (checkin) { checkin.remove(); return; }
+      var tongtianEl = document.getElementById('tongtianScene');
+      if (tongtianEl) { tongtianEl.remove(); return; }
+      var beilinEl = document.getElementById('beilinScene');
+      if (beilinEl) { beilinEl.remove(); if (window.__openBeilin) window.__openBeilin(); return; }
+      var beilinHallEl = document.getElementById('beilinHall');
+      if (beilinHallEl) { beilinHallEl.remove(); return; }
+      var prayCardEl = document.getElementById('prayCard');
+      if (prayCardEl && !prayCardEl.hidden) { prayCardEl.hidden = true; return; }
+      var prayTreeEl = document.getElementById('prayTree');
+      if (prayTreeEl && !prayTreeEl.hidden) { prayTreeEl.hidden = true; return; }
+      var baguaPhoto = document.getElementById('baguaPhoto');
+      if (baguaPhoto && !baguaPhoto.hidden) { baguaPhoto.hidden = true; return; }
       var gatePhoto = document.getElementById('gatePhoto');
       if (gatePhoto && !gatePhoto.hidden) { gatePhoto.hidden = true; return; }
       var gateInfo = document.getElementById('gateInfo');
@@ -3133,6 +3284,780 @@ var bagBtn = $('#bagBtn');
     return function () { prev(); updateInnerTabs(); };
   })(updateHUD);
   init();
+
+  /* ============================================================
+     布老虎：九宫格拼图
+     ============================================================ */
+  var jigsaw2Game = null;
+  var JIGSAW2_ORDER = [3, 7, 1, 8, 0, 5, 2, 6, 4];
+  function buildPlush() {
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
+    $('#shopDetailTitle').textContent = '拼一只布老虎';
+    $('#shopDetailDesc').textContent = '把右边九块碎片拖到拼图板上，拼出这只布老虎；拼好就收进背包。';
+    shopProgressLabel.textContent = '拼图';
+    shopProgress.textContent = '0 / 9 块';
+    shopActions.innerHTML = '';
+    var slots = '', tiles = '';
+    for (var i = 0; i < 9; i++) {
+      slots += '<button class="jigsaw2-slot" type="button" data-slot="' + i + '" aria-label="第 ' + (i + 1) + ' 格"></button>';
+    }
+    JIGSAW2_ORDER.forEach(function (idx) {
+      tiles += '<button class="jigsaw2-tile" type="button" data-tile="' + idx + '" data-src="assets/tiger/jigsaw/' + idx + '.jpg" style="background-image:url(assets/tiger/jigsaw/' + idx + '.jpg)" aria-label="第 ' + (idx + 1) + ' 块碎片"></button>';
+    });
+    shopStage.innerHTML =
+      '<div class="jigsaw2-game">' +
+        '<div class="jigsaw2-board" id="jigsaw2Board">' +
+          '<img class="jigsaw2-ghost" src="assets/tiger/plush-source.jpg" alt="布老虎拼图目标">' +
+          '<div class="jigsaw2-slots" id="jigsaw2Slots">' + slots + '</div>' +
+          '<div class="jigsaw2-done" id="jigsaw2Done" style="background-image:url(assets/tiger/plush-source.jpg)"></div>' +
+        '</div>' +
+        '<div class="jigsaw2-tray" id="jigsaw2Tray">' + tiles + '</div>' +
+        '<p class="jigsaw2-hint">按住右边的碎片，拖到左边的拼图板上松手</p>' +
+      '</div>';
+    jigsaw2Game = { placed: 0, done: false };
+    $$('.jigsaw2-tile', shopStage).forEach(bindJigsaw2Tile);
+  }
+  function highlightJigsaw2Slot(slot) {
+    $$('.jigsaw2-slot', shopStage).forEach(function (s) { s.classList.remove('is-hover'); });
+    if (slot) slot.classList.add('is-hover');
+  }
+  function bindJigsaw2Tile(tile) {
+    var drag = null;
+    var uid = tile.getAttribute('data-tile');
+    function targetSlot() {
+      return document.querySelector('.jigsaw2-slot[data-slot="' + uid + '"]');
+    }
+    function makeGhost(rect) {
+      var g = document.createElement('div');
+      g.className = 'jigsaw2-ghostpiece';
+      g.style.width = rect.width + 'px';
+      g.style.height = rect.height + 'px';
+      g.style.backgroundImage = 'url(' + tile.getAttribute('data-src') + ')';
+      document.body.appendChild(g);
+      return g;
+    }
+    function moveGhost(x, y) {
+      if (!drag) return;
+      var r = drag.rect;
+      drag.ghost.style.left = (x - r.width / 2) + 'px';
+      drag.ghost.style.top = (y - r.height / 2 - 16) + 'px';
+      highlightJigsaw2Slot(jigsaw2SlotAt(x, y));
+    }
+    function start(x, y, id) {
+      if (drag) return false;
+      if (!jigsaw2Game || jigsaw2Game.done || tile.classList.contains('is-placed')) return false;
+      var r = tile.getBoundingClientRect();
+      drag = { id: id, sx: x, sy: y, moved: 0, rect: r, ghost: makeGhost(r) };
+      tile.classList.add('is-source');
+      var t = targetSlot();
+      if (t) t.classList.add('is-target');
+      moveGhost(x, y);
+      return true;
+    }
+    function move(x, y) {
+      if (!drag) return;
+      var dx = x - drag.sx, dy = y - drag.sy;
+      drag.moved += Math.abs(dx) + Math.abs(dy);
+      drag.sx = x; drag.sy = y;
+      moveGhost(x, y);
+    }
+    function finishDrag(ok, target) {
+      var d = drag; drag = null;
+      highlightJigsaw2Slot(null);
+      $$('.jigsaw2-slot.is-target', shopStage).forEach(function (s) { s.classList.remove('is-target'); });
+      tile.classList.remove('is-source');
+      var ghost = d.ghost;
+      if (ok && target) {
+        var tr = target.getBoundingClientRect();
+        ghost.style.transition = 'left .2s ease, top .2s ease, transform .2s ease, opacity .2s ease';
+        ghost.style.left = (tr.left + tr.width / 2 - d.rect.width / 2) + 'px';
+        ghost.style.top = (tr.top + tr.height / 2 - d.rect.height / 2) + 'px';
+        ghost.style.transform = 'scale(1)';
+        setTimeout(function () { if (ghost.parentNode) ghost.remove(); }, 220);
+        placeJigsaw2Tile(tile, target);
+      } else {
+        ghost.style.transition = 'opacity .22s ease, transform .22s ease';
+        ghost.style.opacity = '0';
+        ghost.style.transform = 'scale(.88)';
+        setTimeout(function () { if (ghost.parentNode) ghost.remove(); }, 240);
+      }
+    }
+    function end(x, y) {
+      if (!drag) return;
+      var d = drag;
+      if (d.moved < 8) { finishDrag(false, null); return; }
+      var board = document.getElementById('jigsaw2Board');
+      var target = targetSlot();
+      var ok = false;
+      var slot = jigsaw2SlotAt(x, y);
+      if (slot && target && slot === target) ok = true;
+      if (!ok && target && board) {
+        var br = board.getBoundingClientRect();
+        if (x >= br.left - 10 && x <= br.right + 10 && y >= br.top - 10 && y <= br.bottom + 10) ok = true;
+      }
+      finishDrag(ok, target);
+    }
+    function cancel() {
+      if (!drag) return;
+      var d = drag; drag = null;
+      highlightJigsaw2Slot(null);
+      $$('.jigsaw2-slot.is-target', shopStage).forEach(function (s) { s.classList.remove('is-target'); });
+      tile.classList.remove('is-source');
+      if (d.ghost && d.ghost.parentNode) d.ghost.remove();
+    }
+    // 鼠标 / 触控笔
+    tile.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      if (!start(e.clientX, e.clientY, 'p' + e.pointerId)) return;
+      e.preventDefault();
+      try { tile.setPointerCapture(e.pointerId); } catch (err) { }
+    });
+    tile.addEventListener('pointermove', function (e) {
+      if (!drag || drag.id !== 'p' + e.pointerId) return;
+      e.preventDefault();
+      move(e.clientX, e.clientY);
+    });
+    tile.addEventListener('pointerup', function (e) {
+      if (!drag || drag.id !== 'p' + e.pointerId) return;
+      end(e.clientX, e.clientY);
+    });
+    tile.addEventListener('pointercancel', function () {
+      if (drag && String(drag.id).charAt(0) === 'p') cancel();
+    });
+    // 手指
+    tile.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 1) return;
+      if (!start(e.touches[0].clientX, e.touches[0].clientY, 't')) return;
+      e.preventDefault();
+    }, { passive: false });
+    tile.addEventListener('touchmove', function (e) {
+      if (!drag || drag.id !== 't' || e.touches.length !== 1) return;
+      e.preventDefault();
+      move(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    tile.addEventListener('touchend', function (e) {
+      if (!drag || drag.id !== 't') return;
+      var t = e.changedTouches[0];
+      end(t.clientX, t.clientY);
+    });
+    tile.addEventListener('touchcancel', function () {
+      if (drag && drag.id === 't') cancel();
+    });
+  }
+
+  function placeJigsaw2Tile(tile, slot) {
+    if (!jigsaw2Game || jigsaw2Game.done || tile.classList.contains('is-placed')) return;
+    tile.classList.add('is-placed');
+    tile.style.transform = '';
+    slot.classList.add('is-filled');
+    slot.style.backgroundImage = 'url(' + tile.getAttribute('data-src') + ')';
+    jigsaw2Game.placed++;
+    sfx.pop();
+    if (shopProgress) shopProgress.textContent = jigsaw2Game.placed + ' / 9 块';
+    if (jigsaw2Game.placed >= 9) finishJigsaw2();
+  }
+  function finishJigsaw2() {
+    if (!jigsaw2Game) return;
+    jigsaw2Game.done = true;
+    var done = document.getElementById('jigsaw2Done');
+    if (done) done.classList.add('is-on');
+    state.tiger = {};
+    save();
+    completeTask('tiger');
+    renderBag();
+    setTimeout(showTiger2Done, 720);
+  }
+  function showTiger2Done() {
+    shopDetail.classList.add('is-open');
+    shopDetail.setAttribute('aria-hidden', 'false');
+    if (app) app.classList.add('is-detail');
+    $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
+    $('#shopDetailTitle').textContent = '布老虎拼好了';
+    $('#shopDetailDesc').textContent = '九块拼图凑成一只布老虎，已经收进你的背包。';
+    shopProgressLabel.textContent = '收藏';
+    shopProgress.textContent = '已收进背包';
+    shopStage.innerHTML = '<div class="shop-done"><img class="plush-done-img" src="assets/tiger/plush-source.jpg" alt="拼好的布老虎"><p class="shop-done__name">布老虎玩偶</p><p class="shop-done__meta">布老虎 · 已收进背包</p></div>';
+    shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="plush">再拼一次</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
+    $$('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
+  }
+
+
+  /* ============================================================
+     压缩馍：逐口动画（参考图逐帧，咬一口擦出一张）
+     ============================================================ */
+  var bun4Game = null;
+  var BUN4_FRAMES = [
+    'assets/bun/frame0.jpg', 'assets/bun/frame1.jpg', 'assets/bun/frame2.jpg',
+    'assets/bun/frame3.jpg', 'assets/bun/frame4.jpg', 'assets/bun/frame5.jpg', 'assets/bun/frame6.jpg'
+  ];
+  function buildBun() {
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
+    $('#shopDetailTitle').textContent = '吃一个压缩馍';
+    $('#shopDetailDesc').textContent = '刚出炉的压缩馍，点一下咬一口，一共五口，看着它一点点变小。';
+    shopProgressLabel.textContent = '已吃';
+    shopProgress.textContent = '0 / 6 口';
+    shopActions.innerHTML = '';
+    shopStage.innerHTML =
+      '<div class="bun4-game">' +
+        '<div class="bun4-card" id="bun4Card" role="button" tabindex="0" aria-label="点一下咬一口">' +
+          '<img class="bun4-img bun4-img--old" id="bun4Old" src="' + BUN4_FRAMES[0] + '" alt="">' +
+          '<img class="bun4-img bun4-img--new" id="bun4New" src="' + BUN4_FRAMES[0] + '" alt="压缩馍">' +
+          '<div class="bun4-crumbs" id="bun4Crumbs"></div>' +
+        '</div>' +
+        '<p class="bun4-hint" id="bun4Hint">点一下 · 咬一口（共 6 口）</p>' +
+      '</div>';
+    bun4Game = { count: 0, busy: false, done: false };
+    var card = document.getElementById('bun4Card');
+    if (card) {
+      card.addEventListener('click', function () { biteBun(); });
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); biteBun(); } });
+    }
+  }
+  function spawnBun4Crumbs() {
+    var wrap = document.getElementById('bun4Crumbs');
+    if (!wrap) return;
+    for (var i = 0; i < 8; i++) {
+      var cr = document.createElement('i');
+      cr.className = 'bun4-crumb';
+      var ang = Math.random() * Math.PI * 2, dist = 30 + Math.random() * 70;
+      cr.style.left = (66 + Math.random() * 16) + '%';
+      cr.style.top = (40 + Math.random() * 16) + '%';
+      cr.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+      cr.style.setProperty('--dy', (Math.sin(ang) * dist + 26) + 'px');
+      cr.style.animationDelay = (Math.random() * 0.08) + 's';
+      wrap.appendChild(cr);
+      setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, cr), 780);
+    }
+  }
+  function biteBun() {
+    if (!bun4Game || bun4Game.busy || bun4Game.done) return;
+    if (bun4Game.count >= 5) return;
+    bun4Game.busy = true;
+    var card = document.getElementById('bun4Card');
+    var oldImg = document.getElementById('bun4Old');
+    var newImg = document.getElementById('bun4New');
+    var idx = bun4Game.count;
+    if (oldImg) oldImg.src = BUN4_FRAMES[idx];
+    if (newImg) newImg.src = BUN4_FRAMES[idx + 1];
+    if (card) {
+      card.classList.remove('is-biting');
+      void card.offsetWidth;
+      card.classList.add('is-biting');
+      if (newImg) {
+        newImg.style.animation = 'none';
+        void newImg.offsetWidth;
+        newImg.style.animation = '';
+      }
+    }
+    spawnBun4Crumbs();
+    sfx.crunch();
+    bun4Game.count++;
+    if (shopProgress) shopProgress.textContent = bun4Game.count + ' / 5 口';
+    setTimeout(function () {
+      if (!bun4Game) return;
+      bun4Game.busy = false;
+      if (card) card.classList.remove('is-biting');
+      if (bun4Game.count >= 5) finishBun();
+    }, 540);
+  }
+  function finishBun() {
+    if (!bun4Game || bun4Game.done) return;
+    bun4Game.done = true;
+    var card = document.getElementById('bun4Card');
+    var oldImg = document.getElementById('bun4Old');
+    var newImg = document.getElementById('bun4New');
+    if (oldImg) oldImg.src = BUN4_FRAMES[6];
+    if (newImg) newImg.src = BUN4_FRAMES[6];
+    if (card) card.classList.add('is-finished');
+    completeTask('bun');
+    setTimeout(showBunDone, 750);
+  }
+  function showBunDone() {
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
+    $('#shopDetailTitle').textContent = '压缩馍吃完了';
+    $('#shopDetailDesc').textContent = '最后一口也吃完了，这个压缩馍做成了小挂件，已经收进背包。';
+    shopProgressLabel.textContent = '收藏';
+    shopProgress.textContent = '已收进背包';
+    shopStage.innerHTML = '<div class="shop-done"><img class="bun4-done-img" src="assets/bun/frame6.jpg" alt="压缩馍吃完了"><p class="shop-done__name">压缩馍挂件</p><p class="shop-done__meta">压缩馍 · 已收进背包</p></div>';
+    shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="bun">再吃一个</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
+    $$('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
+  }
+
+  /* ============================================================
+     布老虎拼图：拖拽（pointer + touch 双通道）
+     ============================================================ */
+  function jigsaw2SlotAt(x, y) {
+    var el = document.elementFromPoint(x, y);
+    var slot = el && el.closest ? el.closest('.jigsaw2-slot') : null;
+    if (slot) return slot;
+    var best = null, bestD = 1e9;
+    $$('.jigsaw2-slot', shopStage).forEach(function (s) {
+      if (s.classList.contains('is-filled')) return;
+      var r = s.getBoundingClientRect();
+      if (x < r.left - 12 || x > r.right + 12 || y < r.top - 12 || y > r.bottom + 12) return;
+      var d = Math.hypot(x - (r.left + r.width / 2), y - (r.top + r.height / 2));
+      if (d < bestD) { bestD = d; best = s; }
+    });
+    return best;
+  }
+  /* ============================================================
+     压缩馍：图片遮罩咬痕（点击位置缺一块，逐口缩小）
+     ============================================================ */
+  var bun5Game = null;
+  var BUN5_CX = 450, BUN5_CY = 430, BUN5_RX = 322, BUN5_RY = 288;
+  function buildBun() {
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
+    $('#shopDetailTitle').textContent = '吃一个压缩馍';
+    $('#shopDetailDesc').textContent = '刚出炉的压缩馍，点一下咬一口，一共六口，从边上开始咬，最后一口吃完只剩小挂件。';
+    shopProgressLabel.textContent = '已吃';
+    shopProgress.textContent = '0 / 6 口';
+    shopActions.innerHTML = '';
+    shopStage.innerHTML =
+      '<div class="bun5-game">' +
+        '<div class="bun5-card" id="bun5Card" role="button" tabindex="0" aria-label="点一下咬一口">' +
+          '<svg class="bun5-svg" id="bun5Svg" viewBox="0 0 903 853" role="img" aria-label="压缩馍：点一下咬一口">' +
+            '<defs>' +
+              '<mask id="bun5Mask"><rect x="0" y="0" width="903" height="853" fill="#fff"/><g id="bun5Holes" clip-path="url(#bun5Clip)"></g></mask>' +
+              '<clipPath id="bun5Clip"><ellipse cx="450" cy="430" rx="330" ry="296"/></clipPath>' +
+              '<filter id="bun5EdgeShadow" x="-6%" y="-6%" width="112%" height="112%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#3a2412" flood-opacity=".38"/></filter>' +
+            '</defs>' +
+            '<rect x="0" y="0" width="903" height="853" fill="#f2e7d3"/>' +
+            '<g id="bun5Bun" class="bun5-bun">' +
+              '<image href="assets/bun/bun-main.jpg" x="0" y="0" width="903" height="853" mask="url(#bun5Mask)" filter="url(#bun5EdgeShadow)"/>' +
+            '</g>' +
+          '</svg>' +
+        '</div>' +
+        '<p class="bun5-hint" id="bun5Hint">点一下 · 咬一口（共 6 口）</p>' +
+      '</div>';
+    bun5Game = { count: 0, busy: false, done: false };
+    var card = document.getElementById('bun5Card');
+    var svg = document.getElementById('bun5Svg');
+    if (card && svg) {
+      svg.addEventListener('click', function (e) { biteBun(e); });
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); biteBun(null); } });
+    }
+  }
+  function bun5BiteShape(cx, cy, rad) {
+    var circles = [{ x: cx, y: cy, r: rad }];
+    for (var i = 0; i < 6; i++) {
+      var a = (i / 6) * Math.PI * 2 + 0.35;
+      circles.push({ x: cx + Math.cos(a) * rad * 0.82, y: cy + Math.sin(a) * rad * 0.82, r: rad * 0.34 });
+    }
+    return circles;
+  }
+  var BUN6_BITES = [
+    { a: -16, r: 174, off: 0.22 },
+    { a: 50, r: 180, off: 0.22 },
+    { a: 122, r: 186, off: 0.22 },
+    { a: 196, r: 192, off: 0.22 },
+    { a: 268, r: 198, off: 0.22 },
+    { final: true }
+  ];
+  function biteBun(e) {
+    if (!bun5Game || bun5Game.busy || bun5Game.done) return;
+    if (bun5Game.count >= 6) return;
+    var svg = document.getElementById('bun5Svg');
+    var card = document.getElementById('bun5Card');
+    var r = svg.getBoundingClientRect();
+    var sy = 853 / r.height;
+    var x = BUN5_CX, y = BUN5_CY;
+    if (e && typeof e.clientX === 'number' && e.clientX > 0) {
+      x = (e.clientX - r.left) * (903 / r.width);
+      y = (e.clientY - r.top) * sy;
+      var hx = (x - BUN5_CX) / BUN5_RX, hy = (y - BUN5_CY) / BUN5_RY;
+      if (hx * hx + hy * hy > 1.0) { toast('点在馍上才有得吃'); return; }
+    }
+    var n = bun5Game.count;
+    var spec = BUN6_BITES[n];
+    var ns = 'http://www.w3.org/2000/svg';
+    var circles = [];
+    var bx, by, rad;
+    if (spec.final) {
+      bx = BUN5_CX; by = BUN5_CY; rad = 205;
+      circles.push({ x: bx, y: by, r: rad });
+      for (var i = 0; i < 6; i++) {
+        var aa = (i / 6) * Math.PI * 2;
+        circles.push({ x: bx + Math.cos(aa) * rad * 0.8, y: by + Math.sin(aa) * rad * 0.8, r: rad * 0.3 });
+      }
+    } else {
+      var ang = spec.a * Math.PI / 180;
+      var rimX = BUN5_CX + Math.cos(ang) * BUN5_RX;
+      var rimY = BUN5_CY + Math.sin(ang) * BUN5_RY;
+      bx = rimX + Math.cos(ang) * spec.r * spec.off;
+      by = rimY + Math.sin(ang) * spec.r * spec.off;
+      rad = spec.r;
+      circles.push({ x: bx, y: by, r: rad });
+      var inA = Math.atan2(BUN5_CY - by, BUN5_CX - bx);
+      for (var k = 0; k < 7; k++) {
+        var off2 = (k - 3) * 0.27;
+        circles.push({ x: bx + Math.cos(inA + off2) * rad * 1.0, y: by + Math.sin(inA + off2) * rad * 1.0, r: rad * 0.3 });
+      }
+    }
+    var hole = document.createElementNS(ns, 'g');
+    hole.setAttribute('class', 'bun5-bite-pop');
+    circles.forEach(function (c) {
+      var el = document.createElementNS(ns, 'circle');
+      el.setAttribute('cx', c.x.toFixed(1)); el.setAttribute('cy', c.y.toFixed(1)); el.setAttribute('r', c.r.toFixed(1));
+      el.setAttribute('fill', '#000');
+      hole.appendChild(el);
+    });
+    document.getElementById('bun5Holes').appendChild(hole);
+    var bun = document.getElementById('bun5Bun');
+    if (bun) bun.style.transform = 'scale(' + (1 - (n + 1) * 0.03) + ')';
+    if (card) { card.classList.remove('is-biting'); void card.offsetWidth; card.classList.add('is-biting'); }
+    var ca = card.getBoundingClientRect();
+    var px = ((spec.final ? BUN5_CX : bx) / 903) * ca.width;
+    var py = ((spec.final ? BUN5_CY : by) / 853) * ca.height;
+    for (var i2 = 0; i2 < (spec.final ? 12 : 8); i2++) {
+      var cr = document.createElement('i');
+      cr.className = 'bun5-crumb';
+      cr.style.left = px + 'px';
+      cr.style.top = py + 'px';
+      var a2 = Math.random() * Math.PI * 2, dist = 28 + Math.random() * 70;
+      cr.style.setProperty('--dx', Math.cos(a2) * dist + 'px');
+      cr.style.setProperty('--dy', (Math.sin(a2) * dist + 22) + 'px');
+      cr.style.animationDelay = (Math.random() * 0.06) + 's';
+      card.appendChild(cr);
+      setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, cr), 760);
+    }
+    sfx.crunch();
+    bun5Game.count++;
+    if (shopProgress) shopProgress.textContent = bun5Game.count + ' / 6 口';
+    setTimeout(function () {
+      if (!bun5Game) return;
+      bun5Game.busy = false;
+      if (card) card.classList.remove('is-biting');
+      if (bun5Game.count >= 6) finishBun();
+    }, 460);
+  }
+
+  function finishBun() {
+    if (!bun5Game || bun5Game.done) return;
+    bun5Game.done = true;
+    completeTask('bun');
+    setTimeout(showBunDone, 760);
+  }
+  function showBunDone() {
+    $('#shopDetailKicker').textContent = '集市 · 馍香坊';
+    $('#shopDetailTitle').textContent = '压缩馍吃完了';
+    $('#shopDetailDesc').textContent = '五口吃完，这个压缩馍做成了小挂件，已经收进背包。';
+    shopProgressLabel.textContent = '收藏';
+    shopProgress.textContent = '已收进背包';
+    shopStage.innerHTML = '<div class="shop-done"><img class="bun5-done-img" src="assets/bun/bun-main.jpg" alt="压缩馍"><p class="shop-done__name">压缩馍挂件</p><p class="shop-done__meta">压缩馍 · 已收进背包</p></div>';
+    shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="bun">再吃一个</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
+    $$('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
+  }
+
+
+  /* ============================================================
+     碑林：擦碑场景
+     ============================================================ */
+  var beilinState = null;
+  function beilinWeb(cx, cy, r, n) {
+    var out = '';
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / n;
+      out += '<line x1="' + cx + '" y1="' + cy + '" x2="' + (cx + Math.cos(a) * r).toFixed(0) + '" y2="' + (cy + Math.sin(a) * r).toFixed(0) + '" stroke="#ece6d6" stroke-width="2" opacity=".5"/>';
+    }
+    for (var k = 1; k <= 4; k++) {
+      var rr = r * k / 4, pts = '';
+      for (var j = 0; j <= n; j++) {
+        var a2 = -Math.PI / 2 + j * 2 * Math.PI / n;
+        pts += (j ? 'L' : 'M') + (cx + Math.cos(a2) * rr).toFixed(0) + ' ' + (cy + Math.sin(a2) * rr).toFixed(0) + ' ';
+      }
+      out += '<path d="' + pts + 'Z" fill="none" stroke="#ece6d6" stroke-width="1.5" opacity=".4"/>';
+    }
+    return out;
+  }
+  function beilinRagSVG() {
+    return '<svg viewBox="0 0 72 72" aria-hidden="true">' +
+      '<path d="M13 30C13 18 23 9 36 10C50 11 61 20 61 33C61 48 50 61 35 62C22 63 12 52 12 40Z" fill="#e9ddc4" stroke="#8a7a5e" stroke-width="2.2" stroke-linejoin="round"/>' +
+      '<path d="M22 24C28 18 38 16 46 22C52 27 55 37 50 46" fill="none" stroke="#c9b894" stroke-width="3.2" stroke-linecap="round" opacity=".85"/>' +
+      '<path d="M17 44C24 50 33 52 42 48C48 45 52 39 52 33" fill="none" stroke="#c9b894" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>' +
+      '<path d="M30 14C34 22 34 34 29 44C27 48 24 51 21 53" fill="none" stroke="#d8c8a8" stroke-width="2.2" stroke-linecap="round" opacity=".8"/>' +
+      '<path d="M18 28C24 26 30 28 34 33" fill="none" stroke="#fbf4e2" stroke-width="2" opacity=".7"/>' +
+      '<path d="M42 50C46 47 50 42 52 37" fill="none" stroke="#fbf4e2" stroke-width="2" opacity=".6"/>' +
+      '</svg>';
+  }
+  function openBeilinStele() {
+    var old = document.getElementById('beilinScene');
+    if (old) old.remove();
+    var webs = beilinWeb(-20, -10, 330, 9) + beilinWeb(1300, 60, 300, 8) + beilinWeb(40, 1650, 260, 8);
+    var box = document.createElement('div');
+    box.className = 'beilin-scene';
+    box.id = 'beilinScene';
+    box.innerHTML =
+      '<div class="beilin-scene__bg"></div>' +
+      '<div class="beilin-scene__frame" id="beilinFrame">' +
+        '<img class="beilin-scene__clean" src="assets/beilin/stele.jpg" alt="太昊陵碑林石碑">' +
+        '<div class="beilin-scene__dirty" id="beilinDirty">' +
+          '<svg viewBox="0 0 1280 1707" aria-hidden="true">' +
+            '<defs>' +
+              '<filter id="beilinBlur" x="-6%" y="-6%" width="112%" height="112%"><feGaussianBlur stdDeviation="9.5"/></filter>' +
+              '<filter id="beilinGrain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="7"/><feColorMatrix type="saturate" values="0"/></filter>' +
+            '</defs>' +
+            '<image href="assets/beilin/stele.jpg" x="0" y="0" width="1280" height="1707" filter="url(#beilinBlur)"/>' +
+            '<rect x="0" y="0" width="1280" height="1707" fill="#5a5040" opacity=".3"/>' +
+            '<rect x="0" y="0" width="1280" height="1707" filter="url(#beilinGrain)" opacity=".18"/>' +
+            '<g class="beilin-webs" opacity=".6">' + webs + '</g>' +
+          '</svg>' +
+        '</div>' +
+        '<div class="beilin-scene__rag" id="beilinRag">' + beilinRagSVG() + '</div>' +
+      '</div>' +
+      '<p class="beilin-scene__hint" id="beilinHint">按住抹布，在石碑上移动擦拭</p>' +
+      '<button class="beilin-scene__close" type="button" id="beilinClose" aria-label="关闭">×</button>';
+    document.body.appendChild(box);
+    var frame = document.getElementById('beilinFrame');
+    var dirty = document.getElementById('beilinDirty');
+    var rag = document.getElementById('beilinRag');
+    var hint = document.getElementById('beilinHint');
+    var doneAlready = has('beilin');
+    // 擦拭画布：白色底，擦过的地方擦成透明，作为脏层的遮罩
+    var cv = document.createElement('canvas');
+    cv.width = 320; cv.height = 427;
+    var cctx = cv.getContext('2d');
+    cctx.fillStyle = '#fff';
+    cctx.fillRect(0, 0, 320, 427);
+    function applyMask() {
+      var url = 'url(' + cv.toDataURL('image/png') + ')';
+      dirty.style.maskImage = url;
+      dirty.style.webkitMaskImage = url;
+      dirty.style.maskSize = '100% 100%';
+      dirty.style.webkitMaskSize = '100% 100%';
+      dirty.style.maskRepeat = 'no-repeat';
+      dirty.style.webkitMaskRepeat = 'no-repeat';
+    }
+    applyMask();
+    var st = { cleaning: false, done: !!doneAlready, holes: 0, covFrac: 0, lastX: -9999, lastY: -9999, lastPct: -1 };
+    if (doneAlready) {
+      box.classList.add('is-clean');
+      if (hint) hint.textContent = '碑已擦净 · 碑林打卡完成';
+    }
+    var closeBtn = document.getElementById('beilinClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); openBeilin(); });
+    function placeRag(cx, cy) {
+      var r = frame.getBoundingClientRect();
+      if (rag) { rag.style.left = (cx - r.left) + 'px'; rag.style.top = (cy - r.top) + 'px'; }
+    }
+    function paintStroke(x, y, px, py) {
+      var sx = x / 1280 * 320, sy = y / 1707 * 427;
+      cctx.globalCompositeOperation = 'destination-out';
+      cctx.lineCap = 'round';
+      cctx.lineJoin = 'round';
+      // 外层软边（半透明宽笔）+ 内层实心笔，边缘更自然
+      cctx.globalAlpha = 0.3;
+      cctx.lineWidth = 62;
+      cctx.beginPath();
+      if (px < -9000) { cctx.moveTo(sx + 0.5, sy); cctx.lineTo(sx, sy); }
+      else { cctx.moveTo(px / 1280 * 320, py / 1707 * 427); cctx.lineTo(sx, sy); }
+      cctx.stroke();
+      cctx.globalAlpha = 0.55;
+      cctx.lineWidth = 50;
+      cctx.beginPath();
+      if (px < -9000) { cctx.moveTo(sx + 0.5, sy); cctx.lineTo(sx, sy); }
+      else { cctx.moveTo(px / 1280 * 320, py / 1707 * 427); cctx.lineTo(sx, sy); }
+      cctx.stroke();
+      cctx.globalAlpha = 1;
+      cctx.lineWidth = 36;
+      cctx.beginPath();
+      if (px < -9000) { cctx.moveTo(sx + 0.5, sy); cctx.lineTo(sx, sy); }
+      else { cctx.moveTo(px / 1280 * 320, py / 1707 * 427); cctx.lineTo(sx, sy); }
+      cctx.stroke();
+      applyMask();
+    }
+    function wipeAt(cx, cy) {
+      if (!st || st.done) return;
+      var r = frame.getBoundingClientRect();
+      var x = (cx - r.left) / r.width * 1280;
+      var y = (cy - r.top) / r.height * 1707;
+      if (x < 0 || x > 1280 || y < 0 || y > 1707) return;
+      var px = -9999, py = -9999;
+      if (st.lastX > -9000) {
+        px = (st.lastX - r.left) / r.width * 1280;
+        py = (st.lastY - r.top) / r.height * 1707;
+        if (Math.hypot(x - px, y - py) < 14) return;
+      }
+      st.lastX = cx; st.lastY = cy;
+      paintStroke(x, y, px, py);
+      st.holes++;
+      for (var di = 0; di < 3; di++) {
+        var puff = document.createElement('i');
+        puff.className = 'beilin-dust-puff';
+        puff.style.left = (cx - r.left) + 'px';
+        puff.style.top = (cy - r.top) + 'px';
+        var pa = Math.random() * Math.PI * 2, pd = 16 + Math.random() * 44;
+        puff.style.setProperty('--dx', Math.cos(pa) * pd + 'px');
+        puff.style.setProperty('--dy', (Math.sin(pa) * pd - 12) + 'px');
+        frame.appendChild(puff);
+        setTimeout(function (el) { if (el.parentNode) el.parentNode.removeChild(el); }.bind(null, puff), 1000);
+      }
+      if (st.holes % 3 === 0) {
+        var data = cctx.getImageData(0, 0, 320, 427).data;
+        var clear = 0;
+        for (var i = 3; i < data.length; i += 4) if (data[i] < 100) clear++;
+        st.covFrac = clear / (320 * 427);
+        var pct = Math.min(100, Math.round(st.covFrac / 0.36 * 100));
+        if (hint && pct !== st.lastPct) { st.lastPct = pct; hint.textContent = '按住抹布擦石碑 · 已擦 ' + pct + '%'; }
+        if (st.covFrac >= 0.36) {
+          st.done = true;
+          box.classList.add('is-clean');
+          if (hint) hint.textContent = '碑已擦净 · 碑林打卡完成';
+          if (rag) rag.classList.remove('is-pressed');
+          completeTask('beilin');
+          toast('碑林擦碑 · 打卡完成');
+          return;
+        }
+      }
+      if (sfx.tick && (st.holes % 4 === 0)) sfx.tick();
+    }
+    frame.addEventListener('pointerdown', function (e) {
+      if (st.done) return;
+      st.cleaning = true;
+      st.lastX = -9999; st.lastY = -9999;
+      placeRag(e.clientX, e.clientY);
+      if (rag) { rag.classList.add('is-pressed'); rag.classList.add('is-wiping'); }
+      box.classList.add('is-wiping');
+      wipeAt(e.clientX, e.clientY);
+      try { frame.setPointerCapture(e.pointerId); } catch (err) { }
+      e.preventDefault();
+    });
+    frame.addEventListener('pointermove', function (e) {
+      placeRag(e.clientX, e.clientY);
+      if (st.cleaning) wipeAt(e.clientX, e.clientY);
+    });
+    function endWipe() {
+      st.cleaning = false;
+      if (rag) rag.classList.remove('is-pressed');
+    }
+    frame.addEventListener('pointerup', endWipe);
+    frame.addEventListener('pointercancel', endWipe);
+    frame.addEventListener('pointerleave', function () { if (!st.cleaning && rag) rag.classList.remove('is-wiping'); });
+  }
+
+  function openBeilin() {
+    var old = document.getElementById('beilinHall');
+    if (old) old.remove();
+    var oldStele = document.getElementById('beilinScene');
+    if (oldStele) oldStele.remove();
+    var box = document.createElement('div');
+    box.className = 'beilin-hall';
+    box.id = 'beilinHall';
+    box.innerHTML =
+      '<div class="beilin-hall__bg"></div>' +
+      '<div class="beilin-hall__frame">' +
+        '<img class="beilin-hall__img" src="assets/beilin/pavilion.jpg" alt="碑林碑亭">' +
+        '<button class="beilin-hall__stele" type="button" id="beilinHallStele" aria-label="走近石碑"></button>' +
+      '</div>' +
+      '<p class="beilin-hall__hint">点击亭中石碑 · 走近细看</p>' +
+      '<button class="beilin-hall__close" type="button" id="beilinHallClose" aria-label="关闭">×</button>';
+    document.body.appendChild(box);
+    var hot = document.getElementById('beilinHallStele');
+    if (hot) hot.addEventListener('click', function () { box.remove(); openBeilinStele(); });
+    var closeBtn = document.getElementById('beilinHallClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+  }
+  window.__openBeilin = openBeilin;
+
+
+  /* ============================================================
+     通天殿：供奉
+     ============================================================ */
+  var TONGTIAN_OFFERS = [
+    { id: 'flower', name: '花束', src: 'assets/tongtian/offer-flower.png', cls: 'tongtian-scene__card--flower' },
+    { id: 'pastry', name: '点心', src: 'assets/tongtian/offer-pastry.png', cls: '' },
+    { id: 'bun', name: '供饼', src: 'assets/tongtian/offer-bun.png', cls: '' },
+    { id: 'fruit', name: '果盘', src: 'assets/tongtian/offer-fruit.png', cls: '' }
+  ];
+  function openTongtian() {
+    var old = document.getElementById('tongtianScene');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'tongtian-scene';
+    box.id = 'tongtianScene';
+    var slotsHtml = '';
+    [20, 50, 80].forEach(function (x, i) {
+      slotsHtml += '<div class="tongtian-scene__slot" id="ttSlot' + i + '" style="left:' + x + '%">' + (i + 1) + '</div>';
+    });
+    var cardsHtml = TONGTIAN_OFFERS.map(function (o) {
+      return '<button class="tongtian-scene__card ' + o.cls + '" type="button" data-offer="' + o.id + '"><img src="' + o.src + '" alt="' + o.name + '"><span>' + o.name + '</span></button>';
+    }).join('');
+    box.innerHTML =
+      '<div class="tongtian-scene__bg"></div>' +
+      '<div class="tongtian-scene__frame">' +
+        '<img class="tongtian-scene__img" src="assets/tongtian/hall.jpg" alt="通天殿伏羲像与供台">' +
+        '<div class="tongtian-scene__table" id="tongtianTable"><span class="tongtian-scene__table-hint">点击供台 · 供奉贡品</span></div>' +
+        '<div class="tongtian-scene__slots">' + slotsHtml + '</div>' +
+      '</div>' +
+      '<p class="tongtian-scene__hint" id="tongtianHint">点击供台 · 供奉贡品（0 / 3）</p>' +
+      '<button class="tongtian-scene__close" type="button" id="tongtianClose" aria-label="关闭">×</button>' +
+      '<div class="tongtian-scene__chooser" id="tongtianChooser" hidden>' +
+        '<div class="tongtian-scene__chooser-head"><b>选一样供品</b><button class="tongtian-scene__chooser-close" type="button" id="tongtianChooserClose" aria-label="收起">×</button></div>' +
+        '<div class="tongtian-scene__cards">' + cardsHtml + '</div>' +
+      '</div>';
+    document.body.appendChild(box);
+    var hint = document.getElementById('tongtianHint');
+    var chooser = document.getElementById('tongtianChooser');
+    var table = document.getElementById('tongtianTable');
+    var doneAlready = has('tongtian');
+    var st = { count: 0, done: !!doneAlready };
+    function fillSlot(i, offer) {
+      var slot = document.getElementById('ttSlot' + i);
+      if (!slot) return;
+      slot.classList.add('is-filled');
+      slot.innerHTML = '<img src="' + offer.src + '" alt="' + offer.name + '">';
+    }
+    if (doneAlready) {
+      hint.textContent = '供奉完成 · 通天殿打卡完成';
+      TONGTIAN_OFFERS.slice(0, 3).forEach(function (o, i) { fillSlot(i, o); });
+      st.count = 3;
+      var th = document.querySelector('.tongtian-scene__table-hint');
+      if (th) th.style.display = 'none';
+    }
+    function closeChooser() {
+      if (chooser) chooser.hidden = true;
+      box.classList.remove('is-choosing');
+    }
+    table.addEventListener('click', function () {
+      if (st.done) { toast('供台已经摆好了'); return; }
+      if (chooser) chooser.hidden = false;
+      box.classList.add('is-choosing');
+    });
+    var chClose = document.getElementById('tongtianChooserClose');
+    if (chClose) chClose.addEventListener('click', closeChooser);
+    box.addEventListener('click', function (e) {
+      if (chooser && !chooser.hidden && !e.target.closest('.tongtian-scene__chooser') && !e.target.closest('#tongtianTable')) closeChooser();
+    });
+    function chooseOffer(offer) {
+      if (!st || st.done || st.count >= 3) return;
+      fillSlot(st.count, offer);
+      st.count++;
+      closeChooser();
+      if (sfx.pop) sfx.pop();
+      if (st.count < 3) {
+        hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 3）';
+      } else {
+        st.done = true;
+        hint.textContent = '供奉完成 · 通天殿打卡完成';
+        var thDone = document.querySelector('.tongtian-scene__table-hint');
+        if (thDone) thDone.style.display = 'none';
+        completeTask('tongtian');
+        toast('通天殿 · 供奉完成');
+      }
+    }
+    box.querySelectorAll('[data-offer]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var id = btn.getAttribute('data-offer');
+        var offer = TONGTIAN_OFFERS.filter(function (o) { return o.id === id; })[0];
+        if (offer) chooseOffer(offer);
+      });
+    });
+    var closeBtn = document.getElementById('tongtianClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+  }
+  window.__openTongtian = openTongtian;
+
 })();
 
   (function start2dWalkers() {

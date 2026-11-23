@@ -1,86 +1,98 @@
 /* ============================================================
    羲皇寻踪 · 设计变量
-   国潮骨架 + 参考图《清明上河图》式浅绛市井配色
-   - 大面：米黄纸底、浅绛木色、灰绿瓦色
-   - 点色：中国红（印章/链接/主操作）、金线（纹样/细边）
+   风格：古碑拓本 + 太昊陵金身殿（refs/ 三张参考图取色）
+   - 大面：旧纸底、青石碑色、深褐木色
+   - 点色：金铜（纹样/高光）、枣红（印章/主操作）、深墨（文字）
    ============================================================ */
 
 :root {
-  /* 参考图取色（面积由大到小） */
-  --ref-sage: #b0ad89;     /* 灰绿：瓦、树、衣 */
-  --ref-tan: #d8c396;      /* 浅赭：墙面、布 */
-  --ref-ochre: #d0a76f;    /* 赭黄：木作、招牌 */
-  --ref-brown: #a38b66;    /* 褐：梁柱、暗部 */
-  --ref-cream: #f6e7c2;    /* 米黄：纸底 */
-  --ref-sand: #e3d6b0;     /* 沙：次表面 */
+  /* 参考图取色（三张图的面积主色） */
+  --ref-stone: #52483F;      /* 碑身深青灰 */
+  --ref-stone-2: #C9B5A9;    /* 碑面浅石 */
+  --ref-stone-3: #B9A394;    /* 碑面中石 */
+  --ref-stone-4: #9C8878;    /* 石面暗部 */
+  --ref-stone-5: #736357;    /* 石缝/阴影 */
+  --ref-stone-6: #DCC9BE;    /* 受光石面 */
+  --ref-gold: #B88549;       /* 金铜 */
+  --ref-wood: #7C4D30;       /* 木作 */
+  --ref-brick: #662C18;      /* 枣红 */
+  --ref-gold-2: #E9CD8D;     /* 鎏金高光 */
+  --ref-deep: #501F10;       /* 深枣 */
+  --ref-deepest: #38150A;    /* 最深木/暗角 */
+  --ref-paper: #F1E7D8;      /* 旧纸底 */
+  --ref-paper-2: #E6DACA;    /* 纸底次层 */
+  --ref-paper-3: #D8CCBC;    /* 纸底阴影 */
+  --ref-gray: #9F968B;       /* 瓦灰 */
+  --ref-gray-2: #C1B6A9;     /* 浅瓦灰 */
+  --ref-accent: #744439;     /* 点缀褐红 */
 
   /* 纸面与表面 */
-  --bg: #f6e7c2;
-  --bg-deep: #e3d6b0;
-  --surface: #fffaf0;
-  --surface-2: #f6e7c2;
-  --surface-3: #e3d6b0;
-  --paper: #fbf3e4;
-  --paper-2: #f6e7c2;
-  --paper-3: #e3d6b0;
-  --white: #fffdf8;
-  --sage: #b0ad89;
-  --tan: #d0a76f;
-  --brown: #a38b66;
+  --bg: #F1E7D8;
+  --bg-deep: #E6DACA;
+  --surface: #F8F1E5;
+  --surface-2: #F1E7D8;
+  --surface-3: #D8CCBC;
+  --paper: #F8F1E4;
+  --paper-2: #F1E7D8;
+  --paper-3: #DCC9BE;
+  --white: #FBF6EC;
+  --sage: #9F968B;
+  --tan: #C1B6A9;
+  --brown: #9C8878;
 
   /* 文字：墨色，不用纯黑 */
-  --ink: #2a1410;
-  --ink-2: #3a241c;
-  --muted: #6f4a3a;
-  --faint: #8a6a55;
+  --ink: #2E241C;
+  --ink-2: #4A3A2E;
+  --muted: #736357;
+  --faint: #9C8878;
 
-  /* 主色：中国红；金只做图形/细线，不拿来写字 */
-  --primary: #b8202a;
-  --primary-ink: #fff7e6;
-  --primary-deep: #8e1820;
-  --link: #a31d26;
-  --accent: #b8202a;
-  --accent-deep: #8e1820;
-  --accent-soft: #e8c9be;
-  --coral: #a31d26;
-  --coral-deep: #7e141b;
-  --coral-soft: #e8c9be;
-  --gold: #c8952e;
-  --gold-2: #d8b46a;
-  --gold-3: #e8d3b5;
-  --jade: #b0ad89;
-  --jade-2: #c3be9e;
-  --teal: #9dae9c;
-  --water: #c7d0c4;
-  --water-2: #dde4d8;
-  --red: #b8202a;
-  --red-deep: #8e1820;
-  --red-soft: #e8c9be;
+  /* 主色：枣红；金铜只做图形/细线/高光，不拿来写字 */
+  --primary: #662C18;
+  --primary-ink: #F6E9CF;
+  --primary-deep: #501F10;
+  --link: #7C4D30;
+  --accent: #B88549;
+  --accent-deep: #7C4D30;
+  --accent-soft: #E9CD8D;
+  --coral: #744439;
+  --coral-deep: #501F10;
+  --coral-soft: #DCC9BE;
+  --gold: #B88549;
+  --gold-2: #E9CD8D;
+  --gold-3: #DCC9BE;
+  --jade: #9F968B;
+  --jade-2: #C1B6A9;
+  --teal: #B9A394;
+  --water: #C1B6A9;
+  --water-2: #D8CCBC;
+  --red: #662C18;
+  --red-deep: #501F10;
+  --red-soft: #DCC9BE;
 
   /* 线条 */
-  --line: rgba(163, 139, 102, .28);
-  --line-strong: rgba(163, 139, 102, .46);
+  --line: rgba(115, 99, 87, .28);
+  --line-strong: rgba(115, 99, 87, .46);
 
-  /* 圆角：国潮纸片/木牌，统一小圆角 */
-  --r-xs: 3px;
-  --r-s: 6px;
-  --r-m: 8px;
-  --r-l: 12px;
-  --r-xl: 16px;
+  /* 圆角：碑刻/木构，干脆的小圆角 */
+  --r-xs: 2px;
+  --r-s: 4px;
+  --r-m: 6px;
+  --r-l: 10px;
+  --r-xl: 14px;
   --r-pill: 999px;
 
-  /* 阴影：暖红褐、低透明度、大扩散 */
-  --shadow-soft: 0 6px 18px rgba(140, 30, 20, .12);
-  --shadow-card: 0 8px 24px rgba(140, 30, 20, .14);
-  --shadow-lift: 0 14px 36px rgba(140, 30, 20, .16);
+  /* 阴影：暖褐、低透明度、大扩散 */
+  --shadow-soft: 0 6px 18px rgba(56, 21, 10, .14);
+  --shadow-card: 0 8px 24px rgba(56, 21, 10, .18);
+  --shadow-lift: 0 14px 36px rgba(56, 21, 10, .22);
   --shadow-1: var(--shadow-soft);
   --shadow-2: var(--shadow-lift);
 
-  /* 字体：粗宋标题；正文黑体 */
-  --font-serif: "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun", serif;
+  /* 字体：宋楷为骨；正文黑体 */
+  --font-serif: "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", "STKaiti", "KaiTi", serif;
   --font-sans: "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", system-ui, sans-serif;
   --font-num: "Georgia", "Times New Roman", "Songti SC", serif;
-  --font-weight-title: 800;
+  --font-weight-title: 700;
 
   /* 字号阶梯：正文 15–16；小字不低于 12 */
   --fs-2xs: 12px;

@@ -1,0 +1,105 @@
+# GitHub 上传清单（全部覆盖上传）
+
+## 根目录
+- .nojekyll
+- app.css
+- app.js
+- DEPLOY.md
+- index.html
+- scene3d-inner.js
+- scene3d.js
+- tokens.css
+
+## assets/
+- assets/bagua-altar.jpg
+- assets/clay-black-dog.png
+- assets/clay-charm-2x.jpg
+- assets/clay-charm.jpg
+- assets/clay-charm.png
+- assets/clay-checkin-bg.jpg
+- assets/clay-shop-web.jpg
+- assets/clay-shop.jpg
+- assets/gate-closeup.jpg
+- assets/gate-door-left.jpg
+- assets/gate-door-right.jpg
+- assets/inner-painted.jpg
+- assets/market-painted.jpg
+- assets/market2d-web.mp4
+- assets/market2d.mp4
+- assets/plush-source.jpg
+- assets/pray-card.jpg
+- assets/pray-tree.jpg
+- assets/street1-painted.jpg
+- assets/street2-painted.jpg
+
+### assets/audio/
+- assets/audio/bgm.mp3
+
+### assets/beilin/
+- assets/beilin/pavilion.jpg
+- assets/beilin/stele.jpg
+
+### assets/bun/
+- assets/bun/bite1.png
+- assets/bun/bite2.png
+- assets/bun/bun-main.jpg
+- assets/bun/charm.jpg
+- assets/bun/frame0.jpg
+- assets/bun/frame1.jpg
+- assets/bun/frame2.jpg
+- assets/bun/frame3.jpg
+- assets/bun/frame4.jpg
+- assets/bun/frame5.jpg
+- assets/bun/frame6.jpg
+- assets/bun/source-bite1.jpg
+- assets/bun/source-bite2.jpg
+- assets/bun/source-whole.jpg
+- assets/bun/whole.png
+
+### assets/pattern/
+- assets/pattern/tiger-pattern.png
+- assets/pattern/tiger-pattern.svg
+
+### assets/people/
+- assets/people/p1.png
+- assets/people/p2.png
+- assets/people/p3.png
+- assets/people/p4.png
+- assets/people/p5.png
+- assets/people/p6.png
+
+### assets/sachet/
+- assets/sachet/chamomile.png
+- assets/sachet/lavender.png
+- assets/sachet/lemon.png
+- assets/sachet/mint.png
+- assets/sachet/rose.png
+- assets/sachet/sachet-cutout.png
+- assets/sachet/sachet.png
+- assets/sachet/sandalwood.png
+
+### assets/tiger/
+- assets/tiger/plush-source.jpg
+- assets/tiger/tiger-photo.jpg
+
+### assets/tiger2/
+- assets/tiger2/blueprint.png
+- assets/tiger2/body-full.png
+- assets/tiger2/body-left.png
+- assets/tiger2/body-right.png
+- assets/tiger2/circle-red.png
+- assets/tiger2/circle-yellow.png
+- assets/tiger2/design-sheet.jpg
+- assets/tiger2/design2.jpg
+- assets/tiger2/finished.png
+- assets/tiger2/paper.png
+
+### assets/tongtian/
+- assets/tongtian/hall.jpg
+- assets/tongtian/offer-bun.png
+- assets/tongtian/offer-flower.png
+- assets/tongtian/offer-fruit.png
+- assets/tongtian/offer-pastry.png
+
+### assets/vendor/
+- assets/vendor/three.min.js

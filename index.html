@@ -657,11 +657,7 @@
 
       <div class="temple-map">
         <div class="temple-map__frame">
-          <svg class="temple-svg" viewBox="300 70 1000 780" preserveAspectRatio="xMidYMid meet" role="img" aria-label="太昊陵陵庙俯视图">
-            <rect x="300" y="70" width="1000" height="780" fill="var(--paper)"/>
-            <rect x="312" y="82" width="976" height="756" fill="none" stroke="var(--brown)" stroke-width="2"/>
-            <use href="#taihaoPlan"/>
-          </svg>
+          <img class="temple-bg" src="assets/temple-bg.jpg" alt="太昊陵陵庙俯视图">
           <div class="hotspots" id="hotspots"></div>
           <button class="pray-btn" type="button" id="prayBtn" aria-label="祈福">
             <span class="pray-btn__icon">✦</span>
@@ -671,6 +667,7 @@
           <div class="temple-map__north">北</div>
         </div>
         <p class="temple-map__caption">依《太昊陵庙》中轴格局绘制 · 非测绘比例</p>
+        <button class="temple-finish" type="button" id="templeFinish" disabled>完成全部打卡 <span class="btn__arrow">→</span></button>
       </div>
     </div>
   </section>

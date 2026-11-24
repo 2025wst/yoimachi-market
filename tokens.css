@@ -7,71 +7,71 @@
 
 :root {
   /* 参考图取色（三张图的面积主色） */
-  --ref-stone: #52483F;      /* 碑身深青灰 */
-  --ref-stone-2: #C9B5A9;    /* 碑面浅石 */
-  --ref-stone-3: #B9A394;    /* 碑面中石 */
-  --ref-stone-4: #9C8878;    /* 石面暗部 */
-  --ref-stone-5: #736357;    /* 石缝/阴影 */
-  --ref-stone-6: #DCC9BE;    /* 受光石面 */
+  --ref-stone: #644532;      /* 碑身深青灰 */
+  --ref-stone-2: #C4B47F;    /* 碑面浅石 */
+  --ref-stone-3: #9D8A67;    /* 碑面中石 */
+  --ref-stone-4: #9D8A67;    /* 石面暗部 */
+  --ref-stone-5: #6E5A3E;    /* 石缝/阴影 */
+  --ref-stone-6: #ECDDBA;    /* 受光石面 */
   --ref-gold: #B88549;       /* 金铜 */
   --ref-wood: #7C4D30;       /* 木作 */
   --ref-brick: #662C18;      /* 枣红 */
   --ref-gold-2: #E9CD8D;     /* 鎏金高光 */
   --ref-deep: #501F10;       /* 深枣 */
   --ref-deepest: #38150A;    /* 最深木/暗角 */
-  --ref-paper: #F1E7D8;      /* 旧纸底 */
-  --ref-paper-2: #E6DACA;    /* 纸底次层 */
-  --ref-paper-3: #D8CCBC;    /* 纸底阴影 */
+  --ref-paper: #F7ECD1;      /* 旧纸底 */
+  --ref-paper-2: #ECDDBA;    /* 纸底次层 */
+  --ref-paper-3: #D9CAA0;    /* 纸底阴影 */
   --ref-gray: #9F968B;       /* 瓦灰 */
   --ref-gray-2: #C1B6A9;     /* 浅瓦灰 */
-  --ref-accent: #744439;     /* 点缀褐红 */
+  --ref-accent: #644532;     /* 点缀褐红 */
 
   /* 纸面与表面 */
-  --bg: #F1E7D8;
-  --bg-deep: #E6DACA;
-  --surface: #F8F1E5;
-  --surface-2: #F1E7D8;
-  --surface-3: #D8CCBC;
-  --paper: #F8F1E4;
-  --paper-2: #F1E7D8;
-  --paper-3: #DCC9BE;
-  --white: #FBF6EC;
-  --sage: #9F968B;
-  --tan: #C1B6A9;
-  --brown: #9C8878;
+  --bg: #F7ECD1;
+  --bg-deep: #ECDDBA;
+  --surface: #FBF4E3;
+  --surface-2: #F7ECD1;
+  --surface-3: #D9CAA0;
+  --paper: #F7ECD1;
+  --paper-2: #ECDDBA;
+  --paper-3: #D9CAA0;
+  --white: #FDF8EA;
+  --sage: #9D8A67;
+  --tan: #C4B47F;
+  --brown: #9D8A67;
 
   /* 文字：墨色，不用纯黑 */
-  --ink: #2E241C;
-  --ink-2: #4A3A2E;
-  --muted: #736357;
-  --faint: #9C8878;
+  --ink: #3A2A1E;
+  --ink-2: #4E3A28;
+  --muted: #6E5A3E;
+  --faint: #9D8A67;
 
   /* 主色：枣红；金铜只做图形/细线/高光，不拿来写字 */
-  --primary: #662C18;
+  --primary: #644532;
   --primary-ink: #F6E9CF;
-  --primary-deep: #501F10;
-  --link: #7C4D30;
-  --accent: #B88549;
-  --accent-deep: #7C4D30;
-  --accent-soft: #E9CD8D;
-  --coral: #744439;
-  --coral-deep: #501F10;
-  --coral-soft: #DCC9BE;
-  --gold: #B88549;
-  --gold-2: #E9CD8D;
-  --gold-3: #DCC9BE;
-  --jade: #9F968B;
-  --jade-2: #C1B6A9;
-  --teal: #B9A394;
-  --water: #C1B6A9;
-  --water-2: #D8CCBC;
-  --red: #662C18;
-  --red-deep: #501F10;
-  --red-soft: #DCC9BE;
+  --primary-deep: #4A3323;
+  --link: #644532;
+  --accent: #9D8A67;
+  --accent-deep: #644532;
+  --accent-soft: #C4B47F;
+  --coral: #9D8A67;
+  --coral-deep: #644532;
+  --coral-soft: #D9CAA0;
+  --gold: #C4B47F;
+  --gold-2: #D9CAA0;
+  --gold-3: #ECDDBA;
+  --jade: #9D8A67;
+  --jade-2: #C4B47F;
+  --teal: #9D8A67;
+  --water: #C4B47F;
+  --water-2: #D9CAA0;
+  --red: #644532;
+  --red-deep: #4A3323;
+  --red-soft: #D9CAA0;
 
   /* 线条 */
-  --line: rgba(115, 99, 87, .28);
-  --line-strong: rgba(115, 99, 87, .46);
+  --line: rgba(100, 69, 50, .28);
+  --line-strong: rgba(100, 69, 50, .46);
 
   /* 圆角：碑刻/木构，干脆的小圆角 */
   --r-xs: 2px;

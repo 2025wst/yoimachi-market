@@ -87,11 +87,11 @@
   var ORDER = ['tiger', 'bun', 'sachet', 'sugar', 'gate', 'tongtian', 'bagua', 'tomb', 'shicao', 'beilin'];
 
   var SPOTS = [
-    { id: 'tongtian', name: '统天殿', x: 50, y: 59 },
-    { id: 'bagua', name: '八卦坛', x: 50, y: 37 },
-    { id: 'tomb', name: '伏羲陵墓', x: 50, y: 18 },
-    { id: 'shicao', name: '蓍草园', x: 59, y: 7 },
-    { id: 'beilin', name: '碑林', x: 68, y: 63 }
+    { id: 'tongtian', name: '统天殿', x: 49.0, y: 69.0, w: 19, h: 16 },
+    { id: 'bagua', name: '八卦坛', x: 47.8, y: 48.4, w: 13, h: 11.5, round: true },
+    { id: 'tomb', name: '伏羲陵墓', x: 50.0, y: 30.6, w: 17, h: 11 },
+    { id: 'shicao', name: '蓍草园', x: 47.2, y: 12.4, w: 20, h: 10 },
+    { id: 'beilin', name: '碑林', x: 82.2, y: 46.2, w: 20, h: 14 }
   ];
 
   var INNER_SHOPS = [
@@ -598,6 +598,11 @@
     $('#finishHint').textContent = remain > 0
       ? '把集市、内街和陵庙的打卡都走完，才能领证书。'
       : '所有打卡完成。这一趟，走完了。';
+    var tf = document.getElementById('templeFinish');
+    if (tf) {
+      tf.disabled = remain > 0;
+      tf.innerHTML = remain > 0 ? '还差 ' + remain + ' 个打卡' : '领取完赛证书 <span class="btn__arrow">→</span>';
+    }
   }
 
   /* ---------------- 打卡册 ---------------- */
@@ -868,7 +873,7 @@
 
     hot.innerHTML = SPOTS.map(function (s, i) {
       var done = has(s.id);
-      return '<button class="hotspot' + (done ? ' is-done' : '') + '" type="button" data-task="' + s.id + '" style="left:' + s.x + '%;top:' + s.y + '%" aria-label="' + s.name + '">' +
+      return '<button class="hotspot' + (done ? ' is-done' : '') + (s.round ? ' is-round' : '') + '" type="button" data-task="' + s.id + '" style="left:' + s.x + '%;top:' + s.y + '%;width:' + (s.w || 19) + '%;height:' + (s.h || 16) + '%" aria-label="' + s.name + '">' +
         '<span class="hotspot__seal">' + (i + 1) + '</span>' +
         '<span class="hotspot__label">' + s.name + (done ? ' · 已打卡' : '') + '</span></button>';
     }).join('');
@@ -906,6 +911,15 @@
     }
     openCertificate();
   });
+
+  (function bindTempleFinish() {
+    var tf = document.getElementById('templeFinish');
+    if (!tf) return;
+    tf.addEventListener('click', function () {
+      var fb = document.getElementById('finishBtn');
+      if (fb) fb.click();
+    });
+  })();
 
   /* ---------------- 推门 ---------------- */
 

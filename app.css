@@ -4325,3 +4325,42 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 @media (max-width: 900px) {
   .beilin-hall__hint { font-size: 12px; padding: 6px 14px; }
 }
+
+/* ================= 第四幕：新陵庙图 + 贴合背景的热区 ================= */
+.temple-map__frame { width: auto !important; height: min(68vh, 680px); max-width: 100%; aspect-ratio: 1728 / 2304; }
+.temple-map__frame::before { display: none; }
+.temple-bg { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: var(--r-m); box-shadow: var(--shadow-card); }
+.hotspot { width: 118px; height: 94px; border: 0; background: transparent; padding: 0; gap: 0; }
+.hotspot::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 50%, rgba(255,236,196,.5), rgba(255,236,196,0) 70%); opacity: 0; transition: opacity .25s; pointer-events: none; }
+.hotspot:hover::before, .hotspot:focus-visible::before { opacity: 1; }
+.hotspot__seal { display: none; }
+.hotspot__label { position: absolute; left: 50%; bottom: -6px; transform: translate(-50%, 6px); }
+.hotspot:hover .hotspot__label, .hotspot:focus-visible .hotspot__label { transform: translate(-50%, 0); }
+.hotspot.is-done::after { content: "✓"; position: absolute; right: 6px; top: 6px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--primary-deep); color: var(--primary-ink); font-size: 11px; opacity: .9; }
+.pray-btn { left: 19% !important; top: 35% !important; transform: translate(-50%, -50%) !important; }
+@media (max-width: 900px) {
+  .temple-map__frame { width: 100% !important; height: auto; aspect-ratio: 1728 / 2304; }
+  .hotspot { width: 100px; height: 80px; }
+  .pray-btn { left: 18% !important; top: 34% !important; }
+}
+
+/* ================= 第四幕：推开城门直接看陵庙图 ================= */
+.act--4 .temple-layout { grid-template-columns: minmax(0, 1fr); padding: calc(78px + 3vh) var(--pad) 3vh; }
+.act--4 .temple-info { display: none !important; }
+.act--4 .temple-map { width: 100%; height: 100%; justify-content: center; }
+.act--4 .temple-map__frame { height: calc(100dvh - 132px); max-height: 900px; width: auto; max-width: 100%; }
+.act--4 .temple-map__caption { display: none; }
+.temple-finish { position: absolute; left: 50%; bottom: 1.6%; transform: translateX(-50%); z-index: 8; padding: 10px 22px; border-radius: var(--r-pill); border: 1px solid rgba(100,69,50,.5); background: linear-gradient(180deg, #7C4D30, #644532); color: var(--primary-ink); font-family: var(--font-serif); font-size: var(--fs-sm); letter-spacing: .08em; box-shadow: var(--shadow-card); cursor: pointer; white-space: nowrap; }
+.temple-finish:disabled { background: rgba(100,69,50,.35); color: rgba(255,247,230,.7); border-color: rgba(100,69,50,.25); cursor: default; }
+.temple-finish:not(:disabled):hover { background: linear-gradient(180deg, #8a5a38, #6e4a2c); }
+@media (max-width: 900px) {
+  .act--4 .temple-layout { padding: calc(72px + 2vh) 8px 2vh; }
+  .act--4 .temple-map__frame { height: auto; width: 100%; max-width: 100%; }
+  .temple-finish { padding: 9px 16px; font-size: 12px; bottom: 1.2%; }
+}
+
+/* 第四幕热区：按点位大小框住建筑，八卦坛为圆形 */
+.hotspot { width: auto; height: auto; }
+.hotspot.is-round { border-radius: 50%; }
+.hotspot.is-round::before { border-radius: 50%; }
+.hotspot.is-round .hotspot__label { top: calc(100% + 2px); bottom: auto; }

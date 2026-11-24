@@ -120,22 +120,36 @@
     muted: false
   };
 
-  // 每次重新进入游戏都重置打卡与互动进度，只保留静音设置
+  // 每次重新进入游戏都重置打卡与互动进度，只保留静音设置；
+  // 但同一标签页内的意外刷新（浏览器回收页面、误下拉刷新）会恢复刚才的进度与当前幕
+  var SNAPSHOT_KEY = 'taihaoling-session-v1';
+  var snapSession = null;
   (function resetOnEntry() {
     var mutedPref = false;
     try {
       var old = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null');
       if (old && typeof old === 'object') mutedPref = !!old.muted;
       localStorage.removeItem(SAVE_KEY);
+      var raw = sessionStorage.getItem(SNAPSHOT_KEY);
+      if (raw) snapSession = JSON.parse(raw);
     } catch (err) { /* ignore */ }
     state.tasks = [];
     state.visited = [1];
     state.name = '羲皇故都探索者';
     state.muted = mutedPref;
+    if (snapSession && snapSession.state && typeof snapSession.state === 'object') {
+      var s = snapSession.state;
+      if (Array.isArray(s.tasks)) state.tasks = s.tasks.slice();
+      if (Array.isArray(s.visited)) state.visited = s.visited.slice();
+      if (typeof s.name === 'string' && s.name) state.name = s.name;
+      state.muted = !!s.muted;
+      if (snapSession.act) state._restoreAct = snapSession.act;
+    }
   })();
 
   function save() {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (err) { /* ignore */ }
+    try { sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify({ state: state, act: currentAct })); } catch (err) { /* ignore */ }
   }
 
   function has(id) { return state.tasks.indexOf(id) !== -1; }
@@ -249,8 +263,8 @@
     app.dataset.act = String(n);
     if (typeof n === 'number' && n >= 2 && state.visited.indexOf(n) === -1) {
       state.visited.push(n);
-      save();
     }
+    save();
     updateChapters();
     if (n === 2 && window.Scene3D && Scene3D.resize) Scene3D.resize();
     if (n === 3 && streetInner.resize) streetInner.resize();
@@ -262,7 +276,10 @@
       else { try { iv.pause(); } catch (e) {} }
     }
     var mv = document.getElementById('market2dVideo');
-    if (mv && String(n) === '2') { try { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); } catch (e) {} }
+    if (mv) {
+      if (String(n) === '2') { try { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); } catch (e) {} }
+      else { try { mv.pause(); } catch (e) {} }
+    }
   }
 
   function goTo(n, delay) {
@@ -954,14 +971,12 @@
 
 
   /* ---------------- 祈福 ---------------- */
-  var PRAY_WORDS = [
-    '平安喜乐', '万事顺遂', '岁岁平安', '心想事成', '吉祥如意', '福寿绵长',
-    '喜乐安康', '顺遂无忧', '诸事顺遂', '福星高照', '好运常在', '四季平安',
-    '平安顺遂', '福运绵长', '安康喜乐', '万事胜意', '如愿以偿', '喜乐无忧',
-    '福满人间', '吉星高照', '平安如意', '诸事皆宜', '所愿皆成', '顺遂安康',
-    '五福临门', '福寿安康', '前程似锦', '步步高升', '财源广进', '合家安康',
-    '幸福美满', '团团圆圆', '年年有余', '好事成双', '岁岁欢愉', '朝朝如愿'
+  var PRAY_WISHES = [
+    'assets/pray/wish-1.jpg', 'assets/pray/wish-2.jpg', 'assets/pray/wish-3.jpg',
+    'assets/pray/wish-4.jpg', 'assets/pray/wish-5.jpg', 'assets/pray/wish-6.jpg',
+    'assets/pray/wish-7.jpg', 'assets/pray/wish-8.jpg', 'assets/pray/wish-9.jpg'
   ];
+  var prayLastWish = -1;
   var prayCardBound = false;
   function openPrayTree() {
     var tp = document.getElementById('prayTree');
@@ -981,14 +996,15 @@
     if (tp) { tp.hidden = true; tp.setAttribute('aria-hidden', 'true'); }
   }
   function rollPray() {
-    if (PRAY_WORDS.length < 2) return;
-    var a = Math.floor(Math.random() * PRAY_WORDS.length);
-    var b = Math.floor(Math.random() * (PRAY_WORDS.length - 1));
-    if (b >= a) b++;
-    var r = document.getElementById('prayPhraseR');
-    var l = document.getElementById('prayPhraseL');
-    if (r) r.textContent = PRAY_WORDS[a];
-    if (l) l.textContent = PRAY_WORDS[b];
+    var img = document.getElementById('prayWishImg');
+    if (!img || !PRAY_WISHES.length) return;
+    var idx = Math.floor(Math.random() * PRAY_WISHES.length);
+    if (PRAY_WISHES.length > 1 && idx === prayLastWish) idx = (idx + 1) % PRAY_WISHES.length;
+    prayLastWish = idx;
+    img.classList.remove('is-in');
+    void img.offsetWidth;
+    img.src = PRAY_WISHES[idx];
+    img.classList.add('is-in');
   }
   function openPrayCard() {
     var cp = document.getElementById('prayCard');
@@ -1005,7 +1021,7 @@
       if (again) again.addEventListener('click', rollPray);
       if (keep) keep.addEventListener('click', function () {
         closePrayCard();
-        toast('福牌已收下 · 平安喜乐');
+        toast('福牌已收下 · 平安顺遂');
       });
       if (close) close.addEventListener('click', closePrayCard);
     }
@@ -1014,6 +1030,20 @@
     var cp = document.getElementById('prayCard');
     if (cp) { cp.hidden = true; cp.setAttribute('aria-hidden', 'true'); }
   }
+  // 意外刷新恢复：等初始化完成、第一幕渲染后再切回上一幕
+  window.addEventListener('load', function () {
+    if (state._restoreAct && state._restoreAct > 1) {
+      var ra = state._restoreAct;
+      delete state._restoreAct;
+      setTimeout(function () {
+        setAct(ra);
+        if (ra >= 4) renderSpots();
+        renderBag();
+        updateHUD();
+      }, 150);
+    }
+  });
+
   window.__openPrayTree = openPrayTree;
   (function bindPrayBtn() {
     var btn = document.getElementById('prayBtn');
@@ -1022,14 +1052,14 @@
 
   /* ---------------- 八卦坛 ---------------- */
   var BAGUA = {
-    qian: { name: '乾', sym: '☰', nature: '天', text: '乾为天，纯阳之卦。刚健、创始，元亨利贞。象曰：天行健，君子以自强不息。' },
-    dui: { name: '兑', sym: '☱', nature: '泽', text: '兑为泽，喜悦之卦。主沟通、和悦。象曰：丽泽兑，君子以朋友讲习。' },
-    li: { name: '离', sym: '☲', nature: '火', text: '离为火，光明之卦。主依附、明亮。象曰：明两作离，大人以继明照于四方。' },
-    zhen: { name: '震', sym: '☳', nature: '雷', text: '震为雷，震动之卦。主奋起、惊动。象曰：洊雷震，君子以恐惧修省。' },
-    xun: { name: '巽', sym: '☴', nature: '风', text: '巽为风，顺入之卦。主顺从、渗入。象曰：随风巽，君子以申命行事。' },
-    kan: { name: '坎', sym: '☵', nature: '水', text: '坎为水，险陷之卦。主智慧、磨砺。象曰：水洊至习坎，君子以常德行。' },
-    gen: { name: '艮', sym: '☶', nature: '山', text: '艮为山，止静之卦。主安定、知止。象曰：兼山艮，君子以思不出其位。' },
-    kun: { name: '坤', sym: '☷', nature: '地', text: '坤为地，纯阴之卦。柔顺、承载，厚德载物。象曰：地势坤，君子以厚德载物。' }
+    qian: { name: '乾', sym: '☰', nature: '天', text: '乾为天，纯阳之卦。刚健、创始，元亨利贞。象曰：天行健，君子以自强不息。', hint: '记住「天行健，君子以自强不息」——坛心问卦会考到。' },
+    dui: { name: '兑', sym: '☱', nature: '泽', text: '兑为泽，喜悦之卦。主沟通、和悦。象曰：丽泽兑，君子以朋友讲习。', hint: '「有朋自远方来，不亦乐乎」正合此卦——问卦会考到。' },
+    li: { name: '离', sym: '☲', nature: '火', text: '离为火，光明之卦。主依附、明亮。象曰：明两作离，大人以继明照于四方。', hint: '记住「明两作离，大人以继明照于四方」——问卦会考到。' },
+    zhen: { name: '震', sym: '☳', nature: '雷', text: '震为雷，震动之卦。主奋起、惊动。象曰：洊雷震，君子以恐惧修省。', hint: '记住「洊雷震，君子以恐惧修省」——问卦会考到。' },
+    xun: { name: '巽', sym: '☴', nature: '风', text: '巽为风，顺入之卦。主顺从、渗入。象曰：随风巽，君子以申命行事。', hint: '记住「随风巽，君子以申命行事」——问卦会考到。' },
+    kan: { name: '坎', sym: '☵', nature: '水', text: '坎为水，险陷之卦。主智慧、磨砺。象曰：水洊至，习坎；君子以常德行，习教事。', hint: '记住「水洊至，习坎；君子以常德行，习教事」——问卦会考到。' },
+    gen: { name: '艮', sym: '☶', nature: '山', text: '艮为山，止静之卦。主安定、知止。象曰：兼山艮，君子以思不出其位。', hint: '记住「兼山艮，君子以思不出其位」——问卦会考到。' },
+    kun: { name: '坤', sym: '☷', nature: '地', text: '坤为地，纯阴之卦。柔顺、承载，厚德载物。象曰：地势坤，君子以厚德载物。', hint: '记住「地势坤，君子以厚德载物」——问卦会考到。' }
   };
   var baguaSeen = {};
   function openBaguaAltar() {
@@ -1045,7 +1075,7 @@
         sfx.tick();
         setTimeout(function () {
           taiji.classList.remove('is-spinning');
-          openBaguaQuiz();
+          openBaguaIntro();
         }, 620);
       });
       bp.dataset.bound = '1';
@@ -1072,7 +1102,7 @@
     var info = document.getElementById('baguaInfo');
     document.getElementById('baguaInfoName').textContent = g.name + '卦 · ' + g.nature;
     document.getElementById('baguaInfoSym').textContent = g.sym;
-    document.getElementById('baguaInfoText').textContent = g.text;
+    document.getElementById('baguaInfoText').textContent = g.text + (g.hint ? ' ' + g.hint : '');
     if (info) info.hidden = false;
     if (btn) btn.classList.add('is-seen');
     if (!baguaSeen[id]) {
@@ -1081,7 +1111,11 @@
       var hint = document.getElementById('baguaHint');
       if (hint) hint.textContent = '点击八卦 · 看卦象（已看 ' + n + ' / 8）';
       if (n >= 8) {
-        toast('八卦已看遍 · 点坛心太极抽卦问签');
+        var infoEl = document.getElementById('baguaInfo');
+        if (infoEl) infoEl.hidden = true;
+        setTimeout(function () {
+          if (window.__openBaguaQuiz) window.__openBaguaQuiz();
+        }, 650);
       }
     }
   }
@@ -1158,6 +1192,32 @@
   ];
 
   var baguaLastQuiz = -1;
+
+  function openBaguaIntro() {
+    var old = document.getElementById('baguaIntro');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'bagua-intro';
+    box.id = 'baguaIntro';
+    box.innerHTML =
+      '<div class="bagua-intro__card" role="dialog" aria-label="一画开天">' +
+        '<button class="bagua-intro__close" type="button" id="baguaIntroClose" aria-label="关闭">×</button>' +
+        '<p class="bagua-intro__kicker">陵庙 · 八卦坛</p>' +
+        '<h3 class="bagua-intro__title">一画开天</h3>' +
+        '<p class="bagua-intro__text">这个八角青石台，就是八卦坛。</p>' +
+        '<p class="bagua-intro__text">传说伏羲在蔡水捉到一只白龟，龟甲纹路是三组“一分为二”；他抬头看天、低头看地，把天地水火雷风山泽压缩成“一横”和“两短横”，三个一组叠出八个符号——这就叫“一画开天”。</p>' +
+        '<p class="bagua-intro__text">八卦不是算命，是中国最早的二进制，也是最早的文字替代品。</p>' +
+        '<p class="bagua-intro__text">坛心阴阳鱼转一圈，就是“太极生两仪，两仪生四象，四象生八卦”。</p>' +
+        '<button class="bagua-intro__btn" type="button" id="baguaIntroBtn">继续看卦 · 看遍八卦自动抽签</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var close = function () { box.remove(); };
+    var c1 = document.getElementById('baguaIntroClose');
+    var c2 = document.getElementById('baguaIntroBtn');
+    if (c1) c1.addEventListener('click', close);
+    if (c2) c2.addEventListener('click', close);
+  }
+  window.__openBaguaIntro = openBaguaIntro;
 
   function openBaguaQuiz() {
     var old = document.getElementById('baguaQuiz');
@@ -3230,6 +3290,7 @@ var bagBtn = $('#bagBtn');
       '<div class="clay-checkin__card">' +
         '<div class="clay-checkin__title">打卡成功 <span class="clay-checkin__tick">✓</span></div>' +
         '<img class="clay-checkin__charm" src="assets/clay-charm.jpg" alt="泥泥狗挂件">' +
+        '<p class="clay-checkin__text">传统泥泥狗统一以黑色为底，搭配红、黄、白、绿等彩色纹饰，黑底是它传承千年的典型视觉标识。市面上少量其他底色款式，多为现代文创衍生版本。</p>' +
         '<button class="clay-checkin__btn" type="button" id="clayCheckinBtn">收下挂件放入背包</button>' +
       '</div>';
     document.body.appendChild(box);
@@ -3697,7 +3758,7 @@ var bagBtn = $('#bagBtn');
     $('#shopDetailDesc').textContent = '九块拼图凑成一只布老虎，已经收进你的背包。';
     shopProgressLabel.textContent = '收藏';
     shopProgress.textContent = '已收进背包';
-    shopStage.innerHTML = '<div class="shop-done"><img class="plush-done-img" src="assets/tiger/plush-source.jpg" alt="拼好的布老虎"><p class="shop-done__name">布老虎玩偶</p><p class="shop-done__meta">布老虎 · 已收进背包</p></div>';
+    shopStage.innerHTML = '<div class="shop-done"><img class="plush-done-img" src="assets/tiger/plush-source.jpg" alt="拼好的布老虎"><p class="shop-done__name">布老虎玩偶</p><p class="shop-done__meta">布老虎 · 已收进背包</p><p class="shop-done__text">随处可以看到琳琅满目的布老虎，有单头虎、双头虎、直卧虎等，形态各异。它反映了华夏子孙对人祖伏羲、女娲的怀念与敬仰，是早期人类繁衍崇拜的物化和象征。</p></div>';
     shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="plush">再拼一次</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
     $$('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
   }
@@ -3964,7 +4025,7 @@ var bagBtn = $('#bagBtn');
     $('#shopDetailDesc').textContent = '五口吃完，这个压缩馍做成了小挂件，已经收进背包。';
     shopProgressLabel.textContent = '收藏';
     shopProgress.textContent = '已收进背包';
-    shopStage.innerHTML = '<div class="shop-done"><img class="bun5-done-img" src="assets/bun/bun-main.jpg" alt="压缩馍"><p class="shop-done__name">压缩馍挂件</p><p class="shop-done__meta">压缩馍 · 已收进背包</p></div>';
+    shopStage.innerHTML = '<div class="shop-done"><img class="bun5-done-img" src="assets/bun/bun-main.jpg" alt="压缩馍"><p class="shop-done__name">压缩馍挂件</p><p class="shop-done__meta">压缩馍 · 已收进背包</p><p class="shop-done__text">压缩馍是太昊陵庙会特色面点，当地流传“小孩吃了考大学，大人吃了好干活”的俗语，寄托着朴素的美好期许。它兴起较晚，是庙会里承载烟火祝福的特色小吃。</p></div>';
     shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="bun">再吃一个</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
     $$('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
   }
@@ -4247,23 +4308,24 @@ var bagBtn = $('#bagBtn');
   function openTomb() {
     var old = document.getElementById('tombScene');
     if (old) old.remove();
-    ['tombIntro', 'tombIncense'].forEach(function (k) { var el = document.getElementById(k); if (el) el.remove(); });
+    ['tombIntro', 'tombIncense', 'tombStory', 'tombVideo'].forEach(function (k) { var el = document.getElementById(k); if (el) el.remove(); });
+    var done = has('tomb');
     var box = document.createElement('div');
     box.className = 'tomb-scene';
     box.id = 'tombScene';
     box.innerHTML =
       '<div class="tomb-scene__bg"></div>' +
       '<div class="tomb-scene__frame">' +
-        '<img class="tomb-scene__img" src="assets/tomb/tomb.jpg" alt="太昊伏羲陵">' +
-        '<button class="tomb-scene__altar" type="button" id="tombAltar" aria-label="陵前香坛"></button>' +
+        '<img class="tomb-scene__img" id="tombSceneImg" src="' + (done ? 'assets/tomb/tomb-lit.jpg' : 'assets/tomb/tomb.jpg') + '" alt="太昊伏羲陵">' +
+        '<button class="tomb-scene__altar" type="button" id="tombAltar" aria-label="伏羲陵墓"></button>' +
       '</div>' +
-      '<p class="tomb-scene__hint">点击香坛 · 上香祭陵</p>' +
+      '<p class="tomb-scene__hint" id="tombSceneHint">' + (done ? '已上香 · 点香炉查看' : '点击香炉 · 上香祭陵') + '</p>' +
       '<button class="tomb-scene__close" type="button" id="tombClose" aria-label="关闭">×</button>';
     document.body.appendChild(box);
     var closeBtn = document.getElementById('tombClose');
     if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
     var altar = document.getElementById('tombAltar');
-    if (altar) altar.addEventListener('click', function () { box.remove(); openTombIntro(); });
+    if (altar) altar.addEventListener('click', function () { openTombIntro(); });
   }
 
   function openTombIntro() {
@@ -4274,17 +4336,11 @@ var bagBtn = $('#bagBtn');
     box.className = 'tomb-intro';
     box.id = 'tombIntro';
     box.innerHTML =
-      '<div class="tomb-intro__card" role="dialog" aria-label="伏羲陵介绍">' +
+      '<div class="tomb-intro__card" role="dialog" aria-label="陵前上香">' +
         '<button class="tomb-intro__close" type="button" id="tombIntroClose" aria-label="关闭">×</button>' +
         '<p class="tomb-intro__kicker">陵庙 · 伏羲陵墓</p>' +
-        '<h3 class="tomb-intro__title">伏羲 · 人文始祖</h3>' +
-        '<p class="tomb-intro__text">伏羲是“三皇之首”、中华人文始祖，他画八卦、定姓氏、制嫁娶，开启华夏文明根脉。</p>' +
-        '<p class="tomb-intro__text">太昊伏羲陵冢通高 13.5 米，上圆下方，方座周长 200 余米，陵前立有“太昊伏羲氏之陵”。</p>' +
-        '<div class="tomb-intro__incense">' +
-          '<figure><img src="assets/tomb/incense-gold.jpg" alt="供香样式一"><figcaption>金香</figcaption></figure>' +
-          '<figure><img src="assets/tomb/incense-red.jpg" alt="供香样式二"><figcaption>红香</figcaption></figure>' +
-          '<span class="tomb-intro__incense-label">陵前供香</span>' +
-        '</div>' +
+        '<h3 class="tomb-intro__title">' + (done ? '已上香 · 礼成' : '陵前上香') + '</h3>' +
+        '<figure class="tomb-intro__photo"><img src="assets/tomb/incense-gold.jpg" alt="陵前供香"></figure>' +
         '<button class="tomb-intro__btn" type="button" id="tombIntroBtn">' + (done ? '已上香 · 关闭' : '上香祭陵') + '</button>' +
       '</div>';
     document.body.appendChild(box);
@@ -4294,51 +4350,81 @@ var bagBtn = $('#bagBtn');
     if (btn) btn.addEventListener('click', function () {
       box.remove();
       if (has('tomb')) return;
-      openTombIncense();
+      playTombVideo();
     });
   }
 
-  function openTombIncense() {
-    var old = document.getElementById('tombIncense');
+  function playTombVideo() {
+    var old = document.getElementById('tombVideo');
     if (old) old.remove();
     var box = document.createElement('div');
-    box.className = 'tomb-incense';
-    box.id = 'tombIncense';
-    box.innerHTML =
-      '<div class="tomb-incense__frame">' +
-        '<img class="tomb-incense__img" src="assets/tomb/tomb.jpg" alt="太昊伏羲陵">' +
-        '<div class="tomb-incense__glow" aria-hidden="true"></div>' +
-        '<img class="tomb-incense__sticks" src="assets/tomb/incense-gold.png" alt="供香">' +
-        '<div class="tomb-incense__smoke" aria-hidden="true"><i></i><i></i><i></i></div>' +
-        '<button class="tomb-incense__altar" type="button" id="tombIncenseAltar" aria-label="点燃供香"></button>' +
-      '</div>' +
-      '<p class="tomb-incense__hint" id="tombIncenseHint">点击香炉 · 点燃供香</p>' +
-      '<button class="tomb-incense__close" type="button" id="tombIncenseClose" aria-label="关闭">×</button>';
+    box.className = 'tomb-video';
+    box.id = 'tombVideo';
+    box.innerHTML = '<video class="tomb-video__media" id="tombVideoMedia" autoplay muted playsinline preload="auto"><source src="assets/tomb/tomb-loop.mp4" type="video/mp4"></video>';
     document.body.appendChild(box);
-    var hint = document.getElementById('tombIncenseHint');
-    var lit = false;
-    var closeBtn = document.getElementById('tombIncenseClose');
-    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
-    function light() {
-      if (lit) return;
-      lit = true;
-      box.classList.add('is-lit');
-      if (hint) hint.textContent = '香火已燃 · 礼敬始祖';
-      setTimeout(function () {
-        if (!document.getElementById('tombIncense')) return;
-        box.classList.add('is-done');
-        if (hint) hint.textContent = '礼成 · 伏羲陵上香完成';
-        completeTask('tomb');
-        toast('伏羲陵 · 上香礼成，打卡完成');
-      }, 1500);
+    var v = document.getElementById('tombVideoMedia');
+    var finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      box.remove();
+      var sc = document.getElementById('tombScene');
+      if (sc) {
+        var im = sc.querySelector('.tomb-scene__img');
+        if (im) im.src = 'assets/tomb/tomb-lit.jpg';
+        var hint = document.getElementById('tombSceneHint');
+        if (hint) hint.textContent = '已上香 · 点香炉查看';
+      }
+      completeTask('tomb');
+      showTombStory();
     }
-    var altar = document.getElementById('tombIncenseAltar');
-    if (altar) altar.addEventListener('click', light);
-    var sticks = box.querySelector('.tomb-incense__sticks');
-    if (sticks) sticks.addEventListener('click', light);
+    if (v) {
+      v.addEventListener('ended', finish);
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    setTimeout(finish, 7000);
   }
-  window.__openBeilin = openBeilin;
+
+  function showTombStory() {
+    var old = document.getElementById('tombStory');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'tomb-story';
+    box.id = 'tombStory';
+    box.innerHTML =
+      '<div class="tomb-story__card" role="dialog" aria-label="伏羲陵介绍">' +
+        '<p class="tomb-story__kicker">陵庙 · 伏羲陵墓</p>' +
+        '<h3 class="tomb-story__title">伏羲 · 人文始祖</h3>' +
+        '<p class="tomb-story__text">伏羲是“三皇之首”、中华人文始祖，他画八卦、定姓氏、制嫁娶，开启华夏文明根脉。</p>' +
+        '<p class="tomb-story__text">太昊伏羲陵冢通高 13.5 米，上圆下方，方座周长 200 余米，陵前立有“太昊伏羲氏之陵”石碑。</p>' +
+        '<button class="tomb-story__btn" type="button" id="tombStoryBtn">礼成 · 知道了</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var btn = document.getElementById('tombStoryBtn');
+    if (btn) btn.addEventListener('click', function () { box.remove(); });
+  }
+
+  window.__openBeilin = openBeilin;  window.__openBeilin = openBeilin;
   window.__openShicao = openShicao;
+  function showTongtianDone() {
+    var old = document.getElementById('tongtianDone');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'tongtian-done';
+    box.id = 'tongtianDone';
+    box.innerHTML =
+      '<div class="tongtian-done__card">' +
+        '<p class="tongtian-done__kicker">陵庙 · 统天殿</p>' +
+        '<h3 class="tongtian-done__title">万物由本源而生</h3>' +
+        '<p class="tongtian-done__text">统天殿是太昊陵里的主殿，处在景区中轴线的核心位置，也是祭祀伏羲的中心场地。殿名里面“统天”这两个字出自《易经》，含义是万物由本源而生，统领天地。殿前宽阔的月台，可以容纳很多人一起参与祭拜，庙会里面比较正式的祭祖活动大多在这里举办。</p>' +
+        '<button class="tongtian-done__btn" type="button" id="tongtianDoneBtn">礼成 · 知道了</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var btn = document.getElementById('tongtianDoneBtn');
+    if (btn) btn.addEventListener('click', function () { box.remove(); });
+  }
+
   window.__openTomb = openTomb;
 
 
@@ -4425,6 +4511,7 @@ var bagBtn = $('#bagBtn');
         if (thDone) thDone.style.display = 'none';
         completeTask('tongtian');
         toast('通天殿 · 供奉完成');
+        setTimeout(function () { showTongtianDone(); }, 420);
       }
     }
     box.querySelectorAll('[data-offer]').forEach(function (btn) {

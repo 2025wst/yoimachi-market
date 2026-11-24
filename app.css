@@ -4514,3 +4514,68 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 .act--2 .market3d::before, .act--3 .inner3d::before { background-image: none; }
 .act--2.is-active .market3d::before { background-image: url(assets/street1-painted.jpg); }
 .act--3.is-active .inner3d::before { background-image: url(assets/street2-painted.jpg); }
+
+/* ================= 祈福树：点树干抽福牌（新图） ================= */
+.pray-tree .pray-page__frame { width: min(100vw, calc(100vh * 899 / 1200)); aspect-ratio: 899 / 1200; }
+.pray-card .pray-page__frame { width: min(100vw, calc(100vh * 900 / 1200)); aspect-ratio: 900 / 1200; }
+.pray-tree__knot { left: 40%; top: 53%; width: 20%; height: 45%; border-radius: 50%; }
+.pray-tree__knot::after { border-radius: 50%; inset: -4%; background: radial-gradient(ellipse at 50% 55%, rgba(255,214,150,.42), rgba(255,214,150,0) 70%); }
+.pray-card__patch, .pray-card__phrases { display: none !important; }
+.pray-card .pray-page__img.is-in { animation: pray-wish-in .55s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes pray-wish-in { from { opacity: .2; transform: scale(.965) rotate(-.6deg); } to { opacity: 1; transform: none; } }
+
+/* ================= 八卦坛：点太极看「一画开天」================= */
+.bagua-intro { position: fixed; inset: 0; z-index: 99; display: grid; place-items: center; padding: 18px; overflow: auto; background: rgba(20,12,6,.62); backdrop-filter: blur(6px); }
+.bagua-intro__card { position: relative; width: min(92vw, 460px); max-height: 88vh; overflow: auto; padding: 24px 22px 20px; border-radius: var(--r-l); border: 1px solid rgba(200,160,100,.42); background: linear-gradient(180deg, #FBF3E1 0%, #F2E5C9 100%); box-shadow: 0 26px 60px -24px rgba(50,28,12,.65); animation: bagua-quiz-in .55s cubic-bezier(.22,.9,.3,1) both; }
+.bagua-intro__close { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(150,110,70,.35); background: rgba(255,250,238,.7); color: #6B5038; font-size: 17px; line-height: 1; cursor: pointer; }
+.bagua-intro__kicker { margin: 0; font-size: var(--fs-2xs); letter-spacing: .2em; color: var(--muted); }
+.bagua-intro__title { margin: 6px 0 0; font-family: var(--font-serif); font-size: 24px; letter-spacing: .08em; color: var(--ink); }
+.bagua-intro__text { margin: 10px 0 0; font-size: var(--fs-sm); line-height: 1.92; color: var(--ink-2); text-align: left; }
+.bagua-intro__text + .bagua-intro__text { margin-top: 7px; }
+.bagua-intro__btn { width: 100%; margin-top: 18px; padding: 13px 16px; border-radius: var(--r-pill); border: 1px solid rgba(100,69,50,.5); background: linear-gradient(180deg, #7C4D30, #644532); color: var(--primary-ink); font-family: var(--font-serif); font-size: var(--fs-base); letter-spacing: .08em; cursor: pointer; box-shadow: 0 10px 22px -14px rgba(60,40,20,.8); }
+.bagua-intro__btn:hover { background: linear-gradient(180deg, #8A5A38, #6E4A2C); }
+@media (max-width: 900px) {
+  .bagua-intro__card { padding: 20px 16px 16px; }
+  .bagua-intro__title { font-size: 21px; }
+}
+
+/* 完成页的说明文字 */
+.shop-done__text { margin: 10px auto 0; max-width: 92%; font-size: var(--fs-sm); line-height: 1.85; color: var(--ink-2); text-align: left; }
+.clay-checkin__text { margin: 10px auto 4px; max-width: 92%; font-size: var(--fs-sm); line-height: 1.8; color: var(--ink-2); text-align: left; }
+/* 统天殿：供奉完成后的文字解释页 */
+.tongtian-done { position: fixed; inset: 0; z-index: 99; display: grid; place-items: center; padding: 18px; overflow: auto; background: rgba(20,12,6,.62); backdrop-filter: blur(6px); }
+.tongtian-done__card { position: relative; width: min(92vw, 480px); max-height: 88vh; overflow: auto; padding: 24px 22px 20px; border-radius: var(--r-l); border: 1px solid rgba(200,160,100,.42); background: linear-gradient(180deg, #FBF3E1 0%, #F2E5C9 100%); box-shadow: 0 26px 60px -24px rgba(50,28,12,.65); animation: bagua-quiz-in .55s cubic-bezier(.22,.9,.3,1) both; }
+.tongtian-done__kicker { margin: 0; font-size: var(--fs-2xs); letter-spacing: .2em; color: var(--muted); }
+.tongtian-done__title { margin: 6px 0 0; font-family: var(--font-serif); font-size: 24px; letter-spacing: .06em; color: var(--ink); }
+.tongtian-done__text { margin: 12px 0 0; font-size: var(--fs-sm); line-height: 1.92; color: var(--ink-2); text-align: left; }
+.tongtian-done__btn { width: 100%; margin-top: 18px; padding: 13px 16px; border-radius: var(--r-pill); border: 1px solid rgba(100,69,50,.5); background: linear-gradient(180deg, #7C4D30, #644532); color: var(--primary-ink); font-family: var(--font-serif); font-size: var(--fs-base); letter-spacing: .08em; cursor: pointer; }
+.tongtian-done__btn:hover { background: linear-gradient(180deg, #8A5A38, #6E4A2C); }
+@media (max-width: 900px) { .tongtian-done__card { padding: 20px 16px 16px; } .tongtian-done__title { font-size: 21px; } }
+
+/* 禁止手机浏览器下拉刷新误触（会把整局进度刷掉） */
+html, body { overscroll-behavior-y: none; }
+
+/* 伏羲陵：点击陵墓（土丘+石碑）而不是香坛 */
+.tomb-scene__altar { left: 33%; top: 24%; width: 34%; height: 52%; border-radius: 26% 26% 40% 40%; }
+.tomb-scene__altar::after { inset: -4%; border-radius: 26% 26% 40% 40%; background: radial-gradient(ellipse at 50% 45%, rgba(255,214,150,.4), rgba(255,214,150,0) 72%); }
+.tomb-scene__img { object-fit: cover; }
+
+/* 伏羲陵：上香后的介绍卡 */
+.tomb-story { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 18px; overflow: auto; background: rgba(20,12,6,.62); backdrop-filter: blur(6px); }
+.tomb-story__card { position: relative; width: min(92vw, 480px); max-height: 88vh; overflow: auto; padding: 24px 22px 20px; border-radius: var(--r-l); border: 1px solid rgba(200,160,100,.42); background: linear-gradient(180deg, #FBF3E1 0%, #F2E5C9 100%); box-shadow: 0 26px 60px -24px rgba(50,28,12,.65); animation: bagua-quiz-in .55s cubic-bezier(.22,.9,.3,1) both; }
+.tomb-story__kicker { margin: 0; font-size: var(--fs-2xs); letter-spacing: .2em; color: var(--muted); }
+.tomb-story__title { margin: 6px 0 0; font-family: var(--font-serif); font-size: 24px; letter-spacing: .06em; color: var(--ink); }
+.tomb-story__text { margin: 12px 0 0; font-size: var(--fs-sm); line-height: 1.92; color: var(--ink-2); text-align: left; }
+.tomb-story__btn { width: 100%; margin-top: 18px; padding: 13px 16px; border-radius: var(--r-pill); border: 1px solid rgba(100,69,50,.5); background: linear-gradient(180deg, #7C4D30, #644532); color: var(--primary-ink); font-family: var(--font-serif); font-size: var(--fs-base); letter-spacing: .08em; cursor: pointer; }
+.tomb-story__btn:hover { background: linear-gradient(180deg, #8A5A38, #6E4A2C); }
+@media (max-width: 900px) { .tomb-story__card { padding: 20px 16px 16px; } .tomb-story__title { font-size: 21px; } }
+
+/* 伏羲陵：供香照片（单图，无选择） + 播视频 */
+.tomb-intro__photo { margin: 16px auto 0; width: 128px; }
+.tomb-intro__photo img { display: block; width: 100%; height: auto; border-radius: var(--r-s); mix-blend-mode: multiply; }
+.tomb-video { position: fixed; inset: 0; z-index: 101; display: grid; place-items: center; background: #120b06; }
+.tomb-video__media { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* 伏羲陵：互动热区在香炉（三只香炉那一排），不在土丘 */
+.tomb-scene__altar { left: 10%; top: 76%; width: 80%; height: 16%; border-radius: 50%; }
+.tomb-scene__altar::after { inset: -4%; border-radius: 50%; background: radial-gradient(ellipse at 50% 50%, rgba(255,214,150,.45), rgba(255,214,150,0) 72%); }

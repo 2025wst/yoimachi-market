@@ -4383,40 +4383,21 @@ var bagBtn = $('#bagBtn');
     if (btn) btn.addEventListener('click', function () {
       box.remove();
       if (has('tomb')) return;
-      playTombVideo();
+      finishTomb();
     });
   }
 
-  function playTombVideo() {
-    var old = document.getElementById('tombVideo');
-    if (old) old.remove();
-    var box = document.createElement('div');
-    box.className = 'tomb-video';
-    box.id = 'tombVideo';
-    box.innerHTML = '<video class="tomb-video__media" id="tombVideoMedia" autoplay muted playsinline preload="auto"><source src="assets/tomb/tomb-loop.mp4" type="video/mp4"></video>';
-    document.body.appendChild(box);
-    var v = document.getElementById('tombVideoMedia');
-    var finished = false;
-    function finish() {
-      if (finished) return;
-      finished = true;
-      box.remove();
-      var sc = document.getElementById('tombScene');
-      if (sc) {
-        var im = sc.querySelector('.tomb-scene__img');
-        if (im) im.src = 'assets/tomb/tomb-lit.jpg';
-        var hint = document.getElementById('tombSceneHint');
-        if (hint) hint.textContent = '已上香 · 点香炉查看';
-      }
-      completeTask('tomb');
-      showTombStory();
+  function finishTomb() {
+    var sc = document.getElementById('tombScene');
+    if (sc) {
+      var im = sc.querySelector('.tomb-scene__img');
+      if (im) im.src = 'assets/tomb/tomb-lit.jpg';
+      var hint = document.getElementById('tombSceneHint');
+      if (hint) hint.textContent = '已上香 · 点香炉查看';
     }
-    if (v) {
-      v.addEventListener('ended', finish);
-      var p = v.play();
-      if (p && p.catch) p.catch(function () {});
-    }
-    setTimeout(finish, 7000);
+    completeTask('tomb');
+    toast('伏羲陵 · 上香礼成，打卡完成');
+    showTombStory();
   }
 
   function showTombStory() {

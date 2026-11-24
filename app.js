@@ -1030,6 +1030,39 @@
     var cp = document.getElementById('prayCard');
     if (cp) { cp.hidden = true; cp.setAttribute('aria-hidden', 'true'); }
   }
+  // 预加载各关卡的图片：等首屏 ready 后空闲时慢慢下，进关卡时就不用等
+  (function preloadSceneAssets() {
+    var list = [
+      'assets/tiger/jigsaw/0.jpg', 'assets/tiger/jigsaw/1.jpg', 'assets/tiger/jigsaw/2.jpg',
+      'assets/tiger/jigsaw/3.jpg', 'assets/tiger/jigsaw/4.jpg', 'assets/tiger/jigsaw/5.jpg',
+      'assets/tiger/jigsaw/6.jpg', 'assets/tiger/jigsaw/7.jpg', 'assets/tiger/jigsaw/8.jpg',
+      'assets/tiger/plush-source.jpg',
+      'assets/bun/bun-main.jpg',
+      'assets/tongtian/offer-flower.png', 'assets/tongtian/offer-pastry.png',
+      'assets/tongtian/offer-bun.png', 'assets/tongtian/offer-fruit.png',
+      'assets/tongtian/hall.jpg',
+      'assets/tomb/tomb.jpg', 'assets/tomb/tomb-lit.jpg',
+      'assets/tomb/incense-gold.jpg', 'assets/tomb/incense-red.jpg',
+      'assets/gate-closeup.jpg', 'assets/gate-door-left.jpg', 'assets/gate-door-right.jpg',
+      'assets/bagua-altar.jpg', 'assets/pray/tree.jpg',
+      'assets/shicao/garden.jpg', 'assets/shicao/herb.jpg',
+      'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
+      'assets/sachet/lavender.png', 'assets/sachet/rose.png', 'assets/sachet/lemon.png',
+      'assets/sachet/mint.png', 'assets/sachet/sandalwood.png', 'assets/sachet/chamomile.png',
+      'assets/sachet/sachet.png', 'assets/clay-charm.jpg'
+    ];
+    var i = 0;
+    function next() {
+      if (i >= list.length) return;
+      var im = new Image();
+      im.decoding = 'async';
+      im.onload = im.onerror = function () { i++; setTimeout(next, 180); };
+      im.src = list[i];
+      setTimeout(function () { if (im.complete) { i++; next(); } }, 4000);
+    }
+    window.addEventListener('load', function () { setTimeout(next, 1200); });
+  })();
+
   // 意外刷新恢复：等初始化完成、第一幕渲染后再切回上一幕
   window.addEventListener('load', function () {
     if (state._restoreAct && state._restoreAct > 1) {

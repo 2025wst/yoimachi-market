@@ -1382,7 +1382,7 @@
       bgm = new Audio('assets/audio/bgm.mp3');
       bgm.loop = true;
       bgm.volume = 0.32;
-      bgm.preload = 'auto';
+      bgm.preload = 'none';
     } catch (err) { bgm = null; return; }
     function startBgm() {
       if (!bgm || state.muted || bgmStarted) return;
@@ -4498,5 +4498,8 @@ var bagBtn = $('#bagBtn');
         if (kind === 'clay') { if (window.__openTask) window.__openTask('sugar'); return; }
       });
     });
+  if (app) app.classList.add('is-ready');
+  var _enterBtn = document.getElementById('enterBtn');
+  if (_enterBtn) _enterBtn.disabled = false;
   })();
 

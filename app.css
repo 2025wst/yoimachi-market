@@ -4504,3 +4504,11 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .bagua-quiz__sym { font-size: 25px; }
   .bagua-quiz__name { font-size: 14px; }
 }
+
+/* 首屏加载态：app 初始化前禁用入陵，避免点了没反应 */
+#app:not(.is-ready) #enterBtn { cursor: progress; opacity: .55; filter: grayscale(.35); }
+#app.is-ready #enterBtn { opacity: 1; filter: none; }
+/* 第二/三幕的大背景图改成进入该幕才加载 */
+.act--2 .market3d::before, .act--3 .inner3d::before { background-image: none; }
+.act--2.is-active .market3d::before { background-image: url(assets/street1-painted.jpg); }
+.act--3.is-active .inner3d::before { background-image: url(assets/street2-painted.jpg); }

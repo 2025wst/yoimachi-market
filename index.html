@@ -280,7 +280,7 @@
       <h1 class="intro__title">太昊陵</h1>
       <p class="intro__sub">一陵一庙，一城烟火。</p>
       <p class="intro__copy">从龙湖之上的鸟瞰开始，落入太昊陵前的集市，穿过内街，推开午朝门。</p>
-      <button class="btn btn--primary" type="button" id="enterBtn">
+      <button class="btn btn--primary" type="button" id="enterBtn" disabled>
         入陵
         <span class="btn__arrow">→</span>
       </button>
@@ -353,7 +353,7 @@
       </div>
       <div class="market3d__wash" aria-hidden="true"></div>
       <div class="market2d" id="market2d" aria-hidden="true">
-        <video class="market2d__video" id="market2dVideo" src="assets/market2d-web.mp4?v=3" poster="assets/market-painted.jpg" autoplay muted loop playsinline preload="auto"></video>
+        <video class="market2d__video" id="market2dVideo" src="assets/market2d-loop.mp4?v=1" poster="assets/market-painted.jpg" autoplay muted loop playsinline preload="auto"></video>
       </div>
       <div class="market2d-shops">
         <button class="market2d-shop market2d-shop--left" type="button" data-shop="tiger" aria-label="进入布老虎铺"><span>瑞虎坊 · 布艺</span></button>
@@ -403,7 +403,7 @@
       <div class="inner3d__wash" aria-hidden="true"></div>
       <div class="inner2d" id="inner2d">
         <div class="inner2d__stage" id="inner2dStage">
-          <video class="inner2d__video" id="inner2dVideo" src="assets/inner2d-web.mp4" poster="assets/inner-painted.jpg" autoplay muted loop playsinline preload="auto" aria-label="内街：左香薰坊，右泥泥狗工坊，尽头午朝门"></video>
+          <video class="inner2d__video" id="inner2dVideo" src="assets/inner2d-loop.mp4?v=1" poster="assets/inner-painted.jpg" autoplay muted loop playsinline preload="auto" aria-label="内街：左香薰坊，右泥泥狗工坊，尽头午朝门"></video>
           <button class="inner2d-hot inner2d-hot--sachet" type="button" data-inner="sachet" aria-label="进入香薰坊"><span>香薰坊 · 配香囊</span></button>
           <button class="inner2d-hot inner2d-hot--clay" type="button" data-inner="clay" aria-label="进入泥泥狗工坊"><span>泥泥狗工坊 · 泥塑</span></button>
           <button class="inner2d-hot inner2d-hot--gate" type="button" data-inner="gate" aria-label="午朝门，推门入陵"><span>午朝门 · 推门入陵</span></button>
@@ -819,10 +819,10 @@
   <div class="veil" id="veil" aria-hidden="true"></div>
 </div>
 
-<script src="assets/vendor/three.min.js"></script>
-<script src="scene3d.js"></script>
-<script src="scene3d-inner.js"></script>
-<script src="app.js"></script>
+<script src="assets/vendor/three.min.js" defer></script>
+<script src="scene3d.js" defer></script>
+<script src="scene3d-inner.js" defer></script>
+<script src="app.js" defer></script>
 <div class="clay3d" id="clay3d" aria-hidden="true">
   <canvas id="clay3dCanvas"></canvas>
   <button class="clay3d__close" type="button" id="clay3dClose" aria-label="关闭">×</button>

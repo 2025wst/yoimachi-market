@@ -3371,14 +3371,29 @@ var bagBtn = $('#bagBtn');
       renderer.render(scene, camera);
     };
   }
+  function ensureThree(cb) {
+    if (window.THREE) { cb(); return; }
+    if (window.__threeLoading) { window.__threeLoading.push(cb); return; }
+    window.__threeLoading = [cb];
+    var s = document.createElement('script');
+    s.src = 'assets/vendor/three.min.js';
+    s.onload = s.onerror = function () {
+      var q = window.__threeLoading || [];
+      window.__threeLoading = null;
+      q.forEach(function (fn) { try { fn(); } catch (e) {} });
+    };
+    document.body.appendChild(s);
+  }
   function openClay3D() {
     var el = document.getElementById('clay3d');
     if (!el) return;
     el.classList.add('is-open'); el.setAttribute('aria-hidden', 'false');
-    if (!clay3dState) initClay3D();
-    if (!clay3dState) return;
-    clay3dState.resize();
-    if (!clay3dState.running) { clay3dState.running = true; clay3dState.loop(); }
+    ensureThree(function () {
+      if (!clay3dState) initClay3D();
+      if (!clay3dState) return;
+      clay3dState.resize();
+      if (!clay3dState.running) { clay3dState.running = true; clay3dState.loop(); }
+    });
   }
   function closeClay3D() {
     var el = document.getElementById('clay3d');
@@ -4500,6 +4515,9 @@ var bagBtn = $('#bagBtn');
     });
   if (app) app.classList.add('is-ready');
   var _enterBtn = document.getElementById('enterBtn');
-  if (_enterBtn) _enterBtn.disabled = false;
+  if (_enterBtn) {
+    _enterBtn.innerHTML = '入陵 <span class="btn__arrow">→</span>';
+    _enterBtn.disabled = false;
+  }
   })();
 

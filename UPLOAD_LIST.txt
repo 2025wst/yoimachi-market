@@ -23,6 +23,7 @@
 - assets/gate-door-left.jpg
 - assets/gate-door-right.jpg
 - assets/inner-painted.jpg
+- assets/inner2d-web.mp4
 - assets/market-painted.jpg
 - assets/market2d-web.mp4
 - assets/market2d.mp4
@@ -31,6 +32,7 @@
 - assets/pray-tree.jpg
 - assets/street1-painted.jpg
 - assets/street2-painted.jpg
+- assets/temple-bg.jpg
 
 ### assets/audio/
 - assets/audio/bgm.mp3
@@ -78,7 +80,12 @@
 - assets/sachet/sachet.png
 - assets/sachet/sandalwood.png
 
+### assets/shicao/
+- assets/shicao/garden.jpg
+- assets/shicao/herb.jpg
+
 ### assets/tiger/
+- assets/tiger/plush-silhouette.png
 - assets/tiger/plush-source.jpg
 - assets/tiger/tiger-photo.jpg
 
@@ -93,6 +100,13 @@
 - assets/tiger2/design2.jpg
 - assets/tiger2/finished.png
 - assets/tiger2/paper.png
+
+### assets/tomb/
+- assets/tomb/incense-gold.jpg
+- assets/tomb/incense-gold.png
+- assets/tomb/incense-red.jpg
+- assets/tomb/incense-red.png
+- assets/tomb/tomb.jpg
 
 ### assets/tongtian/
 - assets/tongtian/hall.jpg

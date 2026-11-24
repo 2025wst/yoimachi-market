@@ -59,9 +59,9 @@
       need: 3, art: 'incense', stage: 'incense'
     },
     bagua: {
-      act: 4, group: '第四幕 · 陵庙', label: '八卦坛 · 观卦', spot: true,
-      title: '在八卦坛观一卦', kicker: '陵庙 · 八卦坛',
-      body: '八卦坛在太始门之后，传为伏羲画卦之处。点开八卦图上的卦象，看看每一卦的含义与解释。',
+      act: 4, group: '第四幕 · 陵庙', label: '八卦坛 · 问卦', spot: true,
+      title: '揲蓍问卦', kicker: '陵庙 · 八卦坛',
+      body: '八卦坛在太始门之后，传为伏羲画卦之处。先点开八卦看每一卦的含义，再点坛心太极抽卦问签，答对即可通关。',
       need: 1, art: 'bagua', stage: 'choices', choices: ['乾', '坤', '震', '巽']
     },
     tomb: {
@@ -256,6 +256,13 @@
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
     if (n === 4) renderSpots();
+    var iv = document.getElementById('inner2dVideo');
+    if (iv) {
+      if (String(n) === '3') { try { var ip = iv.play(); if (ip && ip.catch) ip.catch(function () {}); } catch (e) {} }
+      else { try { iv.pause(); } catch (e) {} }
+    }
+    var mv = document.getElementById('market2dVideo');
+    if (mv && String(n) === '2') { try { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); } catch (e) {} }
   }
 
   function goTo(n, delay) {
@@ -703,6 +710,8 @@
   if (id === 'sugar') { openClay(); return; }
     if (id === 'gate') { openGateway(); return; }
     if (id === 'beilin') { openBeilin(); return; }
+    if (id === 'shicao') { openShicao(); return; }
+    if (id === 'tomb') { openTomb(); return; }
     if (id === 'tongtian') { openTongtian(); return; }
 
     $('#panelKicker').textContent = t.kicker;
@@ -1029,6 +1038,16 @@
     bp.hidden = false;
     bp.setAttribute('aria-hidden', 'false');
     if (!bp.dataset.bound) {
+      var taiji = document.getElementById('baguaTaiji');
+      if (taiji) taiji.addEventListener('click', function () {
+        if (taiji.classList.contains('is-spinning')) return;
+        taiji.classList.add('is-spinning');
+        sfx.tick();
+        setTimeout(function () {
+          taiji.classList.remove('is-spinning');
+          openBaguaQuiz();
+        }, 620);
+      });
       bp.dataset.bound = '1';
       document.querySelectorAll('.bagua-photo__gua', bp).forEach(function (btn) {
         btn.addEventListener('click', function () { showBagua(btn.getAttribute('data-gua'), btn); });
@@ -1062,14 +1081,175 @@
       var hint = document.getElementById('baguaHint');
       if (hint) hint.textContent = '点击八卦 · 看卦象（已看 ' + n + ' / 8）';
       if (n >= 8) {
-        completeTask('bagua');
-        renderBag();
-        updateHUD();
-        toast('八卦 · 八卦坛打卡完成');
+        toast('八卦已看遍 · 点坛心太极抽卦问签');
       }
     }
   }
   window.__openBaguaAltar = openBaguaAltar;
+
+  var GUA_META = {
+    qian: { name: '乾卦', sym: '☰', pinyin: 'qián', nature: '天' },
+    dui:  { name: '兑卦', sym: '☱', pinyin: 'duì',  nature: '泽' },
+    li:   { name: '离卦', sym: '☲', pinyin: 'lí',   nature: '火' },
+    zhen: { name: '震卦', sym: '☳', pinyin: 'zhèn', nature: '雷' },
+    kun:  { name: '坤卦', sym: '☷', pinyin: 'kūn',  nature: '地' },
+    gen:  { name: '艮卦', sym: '☶', pinyin: 'gèn',  nature: '山' },
+    kan:  { name: '坎卦', sym: '☵', pinyin: 'kǎn',  nature: '水' },
+    xun:  { name: '巽卦', sym: '☴', pinyin: 'xùn',  nature: '风' }
+  };
+
+  var BAGUA_QUIZ = [
+    {
+      quote: '天行健，君子以自强不息。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'qian',
+      options: ['qian', 'kun', 'li', 'xun'],
+      explain: '乾为天，坤为地。「天行健」说的正是乾卦的刚健不息，所以选乾卦。'
+    },
+    {
+      quote: '有朋自远方来，不亦乐乎。',
+      ask: '这句契合哪一卦？',
+      answer: 'dui',
+      options: ['dui', 'xun', 'li', 'kan'],
+      explain: '兑为泽、为悦；「丽泽兑，君子以朋友讲习」，朋友讲习相悦，故取兑卦。'
+    },
+    {
+      quote: '地势坤，君子以厚德载物。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'kun',
+      options: ['kun', 'qian', 'zhen', 'gen'],
+      explain: '坤为地。大地厚重而能载万物，「厚德载物」说的正是坤卦的柔顺包容。'
+    },
+    {
+      quote: '洊雷震，君子以恐惧修省。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'zhen',
+      options: ['zhen', 'li', 'qian', 'kan'],
+      explain: '震为雷。雷声接连而至，君子因此心怀敬畏、反省修身，故取震卦。'
+    },
+    {
+      quote: '随风巽，君子以申命行事。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'xun',
+      options: ['xun', 'dui', 'kun', 'li'],
+      explain: '巽为风。风行无孔不入，君子效法它申明政令、推行政事，故取巽卦。'
+    },
+    {
+      quote: '水洊至，习坎；君子以常德行，习教事。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'kan',
+      options: ['kan', 'li', 'dui', 'xun'],
+      explain: '坎为水。水流接连不断，君子因此恒守德行、熟习教化之事，故取坎卦。'
+    },
+    {
+      quote: '明两作离，大人以继明照于四方。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'li',
+      options: ['li', 'zhen', 'qian', 'kan'],
+      explain: '离为火、为明。光明相继而起，大人因此以光明照临四方，故取离卦。'
+    },
+    {
+      quote: '兼山艮，君子以思不出其位。',
+      ask: '这句话对应的是哪一卦？',
+      answer: 'gen',
+      options: ['gen', 'kun', 'xun', 'dui'],
+      explain: '艮为山。两山相重、静止不动，君子因此思虑不越出自己的本位，故取艮卦。'
+    }
+  ];
+
+  var baguaLastQuiz = -1;
+
+  function openBaguaQuiz() {
+    var old = document.getElementById('baguaQuiz');
+    if (old) old.remove();
+    var idx = Math.floor(Math.random() * BAGUA_QUIZ.length);
+    if (BAGUA_QUIZ.length > 1 && idx === baguaLastQuiz) idx = (idx + 1) % BAGUA_QUIZ.length;
+    baguaLastQuiz = idx;
+    var q = BAGUA_QUIZ[idx];
+    var opts = q.options.slice();
+    if (Math.random() < 0.5) opts.reverse();
+    var firstWin = !has('bagua');
+    var box = document.createElement('div');
+    box.className = 'bagua-quiz';
+    box.id = 'baguaQuiz';
+    box.innerHTML =
+      '<div class="bagua-quiz__card" role="dialog" aria-label="揲蓍问卦">' +
+        '<button class="bagua-quiz__close" type="button" id="baguaQuizClose" aria-label="关闭">×</button>' +
+        '<p class="bagua-quiz__kicker">陵庙 · 八卦坛 · 揲蓍问卦</p>' +
+        '<h3 class="bagua-quiz__title">抽一签，问一卦</h3>' +
+        '<p class="bagua-quiz__quote">「' + q.quote + '」</p>' +
+        '<p class="bagua-quiz__ask">' + q.ask + '</p>' +
+        '<div class="bagua-quiz__opts" id="baguaQuizOpts">' + opts.map(function (id) {
+          var m = GUA_META[id];
+          return '<button class="bagua-quiz__opt" type="button" data-id="' + id + '">' +
+            '<span class="bagua-quiz__sym">' + m.sym + '</span>' +
+            '<span class="bagua-quiz__name">' + m.name + '</span>' +
+            '<span class="bagua-quiz__pinyin">' + m.pinyin + ' · ' + m.nature + '</span>' +
+          '</button>';
+        }).join('') + '</div>' +
+        '<div class="bagua-quiz__result" id="baguaQuizResult" hidden></div>' +
+        '<button class="bagua-quiz__btn" type="button" id="baguaQuizBtn" hidden></button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var result = document.getElementById('baguaQuizResult');
+    var btn = document.getElementById('baguaQuizBtn');
+    var closeBtn = document.getElementById('baguaQuizClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    var answered = false;
+    function choose(el) {
+      if (answered) return;
+      var id = el.getAttribute('data-id');
+      if (id === q.answer) {
+        answered = true;
+        el.classList.add('is-right');
+        box.querySelectorAll('.bagua-quiz__opt').forEach(function (o) { if (o !== el) o.classList.add('is-dim'); });
+        result.hidden = false;
+        result.innerHTML = '<b>答对了</b><span>' + q.explain + '</span>';
+        btn.hidden = false;
+        if (firstWin) {
+          btn.textContent = '收下八卦阵挂件 · 通关';
+          btn.onclick = function () {
+            completeTask('bagua');
+            renderBag();
+            updateHUD();
+            toast('八卦阵挂件 · 已收进背包');
+            box.remove();
+          };
+        } else {
+          btn.textContent = '再抽一签';
+          btn.onclick = function () { box.remove(); openBaguaQuiz(); };
+        }
+      } else {
+        el.classList.add('is-wrong');
+        sfx.tick();
+        result.hidden = false;
+        result.innerHTML = '<b class="is-wrong">再想想</b><span>卦象之间各有其象，回想一下它的自然之象。</span>';
+        setTimeout(function () { el.classList.remove('is-wrong'); }, 900);
+      }
+    }
+    box.querySelectorAll('.bagua-quiz__opt').forEach(function (el) {
+      el.addEventListener('click', function () { choose(el); });
+    });
+  }
+
+
+  window.__openBaguaQuiz = openBaguaQuiz;
+
+  function bagBaguaSVG() {
+    var gua = [['☰'], ['☱'], ['☲'], ['☳'], ['☷'], ['☶'], ['☵'], ['☴']];
+    return '<svg viewBox="0 0 80 80" aria-hidden="true">' +
+      '<circle cx="40" cy="40" r="32" fill="#fbf3e4" stroke="#c9a063" stroke-width="2.4"/>' +
+      '<circle cx="40" cy="40" r="14" fill="#2b2320"/>' +
+      '<path d="M40 26a14 14 0 0 1 0 28 7 7 0 0 0 0-14 7 7 0 0 1 0-14z" fill="#fbf3e4"/>' +
+      '<circle cx="40" cy="33" r="2.6" fill="#fbf3e4"/><circle cx="40" cy="47" r="2.6" fill="#2b2320"/>' +
+      '<g stroke="#8a5a2e" stroke-width="2.2" stroke-linecap="round">' +
+        '<path d="M36 9h8"/><path d="M36 13h8"/><path d="M36 17h8"/>' +
+        '<path d="M36 63h8"/><path d="M36 67h8"/><path d="M36 71h8"/>' +
+        '<path d="M7 36v8"/><path d="M11 36v8"/><path d="M15 36v8"/>' +
+        '<path d="M65 36v8"/><path d="M69 36v8"/><path d="M73 36v8"/>' +
+      '</g></svg>';
+  }
+
 
   /* ---------------- 午朝门近景 / 开门 ---------------- */
   function openGatePhoto() {
@@ -2312,6 +2492,7 @@
     if (has('bun')) items.push({ key: 'bun', name: '压缩馍挂件', meta: '集市 · 一口一口吃掉', svg: bagBunSVG() });
   if (has('sachet')) items.push({ key: 'sachet', name: '手作香囊', meta: '内街 · 配香', svg: bagSachetSVG() });
   if (has('sugar')) items.push({ key: 'clay', name: '泥泥狗', meta: '内街 · 泥塑', svg: bagClaySVG() });
+    if (has('bagua')) items.push({ key: 'bagua', name: '八卦阵挂件', meta: '陵庙 · 揲蓍问卦', svg: bagBaguaSVG() });
     var count = $('#bagCount');
     if (count) count.textContent = items.length;
     var list = $('#bagList');
@@ -3241,6 +3422,16 @@ var bagBtn = $('#bagBtn');
       if (checkin) { checkin.remove(); return; }
       var tongtianEl = document.getElementById('tongtianScene');
       if (tongtianEl) { tongtianEl.remove(); return; }
+      var tombIncenseEl = document.getElementById('tombIncense');
+      if (tombIncenseEl) { tombIncenseEl.remove(); return; }
+      var tombIntroEl = document.getElementById('tombIntro');
+      if (tombIntroEl) { tombIntroEl.remove(); return; }
+      var tombEl = document.getElementById('tombScene');
+      if (tombEl) { tombEl.remove(); return; }
+      var shicaoIntroEl = document.getElementById('shicaoIntro');
+      if (shicaoIntroEl) { shicaoIntroEl.remove(); return; }
+      var shicaoEl = document.getElementById('shicaoScene');
+      if (shicaoEl) { shicaoEl.remove(); return; }
       var beilinEl = document.getElementById('beilinScene');
       if (beilinEl) { beilinEl.remove(); if (window.__openBeilin) window.__openBeilin(); return; }
       var beilinHallEl = document.getElementById('beilinHall');
@@ -3321,7 +3512,7 @@ var bagBtn = $('#bagBtn');
     shopStage.innerHTML =
       '<div class="jigsaw2-game">' +
         '<div class="jigsaw2-board" id="jigsaw2Board">' +
-          '<img class="jigsaw2-ghost" src="assets/tiger/plush-source.jpg" alt="布老虎拼图目标">' +
+          '<img class="jigsaw2-ghost" src="assets/tiger/plush-silhouette.png" alt="布老虎拼图目标">' +
           '<div class="jigsaw2-slots" id="jigsaw2Slots">' + slots + '</div>' +
           '<div class="jigsaw2-done" id="jigsaw2Done" style="background-image:url(assets/tiger/plush-source.jpg)"></div>' +
         '</div>' +
@@ -3967,11 +4158,173 @@ var bagBtn = $('#bagBtn');
       '<button class="beilin-hall__close" type="button" id="beilinHallClose" aria-label="关闭">×</button>';
     document.body.appendChild(box);
     var hot = document.getElementById('beilinHallStele');
-    if (hot) hot.addEventListener('click', function () { box.remove(); openBeilinStele(); });
+    var zooming = false;
+    if (hot) hot.addEventListener('click', function () {
+      if (zooming) return;
+      zooming = true;
+      var frame = box.querySelector('.beilin-hall__frame');
+      if (frame) frame.classList.add('is-zooming');
+      box.classList.add('is-zooming');
+      setTimeout(function () {
+        openBeilinStele();
+      }, 1200);
+      setTimeout(function () {
+        box.remove();
+      }, 2250);
+    });
     var closeBtn = document.getElementById('beilinHallClose');
     if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
   }
+
+  function openShicao() {
+    var old = document.getElementById('shicaoScene');
+    if (old) old.remove();
+    var oldIntro = document.getElementById('shicaoIntro');
+    if (oldIntro) oldIntro.remove();
+    var box = document.createElement('div');
+    box.className = 'shicao-scene';
+    box.id = 'shicaoScene';
+    box.innerHTML =
+      '<div class="shicao-scene__bg"></div>' +
+      '<div class="shicao-scene__frame">' +
+        '<img class="shicao-scene__img" src="assets/shicao/garden.jpg" alt="蓍草园">' +
+        '<button class="shicao-scene__hot" type="button" id="shicaoHot" aria-label="细看园中蓍草"></button>' +
+      '</div>' +
+      '<p class="shicao-scene__hint">点击园中蓍草 · 细看神草</p>' +
+      '<button class="shicao-scene__close" type="button" id="shicaoClose" aria-label="关闭">×</button>';
+    document.body.appendChild(box);
+    var closeBtn = document.getElementById('shicaoClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    var hot = document.getElementById('shicaoHot');
+    if (hot) hot.addEventListener('click', function () { box.remove(); openShicaoIntro(); });
+  }
+
+  function openShicaoIntro() {
+    var old = document.getElementById('shicaoIntro');
+    if (old) old.remove();
+    var done = has('shicao');
+    var box = document.createElement('div');
+    box.className = 'shicao-intro';
+    box.id = 'shicaoIntro';
+    box.innerHTML =
+      '<div class="shicao-intro__card" role="dialog" aria-label="蓍草介绍">' +
+        '<button class="shicao-intro__close" type="button" id="shicaoIntroClose" aria-label="关闭">×</button>' +
+        '<img class="shicao-intro__herb" src="assets/shicao/herb.jpg" alt="蓍草">' +
+        '<p class="shicao-intro__kicker">陵庙 · 蓍草园</p>' +
+        '<h3 class="shicao-intro__title">蓍草 · 神草</h3>' +
+        '<p class="shicao-intro__text">蓍草是菊科多年生草本植物，相传伏羲曾以蓍草揲蓍画卦，因此被称作“神草”。</p>' +
+        '<p class="shicao-intro__text">太昊陵后蓍草园就是淮阳八景之一“蓍草春荣”。</p>' +
+        '<p class="shicao-intro__text">它既可入药、供观赏，更承载根脉文化：古时帝王遣使祭陵，会带回一束蓍草作为信物，是太昊陵里联结始祖传说与后世传承的灵物。</p>' +
+        '<button class="shicao-intro__btn" type="button" id="shicaoIntroBtn">' + (done ? '已收下这束蓍草 · 关闭' : '收下这束蓍草 · 打卡') + '</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var closeBtn = document.getElementById('shicaoIntroClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    var btn = document.getElementById('shicaoIntroBtn');
+    if (btn) btn.addEventListener('click', function () {
+      box.remove();
+      if (has('shicao')) return;
+      completeTask('shicao');
+      toast('蓍草 · 神草已收下，打卡成功');
+    });
+  }
+
+  function openTomb() {
+    var old = document.getElementById('tombScene');
+    if (old) old.remove();
+    ['tombIntro', 'tombIncense'].forEach(function (k) { var el = document.getElementById(k); if (el) el.remove(); });
+    var box = document.createElement('div');
+    box.className = 'tomb-scene';
+    box.id = 'tombScene';
+    box.innerHTML =
+      '<div class="tomb-scene__bg"></div>' +
+      '<div class="tomb-scene__frame">' +
+        '<img class="tomb-scene__img" src="assets/tomb/tomb.jpg" alt="太昊伏羲陵">' +
+        '<button class="tomb-scene__altar" type="button" id="tombAltar" aria-label="陵前香坛"></button>' +
+      '</div>' +
+      '<p class="tomb-scene__hint">点击香坛 · 上香祭陵</p>' +
+      '<button class="tomb-scene__close" type="button" id="tombClose" aria-label="关闭">×</button>';
+    document.body.appendChild(box);
+    var closeBtn = document.getElementById('tombClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    var altar = document.getElementById('tombAltar');
+    if (altar) altar.addEventListener('click', function () { box.remove(); openTombIntro(); });
+  }
+
+  function openTombIntro() {
+    var old = document.getElementById('tombIntro');
+    if (old) old.remove();
+    var done = has('tomb');
+    var box = document.createElement('div');
+    box.className = 'tomb-intro';
+    box.id = 'tombIntro';
+    box.innerHTML =
+      '<div class="tomb-intro__card" role="dialog" aria-label="伏羲陵介绍">' +
+        '<button class="tomb-intro__close" type="button" id="tombIntroClose" aria-label="关闭">×</button>' +
+        '<p class="tomb-intro__kicker">陵庙 · 伏羲陵墓</p>' +
+        '<h3 class="tomb-intro__title">伏羲 · 人文始祖</h3>' +
+        '<p class="tomb-intro__text">伏羲是“三皇之首”、中华人文始祖，他画八卦、定姓氏、制嫁娶，开启华夏文明根脉。</p>' +
+        '<p class="tomb-intro__text">太昊伏羲陵冢通高 13.5 米，上圆下方，方座周长 200 余米，陵前立有“太昊伏羲氏之陵”。</p>' +
+        '<div class="tomb-intro__incense">' +
+          '<figure><img src="assets/tomb/incense-gold.jpg" alt="供香样式一"><figcaption>金香</figcaption></figure>' +
+          '<figure><img src="assets/tomb/incense-red.jpg" alt="供香样式二"><figcaption>红香</figcaption></figure>' +
+          '<span class="tomb-intro__incense-label">陵前供香</span>' +
+        '</div>' +
+        '<button class="tomb-intro__btn" type="button" id="tombIntroBtn">' + (done ? '已上香 · 关闭' : '上香祭陵') + '</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var closeBtn = document.getElementById('tombIntroClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    var btn = document.getElementById('tombIntroBtn');
+    if (btn) btn.addEventListener('click', function () {
+      box.remove();
+      if (has('tomb')) return;
+      openTombIncense();
+    });
+  }
+
+  function openTombIncense() {
+    var old = document.getElementById('tombIncense');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'tomb-incense';
+    box.id = 'tombIncense';
+    box.innerHTML =
+      '<div class="tomb-incense__frame">' +
+        '<img class="tomb-incense__img" src="assets/tomb/tomb.jpg" alt="太昊伏羲陵">' +
+        '<div class="tomb-incense__glow" aria-hidden="true"></div>' +
+        '<img class="tomb-incense__sticks" src="assets/tomb/incense-gold.png" alt="供香">' +
+        '<div class="tomb-incense__smoke" aria-hidden="true"><i></i><i></i><i></i></div>' +
+        '<button class="tomb-incense__altar" type="button" id="tombIncenseAltar" aria-label="点燃供香"></button>' +
+      '</div>' +
+      '<p class="tomb-incense__hint" id="tombIncenseHint">点击香炉 · 点燃供香</p>' +
+      '<button class="tomb-incense__close" type="button" id="tombIncenseClose" aria-label="关闭">×</button>';
+    document.body.appendChild(box);
+    var hint = document.getElementById('tombIncenseHint');
+    var lit = false;
+    var closeBtn = document.getElementById('tombIncenseClose');
+    if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
+    function light() {
+      if (lit) return;
+      lit = true;
+      box.classList.add('is-lit');
+      if (hint) hint.textContent = '香火已燃 · 礼敬始祖';
+      setTimeout(function () {
+        if (!document.getElementById('tombIncense')) return;
+        box.classList.add('is-done');
+        if (hint) hint.textContent = '礼成 · 伏羲陵上香完成';
+        completeTask('tomb');
+        toast('伏羲陵 · 上香礼成，打卡完成');
+      }, 1500);
+    }
+    var altar = document.getElementById('tombIncenseAltar');
+    if (altar) altar.addEventListener('click', light);
+    var sticks = box.querySelector('.tomb-incense__sticks');
+    if (sticks) sticks.addEventListener('click', light);
+  }
   window.__openBeilin = openBeilin;
+  window.__openShicao = openShicao;
+  window.__openTomb = openTomb;
 
 
   /* ============================================================

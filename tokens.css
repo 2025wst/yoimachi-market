@@ -88,6 +88,17 @@
   --shadow-1: var(--shadow-soft);
   --shadow-2: var(--shadow-lift);
 
+  /* 蓍草园场景（参考图：白花蓍草 + 蓍草春荣园） */
+  --shicao-white: #F1F1EF;
+  --shicao-paper: #FDF7D0;
+  --shicao-paper-2: #E9E2B9;
+  --shicao-sand: #C7C19A;
+  --shicao-gold: #D7D08C;
+  --shicao-olive: #A19E74;
+  --shicao-olive-deep: #8B8A4C;
+  --shicao-sage: #B4BAB2;
+  --shicao-sage-deep: #849085;
+
   /* 字体：宋楷为骨；正文黑体 */
   --font-serif: "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", "STKaiti", "KaiTi", serif;
   --font-sans: "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", system-ui, sans-serif;

@@ -2991,7 +2991,7 @@ input { font: inherit; color: inherit; }
   position: absolute;
   left: 50%;
   top: auto;
-  bottom: 40px;
+  bottom: 104px;
   width: 176px;
   height: 58px;
   transform: translateX(-50%);
@@ -3659,7 +3659,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .market2d__video, .inner2d__video { object-fit: contain; }
   .act--2 .market-title, .act--3 .inner3d-title { top: calc(50% - 100vw * 9 / 32 - 172px); }
   .market-tabs, .inner3d-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .market-sign-hot, .act--3 .inner3d-actions { top: auto; bottom: 44px; }
+  .market-sign-hot, .act--3 .inner3d-actions { top: auto; bottom: 104px; }
   .act--3 .inner3d-actions { left: 10px; right: 10px; transform: none; }
 }
 @media (min-width: 901px) {
@@ -4751,10 +4751,10 @@ html, body { overscroll-behavior-y: none; }
   width: min(100%, calc(100vh * 1152 / 2048)) !important;
   aspect-ratio: 1152 / 2048;
 }
-/* 第二街道背景 1344x1792 (3:4) */
+/* 第二街道背景 1152x2047 (9:16) */
 .act--3 .inner2d {
-  width: min(100%, calc(100vh * 1344 / 1792)) !important;
-  aspect-ratio: 1344 / 1792;
+  width: min(100%, calc(100vh * 1152 / 2047)) !important;
+  aspect-ratio: 1152 / 2047;
 }
 
 /* 店铺热区（按图片百分比，自动跟着图片走） */
@@ -4852,9 +4852,9 @@ html, body { overscroll-behavior-y: none; }
 .act--3 .inner3d-tabs { display: none !important; }
 
 /* 店铺/午朝门热区（手机竖屏，按新图位置） */
-.inner2d-hot--sachet { left: 0%;  top: 46%; width: 31%; height: 37%; }
-.inner2d-hot--clay   { left: 70%; top: 47%; width: 28%; height: 37%; }
-.inner2d-hot--gate   { left: 42%; top: 47%; width: 22%; height: 25%; }
+.inner2d-hot--sachet { left: 0%;  top: 43%; width: 30%; height: 29%; }
+.inner2d-hot--clay   { left: 70%; top: 45%; width: 30%; height: 28%; }
+.inner2d-hot--gate   { left: 38%; top: 47%; width: 24%; height: 19%; }
 
 /* 深呼吸提示 */
 .inner2d-hot--sachet::before, .inner2d-hot--clay::before, .inner2d-hot--gate::before {

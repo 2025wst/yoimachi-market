@@ -5163,3 +5163,25 @@ html, body { overscroll-behavior-y: none; }
 .pray-btn .pray-btn__text { display: none !important; }
 .pray-btn::before, .pray-btn::after { display: none !important; }
 .pray-btn:active { background: rgba(255, 240, 210, .1) !important; }
+
+/* 第四幕：打卡完成后不再显示突兀的 ✓ 圆标；热区保持完全隐形 */
+.hotspot.is-done::after,
+.hotspot::after { display: none !important; content: none !important; }
+.hotspot.is-done { box-shadow: none !important; background: transparent !important; }
+.hotspot .hotspot__label { opacity: 0 !important; }
+.hotspot:hover .hotspot__label,
+.hotspot:focus-visible .hotspot__label { opacity: 1 !important; }
+
+/* 祈福树隐形热区（再兜一次，确保看不出按钮） */
+#prayBtn.pray-btn {
+  display: block !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+#prayBtn.pray-btn::before,
+#prayBtn.pray-btn::after,
+#prayBtn.pray-btn > * { display: none !important; content: none !important; }

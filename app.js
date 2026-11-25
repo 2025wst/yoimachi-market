@@ -1257,10 +1257,8 @@
         '<button class="bagua-intro__close" type="button" id="baguaIntroClose" aria-label="关闭">×</button>' +
         '<p class="bagua-intro__kicker">陵庙 · 八卦坛</p>' +
         '<h3 class="bagua-intro__title">一画开天</h3>' +
-        '<p class="bagua-intro__text">这个八角青石台，就是八卦坛。</p>' +
-        '<p class="bagua-intro__text">传说伏羲在蔡水捉到一只白龟，龟甲纹路是三组“一分为二”；他抬头看天、低头看地，把天地水火雷风山泽压缩成“一横”和“两短横”，三个一组叠出八个符号——这就叫“一画开天”。</p>' +
-        '<p class="bagua-intro__text">八卦不是算命，是中国最早的二进制，也是最早的文字替代品。</p>' +
-        '<p class="bagua-intro__text">坛心阴阳鱼转一圈，就是“太极生两仪，两仪生四象，四象生八卦”。</p>' +
+        '<p class="bagua-intro__text">伏羲八卦坛相传是伏羲推演先天八卦的地方。</p>' +
+        '<p class="bagua-intro__text">传说伏羲把八卦盘传给仁善的老九黄龙氏，黄龙氏没有独自占有，而是在太昊陵前筑坛供奉，让天下人共享八卦里的智慧——这便是淮阳八卦坛的由来。</p>' +
         '<button class="bagua-intro__btn" type="button" id="baguaIntroBtn">继续看卦 · 看遍八卦自动抽签</button>' +
       '</div>';
     document.body.appendChild(box);
@@ -1276,7 +1274,8 @@
     var old = document.getElementById('baguaQuiz');
     if (old) old.remove();
     var idx = Math.floor(Math.random() * BAGUA_QUIZ.length);
-    if (BAGUA_QUIZ.length > 1 && idx === baguaLastQuiz) idx = (idx + 1) % BAGUA_QUIZ.length;
+    if (BAGUA_QUIZ.length > 1 && idx === baguaLastQuiz) idx = (idx + 1 + Math.floor(Math.random() * (BAGUA_QUIZ.length - 1))) % BAGUA_QUIZ.length;
+    if (idx === baguaLastQuiz) idx = (idx + 1) % BAGUA_QUIZ.length;
     baguaLastQuiz = idx;
     var q = BAGUA_QUIZ[idx];
     var opts = q.options.slice();
@@ -1288,7 +1287,7 @@
     box.innerHTML =
       '<div class="bagua-quiz__card" role="dialog" aria-label="揲蓍问卦">' +
         '<button class="bagua-quiz__close" type="button" id="baguaQuizClose" aria-label="关闭">×</button>' +
-        '<p class="bagua-quiz__kicker">陵庙 · 八卦坛 · 揲蓍问卦</p>' +
+        '<p class="bagua-quiz__kicker">陵庙 · 八卦坛 · 揲蓍问卦 · 第 ' + (idx + 1) + ' / ' + BAGUA_QUIZ.length + ' 签</p>' +
         '<h3 class="bagua-quiz__title">抽一签，问一卦</h3>' +
         '<p class="bagua-quiz__quote">「' + q.quote + '」</p>' +
         '<p class="bagua-quiz__ask">' + q.ask + '</p>' +

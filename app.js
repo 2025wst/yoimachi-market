@@ -3693,6 +3693,10 @@ var bagBtn = $('#bagBtn');
     if (sugar) sugar.addEventListener('click', function () { openTask('sugar'); });
     var gate = $('#innerGate');
     if (gate) gate.addEventListener('click', function () {
+      if (!has('sachet') || !has('sugar')) {
+        toast('先把香薰坊和泥泥狗工坊两家的互动做完，再去午朝门。');
+        return;
+      }
       if (window.__openGatePhoto) window.__openGatePhoto();
       else openGateway();
     });

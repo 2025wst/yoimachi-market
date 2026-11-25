@@ -400,43 +400,50 @@ input { font: inherit; color: inherit; }
 }
 
 .intro__eyebrow {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 18px;
+  margin: 0 0 16px;
+  padding: 5px 14px 5px 11px;
+  border: 1px solid rgba(100, 69, 50, .35);
+  border-radius: 999px;
+  font-family: var(--font-serif);
   font-size: 12px;
-  letter-spacing: .28em;
-  color: var(--muted);
+  letter-spacing: .32em;
+  color: var(--accent-deep);
 }
 .intro__eyebrow span { width: 26px; height: 1px; background: var(--red); }
 
 .intro__title {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", var(--font-serif);
   font-size: clamp(64px, 8.4vw, 118px);
-  line-height: 1.18;
+  line-height: 1.12;
   font-weight: var(--font-weight-title);
-  letter-spacing: -.04em;
+  letter-spacing: .06em;
   color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 250, 235, .65);
 }
 
 .intro__sub {
-  margin: 18px 0 0;
-  font-family: var(--font-serif);
-  font-size: clamp(18px, 1.8vw, 22px);
-  letter-spacing: .2em;
-  color: var(--red-deep);
+  margin: 16px 0 0;
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", var(--font-serif);
+  font-size: clamp(19px, 1.9vw, 23px);
+  letter-spacing: .26em;
+  color: var(--accent-deep);
 }
 
 .intro__copy {
   margin: 14px 0 0;
-  max-width: 30em;
+  max-width: 26em;
+  font-family: var(--font-serif);
   font-size: var(--fs-sm);
-  line-height: 1.85;
+  line-height: 1.95;
+  letter-spacing: .02em;
   color: var(--ink-2);
 }
 
-.intro .btn { margin-top: 22px; }
+.intro .btn { margin-top: 22px; letter-spacing: .18em; }
 
 .intro__hint {
   margin: 12px 0 0;

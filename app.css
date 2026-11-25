@@ -4805,3 +4805,13 @@ html, body { overscroll-behavior-y: none; }
 .act-caption__card p:last-child {
   margin: 0; font-size: 13.5px; line-height: 1.78; color: #6b5340; letter-spacing: .02em;
 }
+
+.act-caption__hint {
+  margin: 18px 0 0 !important;
+  font-size: 11.5px !important;
+  letter-spacing: .3em !important;
+  color: #a08363 !important;
+  opacity: .85;
+  animation: capHint 2.4s ease-in-out infinite;
+}
+@keyframes capHint { 0%, 100% { opacity: .45; } 50% { opacity: .95; } }

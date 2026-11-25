@@ -291,13 +291,19 @@
     capsShown[n] = true;
     var ov = document.createElement('div');
     ov.className = 'act-caption';
-    ov.innerHTML = '<div class="act-caption__card">' + src.innerHTML + '</div>';
+    ov.innerHTML = '<div class="act-caption__card">' + src.innerHTML + '<p class="act-caption__hint">轻触继续</p></div>';
     document.body.appendChild(ov);
     requestAnimationFrame(function () { ov.classList.add('is-on'); });
-    setTimeout(function () {
+    var dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
       ov.classList.remove('is-on');
       setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 380);
-    }, 1150);
+    }
+    ov.addEventListener('click', dismiss);
+    ov.addEventListener('touchstart', dismiss, { passive: true });
+    window.__dismissCaption = dismiss;
   }
 
   function goTo(n, delay) {

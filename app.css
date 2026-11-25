@@ -4728,3 +4728,42 @@ html, body { overscroll-behavior-y: none; }
   #marketSign.market-sign-hot { bottom: 8px; }
   .act--3 .inner3d-actions { bottom: 8px; }
 }
+
+/* ===== 第二幕：去掉底部店铺按钮，改为直接点击街景里的店铺本体 ===== */
+.act--2 .market-tabs { display: none !important; }
+
+/* 背景图停止漂移，保证热区与店铺严丝合缝 */
+.market-painted img { animation: none !important; }
+
+/* 热区容器铺满整个视口（原来是个居中窄列，导致百分比算错） */
+.act--2 .market2d-shops {
+  top: 0 !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+  width: 100% !important; height: 100% !important; max-width: none !important;
+  transform: none !important;
+}
+
+/* 手机竖屏：按 3:4 图在 390x844 上的实际位置定位（与店铺轮廓重合） */
+.market2d-shops .market2d-shop--left  { left: 0%;    top: 52.5%; width: 26.5%; height: 21.5%; }
+.market2d-shops .market2d-shop--right { left: 73.5%; top: 52.5%; width: 26.5%; height: 21.5%; }
+
+/* 桌面宽屏：3:4 图居中（宽 600px），店铺在中间那一列里 */
+@media (min-width: 901px) {
+  .market2d-shops .market2d-shop--left  { left: 32.8%; top: 52.5%; width: 13.6%; height: 21.5%; }
+  .market2d-shops .market2d-shop--right { left: 57.2%; top: 52.5%; width: 12.8%; height: 21.5%; }
+}
+
+/* 可点提示：轻轻呼吸的暖光，不压画面 */
+.market2d-shops .market2d-shop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at 50% 62%, rgba(255, 214, 150, .22), rgba(255, 214, 150, 0) 72%);
+  opacity: .55;
+  animation: shopBreathe 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.market2d-shops .market2d-shop--right::before { animation-delay: -1.8s; }
+@keyframes shopBreathe { 0%, 100% { opacity: .35; } 50% { opacity: .8; } }
+.market2d-shops .market2d-shop:hover::before,
+.market2d-shops .market2d-shop:focus-visible::before { opacity: 1; animation: none; }

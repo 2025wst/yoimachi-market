@@ -4565,7 +4565,7 @@ var bagBtn = $('#bagBtn');
       '</div>';
     document.body.appendChild(box);
     var btn = document.getElementById('tombStoryBtn');
-    if (btn) btn.addEventListener('click', function () { box.remove(); });
+    if (btn) btn.addEventListener('click', function () { box.remove(); showNextStep(); });
   }
 
   function showBeilinStory() {

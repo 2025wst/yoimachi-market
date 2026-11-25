@@ -110,10 +110,10 @@ input { font: inherit; color: inherit; }
 .veil.is-on { opacity: 1; pointer-events: auto; }
 
 .toast {
-  position: absolute;
+  position: fixed;
   left: 50%;
-  bottom: 7vh;
-  z-index: 75;
+  bottom: 15vh;
+  z-index: 160;
   max-width: min(86vw, 520px);
   padding: 10px 18px;
   border: 1px solid rgba(199, 180, 156, .35);

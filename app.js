@@ -3592,7 +3592,8 @@ var bagBtn = $('#bagBtn');
     { id: 'huang', name: '阿黄', x: 71.5, y: 56.5, w: 6.5, h: 7, intro: '我是阿黄，黄为土、为中央，是黄土地里捏出来的。', pattern: '黄地黑线，勾的是云头和回纹；黄是土地的颜色，也是五方里的中央。' }
   ];
   function openClay() {
-    shopDetail.classList.add('is-open', 'is-immersive');
+    shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     $('#shopDetailKicker').textContent = '内街 · 泥泥狗工坊';
@@ -3605,15 +3606,15 @@ var bagBtn = $('#bagBtn');
       return '<button class="clay-shop__dog" type="button" data-dog="' + d.id + '" aria-label="点一点' + d.name + '" style="left:' + d.x + '%;top:' + d.y + '%;width:' + d.w + '%;height:' + d.h + '%"></button>';
     }).join('');
     shopStage.innerHTML =
-      '<div class="clay-shop">' +
-        '<p class="clay-shop__hint" id="clayShopHint">点小狗听故事（0 / 6） · 点货架看总述</p>' +
-        '<div class="clay-shop__frame">' +
-          '<img class="clay-shop__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
+      '<div class="clay-shop2">' +
+        '<div class="clay-shop2__frame">' +
+          '<img class="clay-shop2__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
           '<button class="clay-shop__shelf" type="button" id="clayShelf" aria-label="看看货架上的泥泥狗"></button>' +
           dogs +
         '</div>' +
-        '<div class="clay-shop__info" id="clayShopInfo" hidden>' +
-          '<div class="clay-shop__info-head"><b id="clayInfoName">泥泥狗</b><button class="clay-shop__info-close" type="button" id="clayInfoClose" aria-label="关闭">×</button></div>' +
+        '<p class="clay-shop2__hint" id="clayShopHint">点台面上的小狗听故事（0 / 6） · 点上面的货架看总述</p>' +
+        '<div class="clay-shop2__info" id="clayShopInfo" hidden>' +
+          '<div class="clay-shop2__info-head"><b id="clayInfoName">泥泥狗</b><button class="clay-shop2__info-close" type="button" id="clayInfoClose" aria-label="关闭">×</button></div>' +
           '<p id="clayInfoIntro"></p>' +
           '<p id="clayInfoPattern"></p>' +
         '</div>' +
@@ -3642,9 +3643,9 @@ var bagBtn = $('#bagBtn');
       var n = Object.keys(seenDogs).length;
       var total = CLAY_SHOP_DOGS.length;
       if (n >= total) {
-        hint.innerHTML = '六只小狗都听完了 · 收下挂件吧 <span>\u2713</span>';
+        hint.innerHTML = '六只小狗都听完了 · 收下挂件吧（点上面的货架还能看总述）';
       } else {
-        hint.innerHTML = '点击台面上的小狗互动，有惊喜（' + n + ' / ' + total + '） <span>\u2193</span>';
+        hint.innerHTML = '点台面上的小狗听故事（' + n + ' / ' + total + '） · 点上面的货架看总述';
       }
     }
     var shelf = document.getElementById('clayShelf');

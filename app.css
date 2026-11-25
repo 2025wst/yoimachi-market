@@ -2991,7 +2991,7 @@ input { font: inherit; color: inherit; }
   position: absolute;
   left: 50%;
   top: auto;
-  bottom: 88px;
+  bottom: 40px;
   width: 176px;
   height: 58px;
   transform: translateX(-50%);
@@ -3659,7 +3659,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .market2d__video, .inner2d__video { object-fit: contain; }
   .act--2 .market-title, .act--3 .inner3d-title { top: calc(50% - 100vw * 9 / 32 - 172px); }
   .market-tabs, .inner3d-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .market-sign-hot, .act--3 .inner3d-actions { top: auto; bottom: 108px; }
+  .market-sign-hot, .act--3 .inner3d-actions { top: auto; bottom: 44px; }
   .act--3 .inner3d-actions { left: 10px; right: 10px; transform: none; }
 }
 @media (min-width: 901px) {
@@ -3701,7 +3701,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .market2d__video { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
   .act--2 .market-title { top: calc(50% - 100vw * 9 / 32 - 172px); left: 12px; right: 12px; max-width: none; width: auto; }
   .market-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .market-sign-hot { top: auto; bottom: 108px; left: 50%; transform: translateX(-50%); }
+  .market-sign-hot { top: auto; bottom: 44px; left: 50%; transform: translateX(-50%); }
 }
 
 /* 第二街道回到香囊互动那一版：横版内街 + 16:9 舞台；香囊页面保持新版 */
@@ -4722,3 +4722,9 @@ html, body { overscroll-behavior-y: none; }
 #market3d .market2d { display: none !important; }
 #market3d .market-painted { display: flex !important; }
 #market3d .market-painted img { display: block; }
+
+/* 矮屏兜底：往前走更贴底，保证不与店铺按钮重叠 */
+@media (max-height: 720px) {
+  #marketSign.market-sign-hot { bottom: 8px; }
+  .act--3 .inner3d-actions { bottom: 8px; }
+}

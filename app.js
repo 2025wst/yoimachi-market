@@ -1046,9 +1046,10 @@
     tp.setAttribute('aria-hidden', 'false');
     if (!tp.dataset.bound) {
       tp.dataset.bound = '1';
-      var knot = document.getElementById('prayKnot');
       var close = document.getElementById('prayTreeClose');
-      if (knot) knot.addEventListener('click', openPrayCard);
+      $$('.pray-tree__tag', tp).forEach(function (el) {
+        el.addEventListener('click', openPrayCard);
+      });
       if (close) close.addEventListener('click', closePrayTree);
     }
   }

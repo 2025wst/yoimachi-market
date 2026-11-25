@@ -4688,3 +4688,30 @@ html, body { overscroll-behavior-y: none; }
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
+
+/* 祈福树：枝头祈福牌热区（范围贴合牌子，不覆盖空气） */
+.pray-tree__tag {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  z-index: 3;
+}
+.pray-tree__tag::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 214, 150, .55), rgba(255, 214, 150, 0) 72%);
+  opacity: 0;
+  transition: opacity .22s;
+  pointer-events: none;
+}
+.pray-tree__tag:hover::after,
+.pray-tree__tag:focus-visible::after { opacity: 1; }
+
+/* 第四幕：把热区（含名字签）整体点击范围放大 */
+.hotspot { padding: 6px 10px 4px; }
+.hotspot__label { pointer-events: auto; }

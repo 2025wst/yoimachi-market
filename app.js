@@ -3584,12 +3584,12 @@ var bagBtn = $('#bagBtn');
   </svg>`;
   }
   var CLAY_SHOP_DOGS = [
-    { id: 'ahei', name: '阿黑', x: 24, y: 35.5, w: 13.5, h: 35, intro: '我是人祖庙前的阿黑，黑地红纹，耳朵尖尖，替人祖看家护院，也会给你带路。', pattern: '我身上是黑底红黄彩纹：一层压一层的回纹、胸口一团云头花，黑为水、为玄，是镇宅驱邪的老纹样。' },
-    { id: 'bai1', name: '小白', x: 42.2, y: 53.6, w: 5.6, h: 12, intro: '我是柜台左边的小白，白地红纹，脖子上围着一圈红绒花。', pattern: '白为素，红为喜；庙会上把孩子交给我，是求平安、求长大的意思。' },
-    { id: 'bai2', name: '小玉', x: 48.7, y: 53.6, w: 5.6, h: 12, intro: '我是右边的小玉，白地绿纹，和左边的小白是一对。', pattern: '绿为春、为生，我身上盘着云头，是盼着孩子像春天一样长起来。' },
-    { id: 'hong', name: '红红', x: 60.3, y: 55.2, w: 4.3, h: 9.8, intro: '我是红红，红为阳、为喜，站在柜台右边。', pattern: '红地彩纹，胸口一团团花，耳内点朱；红是祈子、祈福的颜色，庙会上最讨喜。' },
-    { id: 'cui', name: '小翠', x: 65.3, y: 55.2, w: 4.3, h: 9.8, intro: '我是小翠，青为东方、为春生，最爱凑热闹。', pattern: '青地金线，云头一圈圈盘着；青是春天和生气的颜色，盼着人丁兴旺。' },
-    { id: 'huang', name: '阿黄', x: 70.3, y: 55.2, w: 4.3, h: 9.8, intro: '我是阿黄，黄为土、为中央，是黄土地里捏出来的。', pattern: '黄地黑线，勾的是云头和回纹；黄是土地的颜色，也是五方里的中央。' }
+    { id: 'ahei', name: '阿黑', x: 21, y: 51, w: 12, h: 13, intro: '我是人祖庙前的阿黑，黑地红纹，耳朵尖尖，替人祖看家护院，也会给你带路。', pattern: '我身上是黑底红黄彩纹：一层压一层的回纹、胸口一团云头花，黑为水、为玄，是镇宅驱邪的老纹样。' },
+    { id: 'bai1', name: '小白', x: 35.5, y: 56.5, w: 11.5, h: 8, intro: '我是柜台左边的小白，白地红纹，脖子上围着一圈红绒花。', pattern: '白为素，红为喜；庙会上把孩子交给我，是求平安、求长大的意思。' },
+    { id: 'bai2', name: '小玉', x: 48.5, y: 56.5, w: 11, h: 8, intro: '我是右边的小玉，白地绿纹，和左边的小白是一对。', pattern: '绿为春、为生，我身上盘着云头，是盼着孩子像春天一样长起来。' },
+    { id: 'hong', name: '红红', x: 61, y: 56.5, w: 6, h: 7, intro: '我是红红，红为阳、为喜，站在柜台右边。', pattern: '红地彩纹，胸口一团团花，耳内点朱；红是祈子、祈福的颜色，庙会上最讨喜。' },
+    { id: 'cui', name: '小翠', x: 66.5, y: 56.5, w: 6, h: 7, intro: '我是小翠，青为东方、为春生，最爱凑热闹。', pattern: '青地金线，云头一圈圈盘着；青是春天和生气的颜色，盼着人丁兴旺。' },
+    { id: 'huang', name: '阿黄', x: 71.5, y: 56.5, w: 6.5, h: 7, intro: '我是阿黄，黄为土、为中央，是黄土地里捏出来的。', pattern: '黄地黑线，勾的是云头和回纹；黄是土地的颜色，也是五方里的中央。' }
   ];
   function openClay() {
     shopDetail.classList.add('is-open', 'is-immersive');
@@ -3606,9 +3606,10 @@ var bagBtn = $('#bagBtn');
     }).join('');
     shopStage.innerHTML =
       '<div class="clay-shop">' +
-        '<p class="clay-shop__hint" id="clayShopHint">点击台面上的小狗互动，有惊喜（0 / 6） <span>↓</span></p>' +
+        '<p class="clay-shop__hint" id="clayShopHint">点小狗听故事（0 / 6） · 点货架看总述</p>' +
         '<div class="clay-shop__frame">' +
           '<img class="clay-shop__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
+          '<button class="clay-shop__shelf" type="button" id="clayShelf" aria-label="看看货架上的泥泥狗"></button>' +
           dogs +
         '</div>' +
         '<div class="clay-shop__info" id="clayShopInfo" hidden>' +
@@ -3646,6 +3647,13 @@ var bagBtn = $('#bagBtn');
         hint.innerHTML = '点击台面上的小狗互动，有惊喜（' + n + ' / ' + total + '） <span>\u2193</span>';
       }
     }
+    var shelf = document.getElementById('clayShelf');
+    if (shelf) shelf.addEventListener('click', function () {
+      document.getElementById('clayInfoName').textContent = '泥泥狗 · 一架子';
+      document.getElementById('clayInfoIntro').textContent = '传统泥泥狗统一以黑色为底，搭配红、黄、白、绿等彩色纹饰，黑底是它传承千年的典型视觉标识。市面上少量其他底色款式，多为现代文创衍生版本。';
+      document.getElementById('clayInfoPattern').textContent = '这一架子上，黑、红、白、青、黄五色都有——颜色对应五行，也对应庙会上的五方，都是祈子、祈福、镇宅的老纹样。';
+      if (info) info.hidden = false;
+    });
     var closeInfo = document.getElementById('clayInfoClose');
     if (closeInfo) closeInfo.addEventListener('click', function () { if (info) info.hidden = true; });
   }

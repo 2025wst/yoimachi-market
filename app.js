@@ -535,6 +535,10 @@
     function forwardToInner() {
       if (busy) return;
       if (currentAct !== 2) return;
+      if (!has('tiger') || !has('bun')) {
+        toast('先把瑞虎坊和馍香坊两家的互动做完，再往前走。');
+        return;
+      }
       goTo(3);
     }
     $('#marketWalk').addEventListener('click', forwardToInner);

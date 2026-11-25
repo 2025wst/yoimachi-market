@@ -4205,8 +4205,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 .bun4-done-img { width: min(250px, 58%); height: auto; border-radius: 6px; border: 1px solid #c9ad86; }
 
 /* 拼图拖拽反馈 */
-.jigsaw2-slot.is-target { border-color: rgba(184,58,50,.85) !important; background: rgba(255,244,220,.55) !important; box-shadow: inset 0 0 0 2px rgba(184,58,50,.35), 0 0 18px rgba(184,58,50,.25); }
-.jigsaw2-slot.is-hover { border-color: rgba(184,58,50,.9) !important; background: rgba(255,244,220,.45) !important; }
+.jigsaw2-slot.is-target, .jigsaw2-slot.is-hover { border-color: rgba(150,110,70,.5) !important; background: rgba(255,250,235,.12) !important; box-shadow: none !important; }
 .jigsaw2-tile.is-drag { z-index: 30 !important; transform-origin: center; box-shadow: 0 18px 28px -12px rgba(60,36,20,.55) !important; }
 .jigsaw2-tile.is-return { animation: jig2-return .34s ease; }
 @keyframes jig2-return { 0%,100%{transform:scale(1)} 40%{transform:scale(.94) translateX(-3px)} 70%{transform:scale(1.02) translateX(2px)} }
@@ -4468,7 +4467,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 @keyframes beilin-scene-in { from { opacity: 0; transform: scale(1.015); } to { opacity: 1; transform: none; } }
 
 /* ================= 八卦坛：点太极抽卦问签 ================= */
-.bagua-photo__taiji { position: absolute; left: 41%; top: 41%; width: 14%; height: 13%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; z-index: 3; }
+.bagua-photo__taiji { position: absolute; left: 43%; top: 43.5%; width: 14%; height: 13%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; z-index: 3; }
 .bagua-photo__taiji::after { content: ""; position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(ellipse at 50% 50%, rgba(255,226,170,.36), rgba(255,226,170,0) 70%); opacity: 0; transition: opacity .22s; pointer-events: none; }
 .bagua-photo__taiji:hover::after, .bagua-photo__taiji:focus-visible::after { opacity: 1; }
 .bagua-photo__taiji.is-spinning::after { opacity: 1; animation: taiji-spin .6s ease-in-out; }
@@ -4664,4 +4663,28 @@ html, body { overscroll-behavior-y: none; }
   font-size: 15px;
   letter-spacing: .16em;
   cursor: pointer;
+}
+
+/* 第四幕互动完成后右下角「下一步」 */
+.next-step {
+  position: fixed;
+  right: 16px;
+  bottom: 92px;
+  z-index: 1200;
+  padding: 10px 18px;
+  border: 1px solid rgba(150, 110, 70, .55);
+  border-radius: 999px;
+  background: rgba(251, 243, 228, .97);
+  color: #5a2a18;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: .1em;
+  box-shadow: 0 8px 20px rgba(60, 36, 20, .22);
+  cursor: pointer;
+  animation: next-step-in .35s ease both;
+}
+.next-step span { color: #b8202a; margin-left: 4px; }
+@keyframes next-step-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }

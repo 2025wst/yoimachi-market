@@ -888,6 +888,33 @@
 
   /* ---------------- 完成打卡 ---------------- */
 
+  function showNextStep() {
+    if (document.getElementById('nextStep')) return;
+    var btn = document.createElement('button');
+    btn.id = 'nextStep';
+    btn.className = 'next-step';
+    btn.type = 'button';
+    btn.innerHTML = '下一步 <span>→</span>';
+    btn.addEventListener('click', function () {
+      btn.remove();
+      try { closePanel(); } catch (e) {}
+      try { closeShopDetail(); } catch (e) {}
+      try { closeGateway(); } catch (e) {}
+      try { closeBag(); } catch (e) {}
+      if (document.getElementById('tombStory')) document.getElementById('tombStory').remove();
+      if (document.getElementById('beilinStory')) document.getElementById('beilinStory').remove();
+      if (document.getElementById('tongtianDone')) document.getElementById('tongtianDone').remove();
+      if (document.getElementById('shicaoIntro')) document.getElementById('shicaoIntro').remove();
+      if (document.getElementById('baguaIntro')) document.getElementById('baguaIntro').remove();
+      if (document.getElementById('baguaQuiz')) document.getElementById('baguaQuiz').remove();
+      if (document.getElementById('baguaPhoto')) { var bpp = document.getElementById('baguaPhoto'); bpp.hidden = true; bpp.setAttribute('aria-hidden', 'true'); }
+      setAct(4);
+      renderSpots();
+      updateHUD();
+    });
+    document.body.appendChild(btn);
+  }
+
   function completeTask(id) {
     if (has(id)) return;
     state.tasks.push(id);
@@ -898,6 +925,7 @@
     sfx.chime();
     showStamp('已打卡');
     toast(TASKS[id].label + ' · 打卡完成');
+    if (act === 4) setTimeout(showNextStep, 700);
     if (state.tasks.length === ORDER.length) {
       setTimeout(function () { toast('全部打卡完成 · 去第四幕领完赛证书'); }, 1300);
     }
@@ -2618,7 +2646,13 @@
     if (kind === 'tiger' || kind === 'bun') openShopDetail(kind);
     else toast('这家只是看看 · 前面两家可以进');
   };
-  window.__marketForward = function () { goTo(3); };
+  window.__marketForward = function () {
+    if (!has('tiger') || !has('bun')) {
+      toast('先把瑞虎坊和馍香坊两家的互动做完，再往前走。');
+      return;
+    }
+    goTo(3);
+  };
 
   /* ------------------------------ 背包 ------------------------------ */
 
@@ -2737,7 +2771,7 @@ var bagBtn = $('#bagBtn');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     $('#shopDetailKicker').textContent = '内街 · 香薰坊';
-    $('#shopDetailDesc').textContent = '把右边的香药拖进左边香囊里，再在下面选囊袋颜色；装够三味，系上袋口。';
+    $('#shopDetailDesc').textContent = '把下面的香药拖进上方的香囊里，再选一个喜欢的囊袋颜色；装够三味，系上袋口。';
     sachetGame = { mats: [], hue: 0, colorName: '藕粉' };
     $('#shopDetailTitle').textContent = '配一只香囊';
     shopProgressLabel.textContent = '香药';
@@ -3715,8 +3749,7 @@ var bagBtn = $('#bagBtn');
     $$('.jigsaw2-tile', shopStage).forEach(bindJigsaw2Tile);
   }
   function highlightJigsaw2Slot(slot) {
-    $$('.jigsaw2-slot', shopStage).forEach(function (s) { s.classList.remove('is-hover'); });
-    if (slot) slot.classList.add('is-hover');
+    /* 不再显示红色目标框，保持拼图板干净 */
   }
   function bindJigsaw2Tile(tile) {
     var drag = null;
@@ -3746,8 +3779,6 @@ var bagBtn = $('#bagBtn');
       var r = tile.getBoundingClientRect();
       drag = { id: id, sx: x, sy: y, moved: 0, rect: r, ghost: makeGhost(r) };
       tile.classList.add('is-source');
-      var t = targetSlot();
-      if (t) t.classList.add('is-target');
       moveGhost(x, y);
       return true;
     }
@@ -3783,16 +3814,9 @@ var bagBtn = $('#bagBtn');
       if (!drag) return;
       var d = drag;
       if (d.moved < 8) { finishDrag(false, null); return; }
-      var board = document.getElementById('jigsaw2Board');
-      var target = targetSlot();
-      var ok = false;
       var slot = jigsaw2SlotAt(x, y);
-      if (slot && target && slot === target) ok = true;
-      if (!ok && target && board) {
-        var br = board.getBoundingClientRect();
-        if (x >= br.left - 10 && x <= br.right + 10 && y >= br.top - 10 && y <= br.bottom + 10) ok = true;
-      }
-      finishDrag(ok, target);
+      var ok = !!(slot && !slot.classList.contains('is-filled'));
+      finishDrag(ok, slot);
     }
     function cancel() {
       if (!drag) return;
@@ -3845,17 +3869,51 @@ var bagBtn = $('#bagBtn');
 
   function placeJigsaw2Tile(tile, slot) {
     if (!jigsaw2Game || jigsaw2Game.done || tile.classList.contains('is-placed')) return;
+    if (!slot || slot.classList.contains('is-filled')) return;
     tile.classList.add('is-placed');
     tile.style.transform = '';
     slot.classList.add('is-filled');
+    slot.dataset.filled = tile.getAttribute('data-tile');
     slot.style.backgroundImage = 'url(' + tile.getAttribute('data-src') + ')';
     jigsaw2Game.placed++;
     sfx.pop();
     if (shopProgress) shopProgress.textContent = jigsaw2Game.placed + ' / 9 块';
     if (jigsaw2Game.placed >= 9) finishJigsaw2();
   }
+  function shuffleTiles(list) {
+    var a = list.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+  function resetJigsaw2() {
+    if (!jigsaw2Game) return;
+    var slots = document.querySelectorAll('.jigsaw2-slot');
+    Array.prototype.forEach.call(slots, function (s) {
+      s.classList.remove('is-filled');
+      s.style.backgroundImage = '';
+      s.dataset.filled = '';
+    });
+    var tray = document.getElementById('jigsaw2Tray');
+    if (tray) {
+      var tiles = Array.prototype.slice.call(tray.querySelectorAll('.jigsaw2-tile'));
+      Array.prototype.forEach.call(tiles, function (t) { t.classList.remove('is-placed'); });
+      tray.innerHTML = '';
+      shuffleTiles(tiles).forEach(function (t) { tray.appendChild(t); });
+    }
+    jigsaw2Game.placed = 0;
+    if (shopProgress) shopProgress.textContent = '0 / 9 块';
+    toast('拼错了 · 九块碎片已退回右边，重新再拼一次');
+  }
   function finishJigsaw2() {
     if (!jigsaw2Game) return;
+    var allRight = true;
+    Array.prototype.forEach.call(document.querySelectorAll('.jigsaw2-slot'), function (s) {
+      if (s.getAttribute('data-filled') !== s.getAttribute('data-slot')) allRight = false;
+    });
+    if (!allRight) { resetJigsaw2(); return; }
     jigsaw2Game.done = true;
     var done = document.getElementById('jigsaw2Done');
     if (done) done.classList.add('is-on');
@@ -4513,7 +4571,8 @@ var bagBtn = $('#bagBtn');
       '<div class="tomb-story__card" role="dialog" aria-label="碑林 · 根脉">' +
         '<p class="tomb-story__kicker">陵庙 · 碑林</p>' +
         '<h3 class="tomb-story__title">碑 · 根脉</h3>' +
-        '<p class="tomb-story__text">这座陵冢是伏羲根脉文化的具象载体，承载着中华民族绵延千年的寻根祭祖传统，是伏羲文化传承的核心象征。</p>' +
+        '<p class="tomb-story__text">陈州伏羲碑林坐落于太昊陵景区东侧，采用环抱卦式布局，廊亭相连，共收纳三百余方碑刻。</p>' +
+        '<p class="tomb-story__text">碑林汇集明清御祭古碑、历代文人题咏与当代书法名家作品，既是记录伏羲祭祀传统的实物史料，也是书法艺术的荟萃之地。</p>' +
         '<button class="tomb-story__btn" type="button" id="beilinStoryBtn">礼成 · 知道了</button>' +
       '</div>';
     document.body.appendChild(box);
@@ -4720,7 +4779,7 @@ var bagBtn = $('#bagBtn');
   if (app) app.classList.add('is-ready');
   var _enterBtn = document.getElementById('enterBtn');
   if (_enterBtn) {
-    _enterBtn.innerHTML = '点击完成进入游览';
+    _enterBtn.innerHTML = '游览';
     _enterBtn.disabled = false;
   }
   })();

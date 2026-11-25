@@ -282,6 +282,24 @@
     }
   }
 
+  var capsShown = {};
+  function flashCaption(n) {
+    if (capsShown[n]) return;
+    var src = n === 2 ? document.querySelector('.act--2 .market-title')
+            : (n === 3 ? document.querySelector('.act--3 .inner3d-title') : null);
+    if (!src) return;
+    capsShown[n] = true;
+    var ov = document.createElement('div');
+    ov.className = 'act-caption';
+    ov.innerHTML = '<div class="act-caption__card">' + src.innerHTML + '</div>';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function () { ov.classList.add('is-on'); });
+    setTimeout(function () {
+      ov.classList.remove('is-on');
+      setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 380);
+    }, 1150);
+  }
+
   function goTo(n, delay) {
     if (busy || n === currentAct) return;
     busy = true;
@@ -289,6 +307,7 @@
     sfx.whoosh();
     setTimeout(function () {
       setAct(n);
+      if (n === 2 || n === 3) setTimeout(function () { flashCaption(n); }, 150);
       var ab = document.getElementById('appBack');
       if (ab) ab.classList.toggle('is-on', n === 3);
       setTimeout(function () {

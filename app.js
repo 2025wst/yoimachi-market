@@ -2763,16 +2763,37 @@ var bagBtn = $('#bagBtn');
 
   /* ------------------------------ 香囊 / 泥泥狗 ------------------------------ */
   var SACHET_INGREDIENTS = [
-    { key: 'lavender', name: '薰衣草', img: 'assets/sachet/lavender.png' },
-    { key: 'rose', name: '玫瑰', img: 'assets/sachet/rose.png' },
-    { key: 'lemon', name: '柠檬', img: 'assets/sachet/lemon.png' },
-    { key: 'mint', name: '薄荷叶', img: 'assets/sachet/mint.png' },
-    { key: 'sandal', name: '檀香', img: 'assets/sachet/sandalwood.png' },
-    { key: 'chamomile', name: '洋甘菊', img: 'assets/sachet/chamomile.png' }
+    { key: 'mint', name: '薄荷', img: 'assets/sachet/herb-mint.jpg' },
+    { key: 'baizhi', name: '白芷', img: 'assets/sachet/herb-baizhi.jpg' },
+    { key: 'chenpi', name: '陈皮', img: 'assets/sachet/herb-chenpi.jpg' },
+    { key: 'sandal', name: '檀香', img: 'assets/sachet/herb-sandal.jpg' },
+    { key: 'lavender', name: '薰衣草', img: 'assets/sachet/herb-lavender.jpg' },
+    { key: 'chamomile', name: '洋甘菊', img: 'assets/sachet/herb-chamomile.jpg' }
   ];
   var SACHET_COLORS = [
     { name: '藕粉', hue: 0 }, { name: '朱红', hue: -22 }, { name: '杏黄', hue: 42 },
     { name: '竹青', hue: 118 }, { name: '靛蓝', hue: 212 }, { name: '紫藤', hue: 272 }
+  ];
+  /* 六组推荐搭配（按香氛作用方向划分） */
+  var SACHET_COMBOS = [
+    { key: 'chamomile+chenpi+lavender', dir: '舒缓安神', label: '清甜花香，舒缓安神',
+      aroma: '淡淡的清甜花香，整体气味偏淡。',
+      feel: '薰衣草和洋甘菊帮助舒缓紧绷的心情，陈皮中和花香，不会甜得让人发腻，适合想要放松、平复焦虑的人，醒神的作用很弱。' },
+    { key: 'baizhi+chenpi+mint', dir: '醒神除闷', label: '清爽草木香，提神除闷',
+      aroma: '清爽的草木香气，浓淡刚好。',
+      feel: '薄荷帮助赶走困意，白芷祛除杂味，陈皮缓和气息，适合容易犯困、心里觉得烦闷的人。' },
+    { key: 'chamomile+chenpi+mint', dir: '醒神除闷', label: '清凉微花，轻轻醒神',
+      aroma: '清凉感混上淡淡的花香，味道清淡。',
+      feel: '有轻度的醒神效果，还能舒缓轻微烦躁，大部分人都比较容易接受。' },
+    { key: 'baizhi+lavender+sandal', dir: '辟秽净味', label: '温润厚重，辟秽净味',
+      aroma: '温润厚重的香气，香味比较明显。',
+      feel: '檀香气息安稳，白芷可以遮盖不好闻的杂味，薰衣草舒缓心绪。香气偏重，不习惯浓香味的人会觉得刺鼻。' },
+    { key: 'baizhi+chenpi+sandal', dir: '辟秽净味', label: '木香清雅，稳住情绪',
+      aroma: '木香搭配清雅药香，质感稳重。',
+      feel: '可以弱化环境里面的异味，安抚浮躁的情绪。' },
+    { key: 'chamomile+lavender+mint', dir: '平衡兼顾', label: '清凉转柔花，先醒后松',
+      aroma: '清凉感搭配柔和花香，层次对比明显。',
+      feel: '薄荷带来短时间的清醒感，之后薰衣草、洋甘菊慢慢舒缓情绪，风格比较均衡。' }
   ];
   var sachetGame = null;
 
@@ -2785,26 +2806,21 @@ var bagBtn = $('#bagBtn');
     return 'hsl(' + ((342 + hue + 360) % 360) + ', 62%, 78%)';
   }
 
-  function sachetHerbIcon(key) {
-    var inner = '';
-    if (key === 'lavender') {
-      inner = '<path d="M20 36V12" stroke="#6e7a4a" stroke-width="2"/><g fill="#8b6fb0"><ellipse cx="16" cy="12" rx="3" ry="5"/><ellipse cx="24" cy="14" rx="3" ry="5"/><ellipse cx="15" cy="19" rx="3" ry="5"/><ellipse cx="25" cy="21" rx="3" ry="5"/><ellipse cx="18" cy="26" rx="3" ry="5"/><ellipse cx="23" cy="28" rx="3" ry="5"/></g><path d="M20 34q-8-2-10 4M20 34q8-2 10 4" fill="none" stroke="#7f9a5e" stroke-width="2"/>';
-    } else if (key === 'rose') {
-      inner = '<circle cx="20" cy="14" r="7" fill="#f19bb0"/><circle cx="12" cy="22" r="6" fill="#ef8fa6"/><circle cx="28" cy="22" r="6" fill="#f4a6b9"/><path d="M20 20v14M20 34q-7-2-9 3M20 33q7-1 9 3" fill="none" stroke="#6f8a52" stroke-width="2"/>';
-    } else if (key === 'lemon') {
-      inner = '<circle cx="20" cy="20" r="12" fill="#f2d24f" stroke="#d9a92e" stroke-width="2"/><path d="M20 9v22M9 20h22M12 12l16 16M28 12L12 28" stroke="#fff6c8" stroke-width="1.6"/>';
-    } else if (key === 'mint') {
-      inner = '<path d="M20 36V10" stroke="#4f7a44" stroke-width="2"/><path d="M20 18C10 16 6 8 12 5C20 3 22 12 20 18Z" fill="#7fb45c"/><path d="M20 26C30 24 34 16 28 13C20 11 18 20 20 26Z" fill="#8fc46a"/><path d="M18 34q-7-3-10 1M22 34q7-3 10 1" fill="none" stroke="#5f8a4a" stroke-width="2"/>';
-    } else if (key === 'sandal') {
-      inner = '<rect x="8" y="22" width="24" height="11" rx="3" fill="#b98052" stroke="#7a4a2a" stroke-width="2"/><path d="M12 24q8-3 16 0M12 29q8-3 16 0" stroke="#8a5a34" stroke-width="1.4"/><path d="M18 22C16 16 20 12 18 7M24 22C26 16 22 12 24 7" fill="none" stroke="#c9a882" stroke-width="2.4" stroke-linecap="round"/>';
-    } else if (key === 'chamomile') {
-      inner = '<g fill="#fffaf0" stroke="#e8d9b8" stroke-width="1"><ellipse cx="20" cy="9" rx="3" ry="6"/><ellipse cx="20" cy="31" rx="3" ry="6"/><ellipse cx="9" cy="20" rx="6" ry="3"/><ellipse cx="31" cy="20" rx="6" ry="3"/><ellipse cx="12" cy="12" rx="3" ry="6" transform="rotate(-45 12 12)"/><ellipse cx="28" cy="12" rx="3" ry="6" transform="rotate(45 28 12)"/><ellipse cx="12" cy="28" rx="3" ry="6" transform="rotate(45 12 28)"/><ellipse cx="28" cy="28" rx="3" ry="6" transform="rotate(-45 28 28)"/></g><circle cx="20" cy="20" r="6" fill="#e8c84a"/>';
-    }
-    return '<svg viewBox="0 0 40 40" aria-hidden="true">' + inner + '</svg>';
-  }
-
   function sachetHueFilter() {
     return 'hue-rotate(' + sachetState().hue + 'deg)';
+  }
+
+  function sachetHerb(key) {
+    var arr = SACHET_INGREDIENTS.filter(function (x) { return x.key === key; });
+    return arr.length ? arr[0] : { key: key, name: key, img: '' };
+  }
+
+  function sachetComboFor(mats) {
+    var k = mats.slice().sort().join('+');
+    for (var i = 0; i < SACHET_COMBOS.length; i++) {
+      if (SACHET_COMBOS[i].key === k) return SACHET_COMBOS[i];
+    }
+    return null;
   }
 
   function openSachet() {
@@ -2817,7 +2833,6 @@ var bagBtn = $('#bagBtn');
     $('#shopDetailTitle').textContent = '配一只香囊';
     shopProgressLabel.textContent = '香药';
     shopProgress.textContent = '0 / 3';
-    shopActions.innerHTML = '';
     var matsHtml = SACHET_INGREDIENTS.map(function (m) {
       return '<button class="sachet2-mat" type="button" data-mat="' + m.key + '">' +
         '<img src="' + m.img + '" alt="' + m.name + '">' +
@@ -2830,6 +2845,7 @@ var bagBtn = $('#bagBtn');
       '<div class="sachet2-left">' +
         '<div class="sachet2-scene" id="sachet2Scene"><img class="sachet2-img" id="sachet2Img" src="assets/sachet/sachet-cutout.png" alt="香囊" style="filter:' + sachetHueFilter() + '"></div>' +
         '<p class="sachet2-fill" id="sachet2Fill">已放入 0 / 3 味香药</p>' +
+        '<p class="sachet2-result" id="sachet2Result" hidden></p>' +
         '<p class="sachet-label">囊袋颜色</p>' +
         '<div class="sachet-swatches">' + colorsHtml + '</div>' +
       '</div>' +
@@ -2839,6 +2855,8 @@ var bagBtn = $('#bagBtn');
         '<p class="sachet2-tip">拖 3 味香药进香囊；点一下也可以放进去。</p>' +
       '</div>' +
     '</div>';
+    shopActions.innerHTML = '<button class="btn btn--primary" type="button" id="sachetFinish">系上袋口 · 收下香囊</button>';
+    document.getElementById('sachetFinish').addEventListener('click', finishSachet);
     bindSachet2();
   }
 
@@ -2852,7 +2870,7 @@ var bagBtn = $('#bagBtn');
         var startX = e.clientX, startY = e.clientY, moved = false;
         var ghost = document.createElement('div');
         ghost.className = 'sachet2-ghost';
-        ghost.innerHTML = sachetHerbIcon(mat);
+        ghost.innerHTML = '<img src="' + sachetHerb(mat).img + '" alt="">';
         document.body.appendChild(ghost);
         ghost.style.left = e.clientX + 'px';
         ghost.style.top = e.clientY + 'px';
@@ -2908,6 +2926,18 @@ var bagBtn = $('#bagBtn');
     }
     var fill = document.getElementById('sachet2Fill');
     if (fill) fill.textContent = '已放入 ' + g.mats.length + ' / 3 味香药';
+    var res = document.getElementById('sachet2Result');
+    if (res) {
+      if (g.mats.length >= 3) {
+        var combo = sachetComboFor(g.mats);
+        res.textContent = combo ? ('香气 · ' + combo.label) : '小众搭配 · 可自行体验';
+        res.classList.toggle('is-alt', !combo);
+        res.hidden = false;
+      } else {
+        res.hidden = true;
+        res.textContent = '';
+      }
+    }
     document.querySelectorAll('.sachet-swatch[data-hue]', shopStage).forEach(function (b) {
       b.classList.toggle('is-on', parseFloat(b.getAttribute('data-hue')) === g.hue);
     });
@@ -2915,8 +2945,6 @@ var bagBtn = $('#bagBtn');
       b.classList.toggle('is-added', g.mats.indexOf(b.getAttribute('data-mat')) >= 0);
     });
     shopProgress.textContent = g.mats.length + ' / 3';
-    var btn = document.getElementById('sachetFinish');
-    if (btn) btn.disabled = g.mats.length < 3;
   }
 
   function sachetAdd(key) {
@@ -2924,32 +2952,184 @@ var bagBtn = $('#bagBtn');
     if (!key || g.mats.indexOf(key) >= 0 || g.mats.length >= 3) return;
     g.mats.push(key);
     refreshSachet2();
-    if (g.mats.length >= 3 && !document.getElementById('sachetFinish')) {
-      shopActions.innerHTML = '<button class="btn btn--primary" type="button" id="sachetFinish">系上袋口 · 收下香囊</button>';
-      document.getElementById('sachetFinish').addEventListener('click', finishSachet);
-    }
   }
 
   function finishSachet() {
     var g = sachetState();
-    state.sachet = { mats: g.mats.slice(), hue: g.hue, colorName: g.colorName };
+    if (g.mats.length < 3) { toast('还差一味香药'); return; }
+    var combo = sachetComboFor(g.mats);
+    if (!combo) toast('这是小众搭配，可以自行体验，暂无对应的推荐描述');
+    state.sachet = {
+      mats: g.mats.slice(), hue: g.hue, colorName: g.colorName,
+      combo: combo ? { dir: combo.dir, label: combo.label, aroma: combo.aroma, feel: combo.feel } : null
+    };
     save();
     completeTask('sachet');
     renderBag();
     showSachetDone();
   }
 
+  function sachetWrapText(ctx, text, x, y, maxW, lineH) {
+    var line = '', lines = [];
+    for (var i = 0; i < text.length; i++) {
+      var t = line + text[i];
+      if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = text[i]; }
+      else line = t;
+    }
+    if (line) lines.push(line);
+    lines.forEach(function (l, idx) { ctx.fillText(l, x, y + idx * lineH); });
+    return lines.length;
+  }
+
+  function openSachetCard() {
+    var g = state.sachet || { mats: [], hue: 0, colorName: '藕粉', combo: null };
+    var names = (g.mats || []).map(function (k) { return sachetHerb(k).name; });
+    var W = 900, H = 1240;
+    var cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = '#f8f1e2'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(176,132,86,.5)'; ctx.lineWidth = 3;
+    ctx.strokeRect(26, 26, W - 52, H - 52);
+    ctx.strokeStyle = 'rgba(176,132,86,.28)'; ctx.lineWidth = 1;
+    ctx.strokeRect(38, 38, W - 76, H - 76);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#9a6a3c';
+    ctx.font = '600 24px "Kaiti SC","STKaiti",KaiTi,serif';
+    ctx.fillText('内 街 · 香 薰 坊', W / 2, 108);
+    ctx.fillStyle = '#3a2a1c';
+    ctx.font = '700 46px "Songti SC","STSong",serif';
+    ctx.fillText('一只香囊', W / 2, 172);
+
+    var sachetImg = new Image();
+    sachetImg.onerror = function () { showSachetCard(safeCardDataUrl(null, g)); };
+    sachetImg.onload = function () {
+      var sw = 380, sh = sachetImg.height * (sw / sachetImg.width);
+      try { ctx.filter = 'hue-rotate(' + (g.hue || 0) + 'deg)'; } catch (e) {}
+      ctx.drawImage(sachetImg, (W - sw) / 2, 210, sw, sh);
+      try { ctx.filter = 'none'; } catch (e) {}
+      var y = 210 + sh + 30;
+      ctx.fillStyle = '#6b5340';
+      ctx.font = '30px "Kaiti SC","STKaiti",KaiTi,serif';
+      ctx.fillText((g.colorName || '藕粉') + ' 囊袋', W / 2, y);
+      y += 54;
+      ctx.fillStyle = '#3a2a1c';
+      ctx.font = '600 34px "Songti SC","STSong",serif';
+      ctx.fillText(names.join(' · ') || '薄荷 · 白芷 · 陈皮', W / 2, y);
+      y += 66;
+      ctx.fillStyle = '#9a6a3c';
+      ctx.font = '700 34px "Kaiti SC","STKaiti",KaiTi,serif';
+      ctx.fillText(g.combo ? g.combo.label : '小众搭配 · 可自行体验', W / 2, y);
+      y += 50;
+      ctx.fillStyle = '#6b5340';
+      ctx.font = '25px "Songti SC","STSong",serif';
+      var aroma = g.combo ? g.combo.aroma : '这一味组合没有对应的推荐描述，气味如何，全凭你自己体会。';
+      sachetWrapText(ctx, aroma, W / 2, y, W - 190, 40);
+      y += 60;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#6b5340';
+      ctx.font = '25px "Songti SC","STSong",serif';
+      var feel = g.combo ? g.combo.feel : '香药自由搭配，效果不必拘泥于推荐。';
+      sachetWrapText(ctx, feel, 95, y, W - 190, 44);
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#a08363';
+      ctx.font = '22px "Songti SC","STSong",serif';
+      ctx.fillText('羲皇寻踪 · 淮阳太昊陵', W / 2, H - 78);
+      showSachetCard(safeCardDataUrl(cv, g));
+    };
+    /* 优先用 dataURL 载入，避免 canvas 被跨源/本地文件污染 */
+    var finishWithSrc = function (src) { sachetImg.src = src; };
+    if (typeof fetch === 'function') {
+      fetch('assets/sachet/sachet-cutout.png').then(function (r) { return r.blob(); })
+        .then(function (b) {
+          var fr = new FileReader();
+          fr.onload = function () { finishWithSrc(fr.result); };
+          fr.onerror = function () { finishWithSrc('assets/sachet/sachet-cutout.png'); };
+          fr.readAsDataURL(b);
+        })
+        .catch(function () { finishWithSrc('assets/sachet/sachet-cutout.png'); });
+    } else {
+      finishWithSrc('assets/sachet/sachet-cutout.png');
+    }
+  }
+
+  /* 画一张不含图片的纯文字卡片（规避 file:// 下 canvas 被污染无法导出） */
+  function plainSachetCard(g) {
+    var names = ((g && g.mats) || []).map(function (k) { return sachetHerb(k).name; });
+    var W = 900, H = 1240;
+    var cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = '#f8f1e2'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(176,132,86,.5)'; ctx.lineWidth = 3;
+    ctx.strokeRect(26, 26, W - 52, H - 52);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#9a6a3c';
+    ctx.font = '600 24px "Kaiti SC","STKaiti",KaiTi,serif';
+    ctx.fillText('内 街 · 香 薰 坊', W / 2, 108);
+    ctx.fillStyle = '#3a2a1c';
+    ctx.font = '700 46px "Songti SC","STSong",serif';
+    ctx.fillText('一只香囊', W / 2, 172);
+    ctx.beginPath();
+    ctx.fillStyle = sachetSwatchColor(g.hue || 0);
+    ctx.ellipse(W / 2, 430, 150, 180, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(120,80,50,.45)'; ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = '#6b5340';
+    ctx.font = '30px "Kaiti SC","STKaiti",KaiTi,serif';
+    ctx.fillText((g.colorName || '藕粉') + ' 囊袋', W / 2, 690);
+    ctx.fillStyle = '#3a2a1c';
+    ctx.font = '600 34px "Songti SC","STSong",serif';
+    ctx.fillText(names.join(' · ') || '薄荷 · 白芷 · 陈皮', W / 2, 754);
+    ctx.fillStyle = '#9a6a3c';
+    ctx.font = '700 34px "Kaiti SC","STKaiti",KaiTi,serif';
+    ctx.fillText(g.combo ? g.combo.label : '小众搭配 · 可自行体验', W / 2, 820);
+    ctx.fillStyle = '#6b5340';
+    ctx.font = '25px "Songti SC","STSong",serif';
+    sachetWrapText(ctx, g.combo ? g.combo.aroma : '这一味组合没有对应的推荐描述，气味如何，全凭你自己体会。', W / 2, 880, W - 190, 40);
+    ctx.textAlign = 'left';
+    sachetWrapText(ctx, g.combo ? g.combo.feel : '香药自由搭配，效果不必拘泥于推荐。', 95, 960, W - 190, 44);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#a08363';
+    ctx.font = '22px "Songti SC","STSong",serif';
+    ctx.fillText('羲皇寻踪 · 淮阳太昊陵', W / 2, H - 78);
+    return cv;
+  }
+
+  function safeCardDataUrl(cv, g) {
+    if (cv) {
+      try { return cv.toDataURL('image/png'); } catch (e) {}
+    }
+    try { return plainSachetCard(g).toDataURL('image/png'); } catch (e) { return null; }
+  }
+
+  function showSachetCard(dataUrl) {
+    var old = document.getElementById('sachetShareOverlay');
+    if (old) old.remove();
+    var ov = document.createElement('div');
+    ov.className = 'sachet-share';
+    ov.id = 'sachetShareOverlay';
+    ov.innerHTML = '<div class="sachet-share__box">' +
+      (dataUrl ? '<img src="' + dataUrl + '" alt="香囊小卡片">' : '<p class="sachet-share__fail">卡片生成失败，请重试</p>') +
+      '<p class="sachet-share__hint">长按图片保存，或点「保存图片」下载</p>' +
+      '<div class="sachet-share__btns">' +
+        (dataUrl ? '<a class="btn btn--primary" id="sachetShareSave" download="香囊卡片.png" href="' + dataUrl + '">保存图片</a>' : '') +
+        '<button class="btn btn--ghost" type="button" id="sachetShareClose">关闭</button>' +
+      '</div></div>';
+    document.body.appendChild(ov);
+    var close = document.getElementById('sachetShareClose');
+    if (close) close.addEventListener('click', function () { ov.remove(); });
+    ov.addEventListener('click', function (e) { if (e.target === ov) ov.remove(); });
+  }
+
   function showSachetDone() {
     shopDetail.classList.add('is-open');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
-    var g = state.sachet || { mats: [], hue: 0, colorName: '藕粉' };
-    var names = (g.mats || []).map(function (k) {
-      var m = SACHET_INGREDIENTS.filter(function (x) { return x.key === k; })[0];
-      return m ? m.name : k;
-    });
+    var g = state.sachet || { mats: [], hue: 0, colorName: '藕粉', combo: null };
+    var names = (g.mats || []).map(function (k) { return sachetHerb(k).name; });
     $('#shopDetailTitle').textContent = '香囊配好了';
-    $('#shopDetailDesc').textContent = '三味香药装进袋里，系上袋口。带一点庙会的草木香回街市。';
+    $('#shopDetailDesc').textContent = g.combo ? ('这一味组合偏向「' + g.combo.dir + '」。') : '这是小众搭配，气味如何，全凭你自己体会。';
     shopProgressLabel.textContent = '收藏';
     shopProgress.textContent = '已收进背包';
     var hue = (typeof g.hue === 'number') ? g.hue : 0;
@@ -2960,11 +3140,16 @@ var bagBtn = $('#bagBtn');
         '<p class="sachet2-done-meta">' + (g.colorName || '藕粉') + ' 囊袋</p>' +
       '</div>' +
       '<div class="sachet2-right">' +
-        '<p class="sachet-label">香药</p><p class="sachet2-done-mat">' + (names.join(' · ') || '薰衣草 · 玫瑰 · 柠檬') + '</p>' +
-        '<p class="sachet-label">囊袋</p><p class="sachet2-done-mat">' + (g.colorName || '藕粉') + '</p>' +
+        '<p class="sachet-label">香药</p><p class="sachet2-done-mat">' + (names.join(' · ') || '薄荷 · 白芷 · 陈皮') + '</p>' +
+        '<p class="sachet-label">香气</p><p class="sachet2-done-mat">' + (g.combo ? g.combo.label : '小众搭配 · 可自行体验') + '</p>' +
+        (g.combo ? '<p class="sachet2-done-feel">' + g.combo.feel + '</p>' : '') +
       '</div>' +
     '</div>';
-    shopActions.innerHTML = '<button class="btn btn--ghost" type="button" data-replay="sachet">再配一只</button><button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
+    shopActions.innerHTML = '<button class="btn btn--ghost" type="button" id="sachetShare">生成小卡片</button>' +
+      '<button class="btn btn--ghost" type="button" data-replay="sachet">再配一只</button>' +
+      '<button class="btn btn--primary" type="button" data-close-shop>收进背包 · 回街市</button>';
+    var share = document.getElementById('sachetShare');
+    if (share) share.addEventListener('click', openSachetCard);
     document.querySelectorAll('[data-close-shop]', shopActions).forEach(function (el) { el.addEventListener('click', closeShopDetail); });
   }
 

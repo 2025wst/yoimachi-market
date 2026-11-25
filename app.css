@@ -5172,16 +5172,41 @@ html, body { overscroll-behavior-y: none; }
 .hotspot:hover .hotspot__label,
 .hotspot:focus-visible .hotspot__label { opacity: 1 !important; }
 
-/* 祈福树隐形热区（再兜一次，确保看不出按钮） */
+
+/* ===== 第四幕：祈福树热区（覆盖整棵树，最高层级，按下有反馈）===== */
 #prayBtn.pray-btn {
-  display: block !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  outline: none !important;
+  position: absolute !important;
+  left: -2% !important;
+  top: 26% !important;
+  width: 34% !important;
+  height: 34% !important;
+  max-width: none !important;
+  margin: 0 !important;
   padding: 0 !important;
-  overflow: hidden;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  z-index: 90 !important;
+  display: block !important;
+  pointer-events: auto !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-#prayBtn.pray-btn::before,
-#prayBtn.pray-btn::after,
-#prayBtn.pray-btn > * { display: none !important; content: none !important; }
+#prayBtn.pray-btn::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 16px !important;
+  background: radial-gradient(ellipse at 50% 55%, rgba(255, 220, 160, .28), rgba(255, 220, 160, 0) 72%) !important;
+  opacity: 0;
+  transition: opacity .18s;
+  display: block !important;
+  pointer-events: none !important;
+}
+#prayBtn.pray-btn:active::before,
+#prayBtn.pray-btn:hover::before,
+#prayBtn.pray-btn:focus-visible::before { opacity: 1 !important; }
+#prayBtn.pray-btn::after { display: none !important; content: none !important; }
+#prayBtn.pray-btn > * { display: none !important; }

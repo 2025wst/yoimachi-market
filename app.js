@@ -567,11 +567,31 @@
 
   /* ---------------- 幕一 ---------------- */
 
+  function playIntroVideo() {
+    var ov = document.createElement('div');
+    ov.className = 'intro-video';
+    ov.innerHTML = '<video class="intro-video__video" src="assets/intro-transition.mp4" playsinline muted preload="auto" aria-hidden="true"></video>';
+    document.body.appendChild(ov);
+    var v = ov.querySelector('video');
+    var finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      try { v.pause(); } catch (e) {}
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      goTo(2);
+    }
+    v.addEventListener('ended', finish);
+    v.addEventListener('error', finish);
+    setTimeout(finish, 2600);
+    var p = v.play();
+    if (p && p.catch) p.catch(finish);
+  }
+
   $('#enterBtn').addEventListener('click', function () {
-    if (busy) return;
-    mapCamera.classList.add('is-diving');
-    sfx.whoosh();
-    setTimeout(function () { goTo(2); }, 1150);
+    if (this.disabled) return;
+    this.disabled = true;
+    playIntroVideo();
   });
 
   /* ---------------- 章节导航 ---------------- */
@@ -4617,7 +4637,7 @@ var bagBtn = $('#bagBtn');
   if (app) app.classList.add('is-ready');
   var _enterBtn = document.getElementById('enterBtn');
   if (_enterBtn) {
-    _enterBtn.innerHTML = '入陵 <span class="btn__arrow">→</span>';
+    _enterBtn.innerHTML = '点击完成进入游览';
     _enterBtn.disabled = false;
   }
   })();

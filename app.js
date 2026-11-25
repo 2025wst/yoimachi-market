@@ -3743,7 +3743,7 @@ var bagBtn = $('#bagBtn');
   function buildPlush() {
     $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '拼一只布老虎';
-    $('#shopDetailDesc').textContent = '把右边九块碎片拖到拼图板上，拼出这只布老虎；拼好就收进背包。';
+    $('#shopDetailDesc').textContent = '把下面九块碎片拖到拼图板上，拼出这只布老虎；拼好就收进背包。';
     shopProgressLabel.textContent = '拼图';
     shopProgress.textContent = '0 / 9 块';
     shopActions.innerHTML = '';
@@ -3762,7 +3762,7 @@ var bagBtn = $('#bagBtn');
           '<div class="jigsaw2-done" id="jigsaw2Done" style="background-image:url(assets/tiger/plush-source.jpg)"></div>' +
         '</div>' +
         '<div class="jigsaw2-tray" id="jigsaw2Tray">' + tiles + '</div>' +
-        '<p class="jigsaw2-hint">按住右边的碎片，拖到左边的拼图板上松手</p>' +
+        '<p class="jigsaw2-hint">按住下面的碎片，拖到上方的拼图板上松手</p>' +
       '</div>';
     jigsaw2Game = { placed: 0, done: false };
     $$('.jigsaw2-tile', shopStage).forEach(bindJigsaw2Tile);

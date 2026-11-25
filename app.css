@@ -3292,7 +3292,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 /* ===== 第一街道：参考图同款手绘长街 ===== */
 #market3d .market3d__viewport { display: none !important; }
 .market-painted { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #f3e6c9; display: flex; align-items: center; justify-content: center; }
-.market-painted img { width: auto; height: 100%; max-width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: center 50%; display: block; animation: paintedDrift 28s ease-in-out infinite alternate; will-change: transform; }
+.market-painted img { position: relative; width: auto; height: auto; max-width: 100%; max-height: 100%; display: block; animation: none; }
 .market-painted::after { content: ""; position: absolute; inset: 0; pointer-events: none; background:
   radial-gradient(ellipse at 50% 46%, rgba(255,248,230,0) 45%, rgba(92,64,40,.16) 100%),
   linear-gradient(180deg, rgba(255,249,233,.14) 0%, transparent 22%, transparent 74%, rgba(80,52,32,.2) 100%); }
@@ -4735,22 +4735,23 @@ html, body { overscroll-behavior-y: none; }
 /* 背景图停止漂移，保证热区与店铺严丝合缝 */
 .market-painted img { animation: none !important; }
 
-/* 热区容器铺满整个视口（原来是个居中窄列，导致百分比算错） */
-.act--2 .market2d-shops {
-  top: 0 !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
-  width: 100% !important; height: 100% !important; max-width: none !important;
+/* 热区容器 = 图片实际显示框（随屏幕自适应，永远和图片对齐） */
+.act--2 .market2d-shops,
+.act--3 .inner2d {
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: min(100%, calc(100vh * 1344 / 1792)) !important;
+  max-width: none !important;
+  height: auto !important;
+  aspect-ratio: 1344 / 1792;
   transform: none !important;
+  background: transparent !important;
 }
 
-/* 手机竖屏：按 3:4 图在 390x844 上的实际位置定位（与店铺轮廓重合） */
-.market2d-shops .market2d-shop--left  { left: 0%;    top: 52.5%; width: 26.5%; height: 21.5%; }
-.market2d-shops .market2d-shop--right { left: 73.5%; top: 52.5%; width: 26.5%; height: 21.5%; }
-
-/* 桌面宽屏：3:4 图居中（宽 600px），店铺在中间那一列里 */
-@media (min-width: 901px) {
-  .market2d-shops .market2d-shop--left  { left: 32.8%; top: 52.5%; width: 13.6%; height: 21.5%; }
-  .market2d-shops .market2d-shop--right { left: 57.2%; top: 52.5%; width: 12.8%; height: 21.5%; }
-}
+/* 店铺热区（按图片百分比，自动跟着图片走） */
+.market2d-shops .market2d-shop--left  { left: 8%;  top: 53%; width: 25%; height: 24%; }
+.market2d-shops .market2d-shop--right { left: 65%; top: 53%; width: 27%; height: 24%; }
 
 /* 可点提示：轻轻呼吸的暖光，不压画面 */
 .market2d-shops .market2d-shop::before {
@@ -4823,8 +4824,8 @@ html, body { overscroll-behavior-y: none; }
   display: flex; align-items: center; justify-content: center;
 }
 .inner-painted img {
-  width: auto; height: 100%; max-width: 100%;
-  object-fit: cover; object-position: center 50%;
+  position: relative; width: auto; height: auto;
+  max-width: 100%; max-height: 100%;
   display: block;
 }
 .act--3 .inner3d__viewport,
@@ -4833,11 +4834,9 @@ html, body { overscroll-behavior-y: none; }
 .act--3 .inner3d::before,
 .act--3 .inner3d::after { display: none !important; }
 .act--3 .inner2d {
-  position: absolute !important; inset: 0 !important;
-  left: 0 !important; top: 0 !important; right: 0 !important; bottom: 0 !important;
-  width: 100% !important; height: 100% !important; max-width: none !important;
-  transform: none !important; perspective: none !important;
-  background: transparent !important; z-index: 2;
+  perspective: none !important;
+  background: transparent !important;
+  z-index: 2;
 }
 .act--3 .inner2d__stage { inset: 0 !important; transform: none !important; }
 
@@ -4845,15 +4844,9 @@ html, body { overscroll-behavior-y: none; }
 .act--3 .inner3d-tabs { display: none !important; }
 
 /* 店铺/午朝门热区（手机竖屏，按新图位置） */
-.inner2d-hot--sachet { left: 0%;    top: 46%; width: 32%; height: 32%; }
-.inner2d-hot--clay   { left: 74%;   top: 46%; width: 26%; height: 32%; }
-.inner2d-hot--gate   { left: 33%;   top: 45%; width: 38%; height: 25%; }
-
-@media (min-width: 901px) {
-  .inner2d-hot--sachet { left: 26.6%; top: 46%; width: 15%;   height: 32%; }
-  .inner2d-hot--clay   { left: 61.3%; top: 46%; width: 12.1%; height: 32%; }
-  .inner2d-hot--gate   { left: 42%;   top: 45%; width: 17.9%; height: 25%; }
-}
+.inner2d-hot--sachet { left: 0%;  top: 46%; width: 31%; height: 37%; }
+.inner2d-hot--clay   { left: 70%; top: 47%; width: 28%; height: 37%; }
+.inner2d-hot--gate   { left: 42%; top: 47%; width: 22%; height: 25%; }
 
 /* 深呼吸提示 */
 .inner2d-hot--sachet::before, .inner2d-hot--clay::before, .inner2d-hot--gate::before {
@@ -4862,3 +4855,21 @@ html, body { overscroll-behavior-y: none; }
   opacity: .5; animation: shopBreathe 3.8s ease-in-out infinite; pointer-events: none;
 }
 .inner2d-hot--clay::before { animation-delay: -1.9s; }
+
+/* ===== 街道背景：整幅完整显示，四周用模糊延展补足 ===== */
+.market-painted::before,
+.inner-painted::before {
+  content: ""; position: absolute; inset: -12%;
+  background-position: center; background-size: cover;
+  filter: blur(34px) saturate(1.05) brightness(.92);
+  transform: scale(1.08);
+}
+.market-painted::before { background-image: url(assets/market-painted.jpg); }
+.inner-painted::before { background-image: url(assets/inner-painted.jpg); }
+.market-painted img,
+.inner-painted img {
+  box-shadow: 0 18px 54px -26px rgba(46,28,14,.55);
+  border-radius: 2px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 4%, #000 13%, #000 87%, rgba(0,0,0,.55) 96%, transparent 100%);
+          mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,.55) 4%, #000 13%, #000 87%, rgba(0,0,0,.55) 96%, transparent 100%);
+}

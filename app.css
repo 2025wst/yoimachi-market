@@ -4815,3 +4815,50 @@ html, body { overscroll-behavior-y: none; }
   animation: capHint 2.4s ease-in-out infinite;
 }
 @keyframes capHint { 0%, 100% { opacity: .45; } 50% { opacity: .95; } }
+
+/* ===== 第三幕：改用 3:4 静态内街背景，点击店铺本体触发 ===== */
+.inner-painted {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden; background: #f3e6c9;
+  display: flex; align-items: center; justify-content: center;
+}
+.inner-painted img {
+  width: auto; height: 100%; max-width: 100%;
+  object-fit: cover; object-position: center 50%;
+  display: block;
+}
+.act--3 .inner3d__viewport,
+.act--3 .inner2d__video,
+.act--3 .inner2d__vignette { display: none !important; }
+.act--3 .inner3d::before,
+.act--3 .inner3d::after { display: none !important; }
+.act--3 .inner2d {
+  position: absolute !important; inset: 0 !important;
+  left: 0 !important; top: 0 !important; right: 0 !important; bottom: 0 !important;
+  width: 100% !important; height: 100% !important; max-width: none !important;
+  transform: none !important; perspective: none !important;
+  background: transparent !important; z-index: 2;
+}
+.act--3 .inner2d__stage { inset: 0 !important; transform: none !important; }
+
+/* 内街：去掉底部两个店铺按钮 */
+.act--3 .inner3d-tabs { display: none !important; }
+
+/* 店铺/午朝门热区（手机竖屏，按新图位置） */
+.inner2d-hot--sachet { left: 0%;    top: 46%; width: 32%; height: 32%; }
+.inner2d-hot--clay   { left: 74%;   top: 46%; width: 26%; height: 32%; }
+.inner2d-hot--gate   { left: 33%;   top: 45%; width: 38%; height: 25%; }
+
+@media (min-width: 901px) {
+  .inner2d-hot--sachet { left: 26.6%; top: 46%; width: 15%;   height: 32%; }
+  .inner2d-hot--clay   { left: 61.3%; top: 46%; width: 12.1%; height: 32%; }
+  .inner2d-hot--gate   { left: 42%;   top: 45%; width: 17.9%; height: 25%; }
+}
+
+/* 深呼吸提示 */
+.inner2d-hot--sachet::before, .inner2d-hot--clay::before, .inner2d-hot--gate::before {
+  content: ""; position: absolute; inset: 0; border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 60%, rgba(255,214,150,.2), rgba(255,214,150,0) 72%);
+  opacity: .5; animation: shopBreathe 3.8s ease-in-out infinite; pointer-events: none;
+}
+.inner2d-hot--clay::before { animation-delay: -1.9s; }

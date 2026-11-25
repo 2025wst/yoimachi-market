@@ -5209,4 +5209,36 @@ html, body { overscroll-behavior-y: none; }
 #prayBtn.pray-btn:hover::before,
 #prayBtn.pray-btn:focus-visible::before { opacity: 1 !important; }
 #prayBtn.pray-btn::after { display: none !important; content: none !important; }
-#prayBtn.pray-btn > * { display: none !important; }
+#prayBtn.pray-btn > .pray-btn__icon,
+#prayBtn.pray-btn > .pray-btn__text { display: none !important; }
+
+
+/* ===== 第四幕：祈福树名牌（鼠标/手指按到树上时浮出，和其它热区一致）===== */
+.pray-tip {
+  position: absolute !important;
+  left: 15% !important;
+  top: 53% !important;
+  transform: translate(-50%, 6px) !important;
+  z-index: 95 !important;
+  padding: 5px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(247, 242, 232, .95) !important;
+  border: 1px solid rgba(138, 106, 85, .6) !important;
+  color: #5a4436 !important;
+  font-family: "Kaiti SC", "STKaiti", KaiTi, serif !important;
+  font-size: 11.5px !important;
+  letter-spacing: .08em !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  min-width: 0 !important;
+  opacity: 0;
+  pointer-events: none !important;
+  box-shadow: 0 6px 16px rgba(60, 36, 20, .18) !important;
+  transition: opacity .22s, transform .22s !important;
+}
+#prayBtn:hover + .pray-tip,
+#prayBtn:focus-visible + .pray-tip,
+#prayBtn:active + .pray-tip {
+  opacity: 1 !important;
+  transform: translate(-50%, 0) !important;
+}

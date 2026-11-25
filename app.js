@@ -2663,7 +2663,7 @@
   };
   window.__marketForward = function () {
     if (!has('tiger') || !has('bun')) {
-      toast('先把瑞虎坊和馍香坊两家的互动做完，再往前走。');
+      toast('点击互动再往前走吧');
       return;
     }
     goTo(3);

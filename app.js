@@ -4303,6 +4303,7 @@ var bagBtn = $('#bagBtn');
           if (rag) rag.classList.remove('is-pressed');
           completeTask('beilin');
           toast('碑林擦碑 · 打卡完成');
+          showBeilinStory();
           return;
         }
       }
@@ -4501,6 +4502,25 @@ var bagBtn = $('#bagBtn');
     var btn = document.getElementById('tombStoryBtn');
     if (btn) btn.addEventListener('click', function () { box.remove(); });
   }
+
+  function showBeilinStory() {
+    var old = document.getElementById('beilinStory');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'tomb-story';
+    box.id = 'beilinStory';
+    box.innerHTML =
+      '<div class="tomb-story__card" role="dialog" aria-label="碑林 · 根脉">' +
+        '<p class="tomb-story__kicker">陵庙 · 碑林</p>' +
+        '<h3 class="tomb-story__title">碑 · 根脉</h3>' +
+        '<p class="tomb-story__text">这座陵冢是伏羲根脉文化的具象载体，承载着中华民族绵延千年的寻根祭祖传统，是伏羲文化传承的核心象征。</p>' +
+        '<button class="tomb-story__btn" type="button" id="beilinStoryBtn">礼成 · 知道了</button>' +
+      '</div>';
+    document.body.appendChild(box);
+    var btn = document.getElementById('beilinStoryBtn');
+    if (btn) btn.addEventListener('click', function () { box.remove(); });
+  }
+  window.__showBeilinStory = showBeilinStory;
 
   window.__openBeilin = openBeilin;  window.__openBeilin = openBeilin;
   window.__openShicao = openShicao;

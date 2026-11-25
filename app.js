@@ -561,7 +561,7 @@
       if (busy) return;
       if (currentAct !== 2) return;
       if (!has('tiger') || !has('bun')) {
-        toast('点击互动再往前走吧');
+        toast('先把瑞虎坊、馍香坊的互动做完，再往前走');
         return;
       }
       goTo(3);
@@ -1434,6 +1434,10 @@
 
   /* ---------------- 午朝门近景 / 开门 ---------------- */
   function openGatePhoto() {
+    if (!has('sachet') || !has('sugar')) {
+      toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
+      return;
+    }
     var gp = document.getElementById('gatePhoto');
     if (!gp) return;
     gp.hidden = false;
@@ -3870,6 +3874,8 @@ var bagBtn = $('#bagBtn');
   });
   /* 第三幕 · 3D 内街入口 */
   window.__openTask = openTask;
+  window.__hasTask = function (id) { return has(id); };
+  window.__toast = toast;
   window.__backToMarket = function () {
     try {
       if (shopDetail.classList.contains('is-open')) closeShopDetail();
@@ -3948,7 +3954,7 @@ var bagBtn = $('#bagBtn');
     var gate = $('#innerGate');
     if (gate) gate.addEventListener('click', function () {
       if (!has('sachet') || !has('sugar')) {
-        toast('点击互动再往前走吧');
+        toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
         return;
       }
       if (window.__openGatePhoto) window.__openGatePhoto();
@@ -5030,6 +5036,12 @@ var bagBtn = $('#bagBtn');
       btn.addEventListener('click', function () {
         var kind = btn.getAttribute('data-inner');
         if (kind === 'gate') {
+          var _has = window.__hasTask || function () { return true; };
+          var _toast = window.__toast || function () {};
+          if (!_has('sachet') || !_has('sugar')) {
+            _toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
+            return;
+          }
           if (window.__openGatePhoto) window.__openGatePhoto();
           else if (window.__openGateway) window.__openGateway();
           return;

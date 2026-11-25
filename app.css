@@ -3659,7 +3659,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .market2d__video, .inner2d__video { object-fit: contain; }
   .act--2 .market-title, .act--3 .inner3d-title { top: calc(50% - 100vw * 9 / 32 - 172px); }
   .market-tabs, .inner3d-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .market-sign-hot, .act--3 .inner3d-actions { top: calc(50% + 100vw * 9 / 32 + 214px); bottom: auto; }
+  .market-sign-hot, .act--3 .inner3d-actions { top: calc(50% + 100vw * 9 / 32 + 264px); bottom: auto; }
   .act--3 .inner3d-actions { left: 10px; right: 10px; transform: none; }
 }
 @media (min-width: 901px) {
@@ -3701,7 +3701,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .market2d__video { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
   .act--2 .market-title { top: calc(50% - 100vw * 9 / 32 - 172px); left: 12px; right: 12px; max-width: none; width: auto; }
   .market-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .market-sign-hot { top: calc(50% + 100vw * 9 / 32 + 214px); bottom: auto; left: 50%; transform: translateX(-50%); }
+  .market-sign-hot { top: calc(50% + 100vw * 9 / 32 + 264px); bottom: auto; left: 50%; transform: translateX(-50%); }
 }
 
 /* 第二街道回到香囊互动那一版：横版内街 + 16:9 舞台；香囊页面保持新版 */
@@ -3715,7 +3715,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
   .inner2d__video { inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
   .act--3 .inner3d-title { top: calc(50% - 100vw * 9 / 32 - 172px); left: 12px; right: 12px; max-width: none; width: auto; }
   .inner3d-tabs { top: calc(50% + 100vw * 9 / 32 + 132px); bottom: auto; left: 12px; right: 12px; }
-  .act--3 .inner3d-actions { top: calc(50% + 100vw * 9 / 32 + 214px); bottom: auto; left: 10px; right: 10px; transform: none; }
+  .act--3 .inner3d-actions { top: calc(50% + 100vw * 9 / 32 + 264px); bottom: auto; left: 10px; right: 10px; transform: none; }
 }
 /* 横版内街的店铺热区 */
 .inner2d-hot--sachet { left: 1.5%; top: 48%; width: 36%; height: 40%; }

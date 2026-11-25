@@ -5144,5 +5144,22 @@ html, body { overscroll-behavior-y: none; }
   .sachet2-tip { font-size: 12px !important; }
 }
 
-/* 第四幕：去掉浮动的「祈福」按钮，保留地图原貌 */
-.pray-btn { display: none !important; }
+/* 第四幕：祈福树 = 隐形热区（点树触发祈福，画面上不显示按钮） */
+.pray-btn {
+  display: block !important;
+  left: 2% !important;
+  top: 29% !important;
+  width: 24% !important;
+  height: 22% !important;
+  transform: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  z-index: 60;
+}
+.pray-btn .pray-btn__icon,
+.pray-btn .pray-btn__text { display: none !important; }
+.pray-btn::before, .pray-btn::after { display: none !important; }
+.pray-btn:active { background: rgba(255, 240, 210, .1) !important; }

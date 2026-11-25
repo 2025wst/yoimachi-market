@@ -4717,5 +4717,8 @@ html, body { overscroll-behavior-y: none; }
 .hotspot__label { pointer-events: auto; }
 
 /* 第一街道：3:4 静态背景测试 */
+/* 第一街道：统一使用 3:4 静态背景，旧视频与 3D 场景不再显示 */
+#market3d .market3d__viewport { display: none !important; }
+#market3d .market2d { display: none !important; }
 #market3d .market-painted { display: flex !important; }
 #market3d .market-painted img { display: block; }

@@ -536,7 +536,7 @@
       if (busy) return;
       if (currentAct !== 2) return;
       if (!has('tiger') || !has('bun')) {
-        toast('先把瑞虎坊和馍香坊两家的互动做完，再往前走。');
+        toast('点击互动再往前走吧');
         return;
       }
       goTo(3);
@@ -3709,7 +3709,7 @@ var bagBtn = $('#bagBtn');
     var gate = $('#innerGate');
     if (gate) gate.addEventListener('click', function () {
       if (!has('sachet') || !has('sugar')) {
-        toast('先把香薰坊和泥泥狗工坊两家的互动做完，再去午朝门。');
+        toast('点击互动再往前走吧');
         return;
       }
       if (window.__openGatePhoto) window.__openGatePhoto();
@@ -3834,7 +3834,11 @@ var bagBtn = $('#bagBtn');
       var d = drag;
       if (d.moved < 8) { finishDrag(false, null); return; }
       var slot = jigsaw2SlotAt(x, y);
-      var ok = !!(slot && !slot.classList.contains('is-filled'));
+      var ok = false;
+      if (slot && !slot.classList.contains('is-filled')) {
+        ok = slot.getAttribute('data-slot') === tile.getAttribute('data-tile');
+        if (!ok) toast('这块位置不对 · 换一格试试');
+      }
       finishDrag(ok, slot);
     }
     function cancel() {

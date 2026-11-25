@@ -4741,17 +4741,25 @@ html, body { overscroll-behavior-y: none; }
   position: absolute !important;
   inset: 0 !important;
   margin: auto !important;
-  width: min(100%, calc(100vh * 1344 / 1792)) !important;
   max-width: none !important;
   height: auto !important;
-  aspect-ratio: 1344 / 1792;
   transform: none !important;
   background: transparent !important;
 }
+/* 第一街道背景 1152x2048 (9:16) */
+.act--2 .market2d-shops {
+  width: min(100%, calc(100vh * 1152 / 2048)) !important;
+  aspect-ratio: 1152 / 2048;
+}
+/* 第二街道背景 1344x1792 (3:4) */
+.act--3 .inner2d {
+  width: min(100%, calc(100vh * 1344 / 1792)) !important;
+  aspect-ratio: 1344 / 1792;
+}
 
 /* 店铺热区（按图片百分比，自动跟着图片走） */
-.market2d-shops .market2d-shop--left  { left: 8%;  top: 53%; width: 25%; height: 24%; }
-.market2d-shops .market2d-shop--right { left: 65%; top: 53%; width: 27%; height: 24%; }
+.market2d-shops .market2d-shop--left  { left: 7%;  top: 63.5%; width: 34%; height: 20.5%; }
+.market2d-shops .market2d-shop--right { left: 66%; top: 63.5%; width: 27%; height: 20.5%; }
 
 /* 可点提示：轻轻呼吸的暖光，不压画面 */
 .market2d-shops .market2d-shop::before {

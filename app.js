@@ -3650,9 +3650,18 @@ var bagBtn = $('#bagBtn');
     }
     var shelf = document.getElementById('clayShelf');
     if (shelf) shelf.addEventListener('click', function () {
-      document.getElementById('clayInfoName').textContent = '泥泥狗 · 一架子';
-      document.getElementById('clayInfoIntro').textContent = '传统泥泥狗统一以黑色为底，搭配红、黄、白、绿等彩色纹饰，黑底是它传承千年的典型视觉标识。市面上少量其他底色款式，多为现代文创衍生版本。';
-      document.getElementById('clayInfoPattern').textContent = '这一架子上，黑、红、白、青、黄五色都有——颜色对应五行，也对应庙会上的五方，都是祈子、祈福、镇宅的老纹样。';
+      document.getElementById('clayInfoName').textContent = '淮阳泥泥狗';
+      document.getElementById('clayInfoIntro').textContent =
+        '人，你好，我是泥泥狗。\n' +
+        '三千多年前，\n' +
+        '女娲捏你的时候顺手捏了我。\n' +
+        '真的，那时候她坐在淮阳的河边，\n' +
+        '挖起一大块黄土，\n' +
+        '揉揉捏捏变成了人，\n' +
+        '剩下的泥点撒向地面变成了飞禽与走兽，\n' +
+        '我就是其中一只。\n' +
+        '所以，说不定我们来自同一块泥巴。';
+      document.getElementById('clayInfoPattern').textContent = '';
       showClayBubble();
     });
     function showClayBubble() {

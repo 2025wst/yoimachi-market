@@ -5081,3 +5081,19 @@ html, body { overscroll-behavior-y: none; }
   white-space: nowrap;
 }
 .clay-shop2__info p { margin: 5px 0 0 !important; font-size: 12px !important; line-height: 1.78 !important; }
+
+/* 泥泥狗：热区更含蓄 + 气泡内换行 */
+.clay-shop__dog:hover, .clay-shop__dog:focus-visible {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.clay-shop__dog:active { background: rgba(255, 240, 210, .1) !important; }
+.clay-shop__shelf:hover, .clay-shop__shelf:focus-visible {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.clay-shop__shelf:active { background: rgba(255, 240, 210, .1) !important; }
+.clay-shop2__info p { white-space: pre-line; }
+.clay-shop2__info p:empty { display: none; }
+.clay-shop2__hint { font-size: 11px; color: #9c8a70; letter-spacing: .04em; }

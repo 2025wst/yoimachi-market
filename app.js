@@ -1028,9 +1028,20 @@
   ];
   var prayLastWish = -1;
   var prayCardBound = false;
+  var prayPreloaded = false;
+  function preloadPrayAssets() {
+    if (prayPreloaded) return;
+    prayPreloaded = true;
+    ['assets/pray/tree.jpg', 'assets/pray/wish-1.jpg'].forEach(function (src) {
+      var im = new Image();
+      im.decoding = 'async';
+      im.src = src;
+    });
+  }
   function openPrayTree() {
     var tp = document.getElementById('prayTree');
     if (!tp) return;
+    preloadPrayAssets();
     tp.hidden = false;
     tp.setAttribute('aria-hidden', 'false');
     if (!tp.dataset.bound) {
@@ -1128,6 +1139,7 @@
   });
 
   window.__openPrayTree = openPrayTree;
+  setTimeout(preloadPrayAssets, 1500);
   (function bindPrayBtn() {
     var btn = document.getElementById('prayBtn');
     if (btn) btn.addEventListener('click', openPrayTree);
@@ -4786,7 +4798,7 @@ var bagBtn = $('#bagBtn');
   if (app) app.classList.add('is-ready');
   var _enterBtn = document.getElementById('enterBtn');
   if (_enterBtn) {
-    _enterBtn.innerHTML = '游览';
+    _enterBtn.innerHTML = '点击进入游览';
     _enterBtn.disabled = false;
   }
   })();

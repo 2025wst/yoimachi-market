@@ -5143,3 +5143,6 @@ html, body { overscroll-behavior-y: none; }
   .sachet2-mat span { font-size: 13px !important; }
   .sachet2-tip { font-size: 12px !important; }
 }
+
+/* 第四幕：去掉浮动的「祈福」按钮，保留地图原貌 */
+.pray-btn { display: none !important; }

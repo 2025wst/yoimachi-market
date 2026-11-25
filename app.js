@@ -3346,7 +3346,7 @@ var bagBtn = $('#bagBtn');
     }).join('');
     shopStage.innerHTML =
       '<div class="clay-shop">' +
-        '<p class="clay-shop__hint">点击前台小狗有惊喜 <span>↓</span></p>' +
+        '<p class="clay-shop__hint" id="clayShopHint">点击台面上的小狗互动，有惊喜（0 / 6） <span>↓</span></p>' +
         '<div class="clay-shop__frame">' +
           '<img class="clay-shop__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
           dogs +
@@ -3369,11 +3369,23 @@ var bagBtn = $('#bagBtn');
         document.getElementById('clayInfoPattern').textContent = dog.pattern;
         if (info) info.hidden = false;
         seenDogs[id] = true;
+        updateClayHint();
         if (Object.keys(seenDogs).length >= CLAY_SHOP_DOGS.length && !state.sugar) {
           setTimeout(function () { showClayCheckin(); }, 420);
         }
       });
     });
+    function updateClayHint() {
+      var hint = document.getElementById('clayShopHint');
+      if (!hint) return;
+      var n = Object.keys(seenDogs).length;
+      var total = CLAY_SHOP_DOGS.length;
+      if (n >= total) {
+        hint.innerHTML = '六只小狗都听完了 · 收下挂件吧 <span>\u2713</span>';
+      } else {
+        hint.innerHTML = '点击台面上的小狗互动，有惊喜（' + n + ' / ' + total + '） <span>\u2193</span>';
+      }
+    }
     var closeInfo = document.getElementById('clayInfoClose');
     if (closeInfo) closeInfo.addEventListener('click', function () { if (info) info.hidden = true; });
   }
@@ -3667,7 +3679,14 @@ var bagBtn = $('#bagBtn');
      布老虎：九宫格拼图
      ============================================================ */
   var jigsaw2Game = null;
-  var JIGSAW2_ORDER = [3, 7, 1, 8, 0, 5, 2, 6, 4];
+  function shuffleJigsaw2() {
+    var a = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
   function buildPlush() {
     $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '拼一只布老虎';
@@ -3679,7 +3698,7 @@ var bagBtn = $('#bagBtn');
     for (var i = 0; i < 9; i++) {
       slots += '<button class="jigsaw2-slot" type="button" data-slot="' + i + '" aria-label="第 ' + (i + 1) + ' 格"></button>';
     }
-    JIGSAW2_ORDER.forEach(function (idx) {
+    shuffleJigsaw2().forEach(function (idx) {
       tiles += '<button class="jigsaw2-tile" type="button" data-tile="' + idx + '" data-src="assets/tiger/jigsaw/' + idx + '.jpg" style="background-image:url(assets/tiger/jigsaw/' + idx + '.jpg)" aria-label="第 ' + (idx + 1) + ' 块碎片"></button>';
     });
     shopStage.innerHTML =

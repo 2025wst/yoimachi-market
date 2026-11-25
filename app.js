@@ -2569,33 +2569,21 @@
   var bagDrawer = $('#bagDrawer');
 
   function bagTigerSVG() {
-    var g = state.tiger || {};
-    var hue = (typeof g.hue === 'number') ? g.hue : 0;
-    return '<img class="bag-tiger-img" src="assets/tiger2/finished.png" alt="">';
+    return '<img class="bag-tiger-img" src="assets/tiger/plush-source.jpg" alt="布老虎玩偶">';
   }
 
   function bagBunSVG() {
-    return '<svg viewBox="0 0 80 80" aria-hidden="true">' +
-      '<ellipse cx="40" cy="70" rx="24" ry="5" fill="#3e2b20" opacity=".13"/>' +
-      '<path d="M40 18V6" stroke="#744439" stroke-width="3"/>' +
-      '<circle cx="40" cy="5" r="3.4" fill="#744439"/>' +
-      '<ellipse cx="40" cy="58" rx="30" ry="10" fill="#c7d0c4" stroke="#8e9a8c" stroke-width="2"/>' +
-      '<ellipse cx="40" cy="48" rx="22" ry="12" fill="#a86a32" stroke="#6e4422" stroke-width="2"/>' +
-      '<ellipse cx="40" cy="42" rx="21" ry="13" fill="#e2b46c" stroke="#8a5a2e" stroke-width="2"/>' +
-      '<ellipse cx="40" cy="45" rx="12" ry="5" fill="#8f5626" opacity=".3"/>' +
-      '<path d="M32 41q8 4 16 0" fill="none" stroke="#7a4420" stroke-width="1.6" opacity=".6"/>' +
-      '<g fill="#f6e7c5"><circle cx="31" cy="39" r="1.1"/><circle cx="38" cy="36" r="1.1"/><circle cx="45" cy="38" r="1.1"/><circle cx="50" cy="42" r="1.1"/><circle cx="35" cy="46" r="1.1"/><circle cx="45" cy="47" r="1.1"/></g>' +
-      '</svg>';
+    return '<img class="bag-bun-img" src="assets/bun/charm.jpg" alt="压缩馍挂件">';
   }
 
   function bagSachetSVG() {
     var g = state.sachet || { hue: 0 };
     var hue = (g && typeof g.hue === 'number') ? g.hue : 0;
-    return '<img class="bag-sachet-img" src="assets/sachet/sachet-cutout.png" alt="" style="filter:hue-rotate(' + hue + 'deg)">';
+    return '<img class="bag-sachet-img" src="assets/sachet/sachet.png" alt="手作香囊" style="filter:hue-rotate(' + hue + 'deg)">';
   }
 
   function bagClaySVG() {
-    return '<svg viewBox="0 0 80 80" aria-hidden="true"><ellipse cx="40" cy="73" rx="25" ry="4" fill="#3e2b20" opacity=".13"/><path d="M18 30Q10 12 24 8Q32 18 30 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M62 30Q70 12 56 8Q48 18 50 32Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M24 28Q30 16 40 16Q50 16 56 28L54 58Q53 68 40 68Q27 68 26 58Z" fill="#2b2320" stroke="#5a3e2a" stroke-width="2"/><path d="M30 30Q34 24 38 30M42 30Q46 24 50 30" stroke="#e3b54a" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="33" cy="34" r="3" fill="#e3b54a"/><circle cx="47" cy="34" r="3" fill="#e3b54a"/><path d="M34 48h12M30 56h20" stroke="#744439" stroke-width="2.6"/></svg>';
+    return '<img class="bag-clay-img" src="assets/clay-charm.png" alt="泥泥狗挂件">';
   }
 
   function renderBag() {

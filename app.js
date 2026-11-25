@@ -4515,14 +4515,14 @@ var bagBtn = $('#bagBtn');
       '<div class="beilin-scene__frame" id="beilinFrame">' +
         '<img class="beilin-scene__clean" src="assets/beilin/stele.jpg" alt="太昊陵碑林石碑">' +
         '<div class="beilin-scene__dirty" id="beilinDirty">' +
-          '<svg viewBox="0 0 1280 1707" aria-hidden="true">' +
+          '<svg viewBox="0 0 1152 2047" preserveAspectRatio="none" aria-hidden="true">' +
             '<defs>' +
               '<filter id="beilinBlur" x="-6%" y="-6%" width="112%" height="112%"><feGaussianBlur stdDeviation="9.5"/></filter>' +
               '<filter id="beilinGrain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" seed="7"/><feColorMatrix type="saturate" values="0"/></filter>' +
             '</defs>' +
-            '<image href="assets/beilin/stele.jpg" x="0" y="0" width="1280" height="1707" filter="url(#beilinBlur)"/>' +
-            '<rect x="0" y="0" width="1280" height="1707" fill="#5a5040" opacity=".3"/>' +
-            '<rect x="0" y="0" width="1280" height="1707" filter="url(#beilinGrain)" opacity=".18"/>' +
+            '<image href="assets/beilin/stele.jpg" x="0" y="0" width="1152" height="2047" preserveAspectRatio="none" filter="url(#beilinBlur)"/>' +
+            '<rect x="0" y="0" width="1152" height="2047" fill="#5a5040" opacity=".3"/>' +
+            '<rect x="0" y="0" width="1152" height="2047" filter="url(#beilinGrain)" opacity=".18"/>' +
             '<g class="beilin-webs" opacity=".6">' + webs + '</g>' +
           '</svg>' +
         '</div>' +

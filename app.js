@@ -3611,13 +3611,13 @@ var bagBtn = $('#bagBtn');
           '<img class="clay-shop2__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
           '<button class="clay-shop__shelf" type="button" id="clayShelf" aria-label="看看货架上的泥泥狗"></button>' +
           dogs +
+          '<div class="clay-shop2__info" id="clayShopInfo" hidden>' +
+            '<div class="clay-shop2__info-head"><b id="clayInfoName">泥泥狗</b><span class="clay-shop2__info-fold">轻触收起</span></div>' +
+            '<p id="clayInfoIntro"></p>' +
+            '<p id="clayInfoPattern"></p>' +
+          '</div>' +
         '</div>' +
         '<p class="clay-shop2__hint" id="clayShopHint">点台面上的小狗听故事（0 / 6） · 点上面的货架看总述</p>' +
-        '<div class="clay-shop2__info" id="clayShopInfo" hidden>' +
-          '<div class="clay-shop2__info-head"><b id="clayInfoName">泥泥狗</b><button class="clay-shop2__info-close" type="button" id="clayInfoClose" aria-label="关闭">×</button></div>' +
-          '<p id="clayInfoIntro"></p>' +
-          '<p id="clayInfoPattern"></p>' +
-        '</div>' +
       '</div>';
     var info = document.getElementById('clayShopInfo');
     var seenDogs = {};
@@ -3629,7 +3629,7 @@ var bagBtn = $('#bagBtn');
         document.getElementById('clayInfoName').textContent = '泥泥狗 · ' + dog.name;
         document.getElementById('clayInfoIntro').textContent = dog.intro;
         document.getElementById('clayInfoPattern').textContent = dog.pattern;
-        if (info) info.hidden = false;
+        showClayBubble();
         seenDogs[id] = true;
         updateClayHint();
         if (Object.keys(seenDogs).length >= CLAY_SHOP_DOGS.length && !state.sugar) {
@@ -3653,10 +3653,20 @@ var bagBtn = $('#bagBtn');
       document.getElementById('clayInfoName').textContent = '泥泥狗 · 一架子';
       document.getElementById('clayInfoIntro').textContent = '传统泥泥狗统一以黑色为底，搭配红、黄、白、绿等彩色纹饰，黑底是它传承千年的典型视觉标识。市面上少量其他底色款式，多为现代文创衍生版本。';
       document.getElementById('clayInfoPattern').textContent = '这一架子上，黑、红、白、青、黄五色都有——颜色对应五行，也对应庙会上的五方，都是祈子、祈福、镇宅的老纹样。';
-      if (info) info.hidden = false;
+      showClayBubble();
     });
-    var closeInfo = document.getElementById('clayInfoClose');
-    if (closeInfo) closeInfo.addEventListener('click', function () { if (info) info.hidden = true; });
+    function showClayBubble() {
+      if (!info) return;
+      info.hidden = false;
+      info.classList.remove('is-fold');
+      void info.offsetWidth;
+      info.classList.add('is-pop');
+    }
+    if (info) info.addEventListener('click', function (e) {
+      if (e.target.closest('.clay-shop__dog') || e.target.closest('.clay-shop__shelf')) return;
+      info.classList.add('is-fold');
+      setTimeout(function () { if (info.classList.contains('is-fold')) info.hidden = true; }, 260);
+    });
   }
   function showClayCheckin() {
     var old = document.getElementById('clayCheckin');

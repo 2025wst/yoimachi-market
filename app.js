@@ -1447,29 +1447,86 @@
 
   var bigSeal = $('#bigSeal');
 
+  /* ---------------- 纪念册（完赛） ---------------- */
+
+  function certDateText() {
+    var now = new Date();
+    var m = now.getMonth() + 1, d = now.getDate();
+    return now.getFullYear() + '.' + (m < 10 ? '0' + m : m) + '.' + (d < 10 ? '0' + d : d);
+  }
+
+  function drawCertScroll() {
+    var cv = document.getElementById('certScrollCanvas');
+    if (!cv) return;
+    var img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth, h = img.naturalHeight;
+      cv.width = w;
+      cv.height = h;
+      var ctx = cv.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      // 卷轴底部「游玩日期」后的留白处写上当天日期，字体与卷轴一致
+      var fs = Math.max(18, Math.round(w * 0.0128));
+      ctx.font = fs + 'px "Kaiti SC", "STKaiti", "KaiTi", "楷体", "Songti SC", serif';
+      ctx.fillStyle = 'rgba(58, 42, 30, .88)';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText(certDateText(), Math.round(w * 0.757), Math.round(h * 0.795));
+    };
+    img.src = 'assets/cert-scroll.jpg';
+  }
+
+  function openCertScroll() {
+    var ov = document.createElement('div');
+    ov.className = 'cert-scroll';
+    ov.id = 'certScroll';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-label', '太昊陵纪念册');
+    ov.innerHTML = '<canvas class="cert-scroll__canvas" id="certScrollCanvas"></canvas>' +
+      '<button class="cert-scroll__close" type="button" id="certScrollClose" aria-label="关闭">×</button>' +
+      '<button class="cert-scroll__btn" type="button" id="certScrollBtn">收下纪念册</button>';
+    document.body.appendChild(ov);
+    drawCertScroll();
+    var close = function () { if (ov.parentNode) ov.parentNode.removeChild(ov); };
+    var c = document.getElementById('certScrollClose');
+    var b = document.getElementById('certScrollBtn');
+    if (c) c.addEventListener('click', close);
+    if (b) b.addEventListener('click', close);
+  }
+
+  function playCertVideo() {
+    var ov = document.createElement('div');
+    ov.className = 'cert-video';
+    ov.innerHTML = '<video class="cert-video__video" src="assets/cert-video.mp4" playsinline preload="auto"></video>';
+    document.body.appendChild(ov);
+    var v = ov.querySelector('video');
+    var finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      try { v.pause(); } catch (e) {}
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      openCertScroll();
+    }
+    v.addEventListener('ended', finish);
+    v.addEventListener('error', finish);
+    setTimeout(finish, 7500);
+    var p = v.play();
+    if (p && p.catch) p.catch(finish);
+  }
+
   function openCertificate() {
     if (state.tasks.length < ORDER.length) {
       toast('还有打卡没完成。');
       openDrawer();
       return;
     }
-    $('#certName').value = state.name;
-    var now = new Date();
-    $('#certDate').textContent = now.getFullYear() + ' 年 ' + (now.getMonth() + 1) + ' 月 ' + now.getDate() + ' 日';
-    $('#certSpots').innerHTML = SPOTS.map(function (s) { return '<span>' + s.name + '</span>'; }).join('');
-    bigSeal.classList.remove('is-stamped');
-    $('#cert').classList.remove('is-stamped');
-    veil.classList.add('is-on');
     sfx.whoosh();
+    veil.classList.add('is-on');
     setTimeout(function () {
-      setAct('final');
-      setTimeout(function () { veil.classList.remove('is-on'); }, 120);
-      setTimeout(function () {
-        bigSeal.classList.add('is-stamped');
-        $('#cert').classList.add('is-stamped');
-        sfx.thud();
-      }, 760);
-    }, 500);
+      veil.classList.remove('is-on');
+      playCertVideo();
+    }, 320);
   }
 
   $('#certName').addEventListener('input', function () {

@@ -4606,3 +4606,62 @@ html, body { overscroll-behavior-y: none; }
   object-fit: cover;
   display: block;
 }
+
+/* ---------------- 纪念册动画 / 卷轴 ---------------- */
+.cert-video {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: #100c08;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cert-video__video { width: 100%; height: 100%; object-fit: contain; display: block; }
+.cert-scroll {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: rgba(16, 12, 8, .86);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 14px;
+}
+.cert-scroll__canvas {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55);
+}
+.cert-scroll__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(247, 236, 209, .5);
+  border-radius: 50%;
+  background: rgba(20, 14, 8, .55);
+  color: #f7ecd1;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.cert-scroll__btn {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 11px 26px;
+  border: 1px solid rgba(247, 236, 209, .6);
+  border-radius: 999px;
+  background: rgba(247, 236, 209, .12);
+  color: #f7ecd1;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: .16em;
+  cursor: pointer;
+}

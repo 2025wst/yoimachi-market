@@ -892,7 +892,7 @@
 
   /* ---------------- 完成打卡 ---------------- */
 
-  function showNextStep() {
+  function showNextStep(onNext) {
     if (document.getElementById('nextStep')) return;
     var btn = document.createElement('button');
     btn.id = 'nextStep';
@@ -901,16 +901,15 @@
     btn.innerHTML = '下一步 <span>→</span>';
     btn.addEventListener('click', function () {
       btn.remove();
+      if (typeof onNext === 'function') onNext();
       try { closePanel(); } catch (e) {}
       try { closeShopDetail(); } catch (e) {}
       try { closeGateway(); } catch (e) {}
       try { closeBag(); } catch (e) {}
-      if (document.getElementById('tombStory')) document.getElementById('tombStory').remove();
-      if (document.getElementById('beilinStory')) document.getElementById('beilinStory').remove();
-      if (document.getElementById('tongtianDone')) document.getElementById('tongtianDone').remove();
-      if (document.getElementById('shicaoIntro')) document.getElementById('shicaoIntro').remove();
-      if (document.getElementById('baguaIntro')) document.getElementById('baguaIntro').remove();
-      if (document.getElementById('baguaQuiz')) document.getElementById('baguaQuiz').remove();
+      ['tombStory','beilinStory','tongtianDone','shicaoIntro','baguaIntro','baguaQuiz','beilinScene','beilinHall','tongtianScene','tombScene','gatePhoto'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.remove();
+      });
       if (document.getElementById('baguaPhoto')) { var bpp = document.getElementById('baguaPhoto'); bpp.hidden = true; bpp.setAttribute('aria-hidden', 'true'); }
       setAct(4);
       renderSpots();
@@ -929,7 +928,6 @@
     sfx.chime();
     showStamp('已打卡');
     toast(TASKS[id].label + ' · 打卡完成');
-    if (act === 4) setTimeout(showNextStep, 700);
     if (state.tasks.length === ORDER.length) {
       setTimeout(function () { toast('全部打卡完成 · 去第四幕领完赛证书'); }, 1300);
     }
@@ -1358,6 +1356,7 @@
             updateHUD();
             toast('八卦阵挂件 · 已收进背包');
             box.remove();
+            showNextStep();
           };
         } else {
           btn.textContent = '再抽一签';
@@ -4585,7 +4584,7 @@ var bagBtn = $('#bagBtn');
       '</div>';
     document.body.appendChild(box);
     var btn = document.getElementById('beilinStoryBtn');
-    if (btn) btn.addEventListener('click', function () { box.remove(); });
+    if (btn) btn.addEventListener('click', function () { box.remove(); showNextStep(); });
   }
   window.__showBeilinStory = showBeilinStory;
 
@@ -4606,7 +4605,7 @@ var bagBtn = $('#bagBtn');
       '</div>';
     document.body.appendChild(box);
     var btn = document.getElementById('tongtianDoneBtn');
-    if (btn) btn.addEventListener('click', function () { box.remove(); });
+    if (btn) btn.addEventListener('click', function () { box.remove(); showNextStep(); });
   }
 
   window.__openTomb = openTomb;

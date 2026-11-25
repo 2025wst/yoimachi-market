@@ -4753,13 +4753,13 @@ html, body { overscroll-behavior-y: none; }
 }
 /* 第二街道背景 1152x2047 (9:16) */
 .act--3 .inner2d {
-  width: min(100%, calc(100vh * 1152 / 2047)) !important;
-  aspect-ratio: 1152 / 2047;
+  width: min(100%, calc(100vh * 1152 / 2048)) !important;
+  aspect-ratio: 1152 / 2048;
 }
 
 /* 店铺热区（按图片百分比，自动跟着图片走） */
-.market2d-shops .market2d-shop--left  { left: 7%;  top: 49%; width: 31%; height: 20%; }
-.market2d-shops .market2d-shop--right { left: 62%; top: 49%; width: 29%; height: 20%; }
+.market2d-shops .market2d-shop--left  { left: 9%;  top: 50%; width: 30%; height: 16%; }
+.market2d-shops .market2d-shop--right { left: 67%; top: 50%; width: 28%; height: 16%; }
 
 /* 可点提示：轻轻呼吸的暖光，不压画面 */
 .market2d-shops .market2d-shop::before {
@@ -5110,3 +5110,7 @@ html, body { overscroll-behavior-y: none; }
 @media (max-height: 720px) {
   .act--3 .inner3d-actions { bottom: 8px !important; }
 }
+
+/* 第一街道：去掉覆盖在天空上的回纹装饰层 */
+.act--2 .market3d::after,
+.act--2 .market3d::before { display: none !important; }

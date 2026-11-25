@@ -5114,3 +5114,32 @@ html, body { overscroll-behavior-y: none; }
 /* 第一街道：去掉覆盖在天空上的回纹装饰层 */
 .act--2 .market3d::after,
 .act--2 .market3d::before { display: none !important; }
+
+/* ===== 香囊：界面小字放大、加深 ===== */
+.sachet-label {
+  font-size: 13.5px !important;
+  color: #7a5b42 !important;
+  letter-spacing: .1em !important;
+  font-weight: 600;
+}
+.sachet2-fill {
+  font-size: 13.5px !important;
+  color: #7a5b42 !important;
+  letter-spacing: .06em !important;
+}
+.sachet2-tip {
+  font-size: 12.5px !important;
+  color: #8a6a50 !important;
+  line-height: 1.75 !important;
+}
+.sachet2-mat span {
+  font-size: 13.5px !important;
+  color: var(--ink) !important;
+  font-weight: 600;
+}
+.sachet2-done-mat { font-size: 15px !important; }
+.sachet2-done-meta { font-size: 13px !important; color: #7a5b42 !important; }
+@media (max-width: 420px) {
+  .sachet2-mat span { font-size: 13px !important; }
+  .sachet2-tip { font-size: 12px !important; }
+}

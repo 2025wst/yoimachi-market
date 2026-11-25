@@ -3009,9 +3009,13 @@ var bagBtn = $('#bagBtn');
     sachetImg.onerror = function () { showSachetCard(safeCardDataUrl(null, g)); };
     sachetImg.onload = function () {
       var sw = 380, sh = sachetImg.height * (sw / sachetImg.width);
-      try { ctx.filter = 'hue-rotate(' + (g.hue || 0) + 'deg)'; } catch (e) {}
-      ctx.drawImage(sachetImg, (W - sw) / 2, 210, sw, sh);
-      try { ctx.filter = 'none'; } catch (e) {}
+      var tintCanvas = document.createElement('canvas');
+      tintCanvas.width = Math.max(1, Math.round(sw));
+      tintCanvas.height = Math.max(1, Math.round(sh));
+      var tctx = tintCanvas.getContext('2d');
+      tctx.drawImage(sachetImg, 0, 0, tintCanvas.width, tintCanvas.height);
+      var tinted = hueShiftCanvas(tintCanvas, g.hue || 0) || tintCanvas;
+      ctx.drawImage(tinted, (W - sw) / 2, 210, sw, sh);
       var y = 210 + sh + 30;
       ctx.fillStyle = '#6b5340';
       ctx.font = '30px "Kaiti SC","STKaiti",KaiTi,serif';
@@ -3058,6 +3062,34 @@ var bagBtn = $('#bagBtn');
   }
 
   /* 画一张不含图片的纯文字卡片（规避 file:// 下 canvas 被污染无法导出） */
+  /* 像素级色相旋转：手机上 canvas 的 ctx.filter 支持不全，改用逐像素计算 */
+  function hueShiftCanvas(cv, deg) {
+    if (!deg) return cv;
+    try {
+      var ctx2 = cv.getContext('2d');
+      var img = ctx2.getImageData(0, 0, cv.width, cv.height);
+      var p = img.data;
+      var rad = deg * Math.PI / 180, c = Math.cos(rad), s = Math.sin(rad);
+      var m0 = 0.213 + c * 0.787 - s * 0.213, m1 = 0.715 - c * 0.715 - s * 0.715, m2 = 0.072 - c * 0.072 + s * 0.928;
+      var m3 = 0.213 - c * 0.213 + s * 0.143, m4 = 0.715 + c * 0.285 + s * 0.140, m5 = 0.072 - c * 0.072 - s * 0.283;
+      var m6 = 0.213 - c * 0.213 - s * 0.787, m7 = 0.715 - c * 0.715 + s * 0.715, m8 = 0.072 + c * 0.928 + s * 0.072;
+      for (var i = 0; i < p.length; i += 4) {
+        if (p[i + 3] === 0) continue;
+        var r = p[i], gg = p[i + 1], b = p[i + 2];
+        var nr = m0 * r + m1 * gg + m2 * b;
+        var ng = m3 * r + m4 * gg + m5 * b;
+        var nb = m6 * r + m7 * gg + m8 * b;
+        p[i] = nr < 0 ? 0 : (nr > 255 ? 255 : nr);
+        p[i + 1] = ng < 0 ? 0 : (ng > 255 ? 255 : ng);
+        p[i + 2] = nb < 0 ? 0 : (nb > 255 ? 255 : nb);
+      }
+      ctx2.putImageData(img, 0, 0);
+      return cv;
+    } catch (e) {
+      return cv;
+    }
+  }
+
   function plainSachetCard(g) {
     var names = ((g && g.mats) || []).map(function (k) { return sachetHerb(k).name; });
     var W = 900, H = 1240;

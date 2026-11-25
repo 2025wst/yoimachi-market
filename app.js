@@ -87,11 +87,11 @@
   var ORDER = ['tiger', 'bun', 'sachet', 'sugar', 'gate', 'tongtian', 'bagua', 'tomb', 'shicao', 'beilin'];
 
   var SPOTS = [
-    { id: 'tongtian', name: '统天殿', x: 47.0, y: 62.0, w: 26, h: 14 },
-    { id: 'bagua', name: '八卦坛', x: 47.0, y: 46.5, w: 16, h: 8, round: true },
-    { id: 'tomb', name: '伏羲陵墓', x: 46.0, y: 34.0, w: 24, h: 11 },
-    { id: 'shicao', name: '蓍草园', x: 48.5, y: 18.5, w: 30, h: 12 },
-    { id: 'beilin', name: '碑林', x: 82.0, y: 47.0, w: 20, h: 14 }
+    { id: 'tongtian', name: '统天殿', x: 47.0, y: 61.5, w: 46, h: 19 },
+    { id: 'bagua', name: '八卦坛', x: 47.0, y: 46.5, w: 24, h: 11, round: true },
+    { id: 'tomb', name: '伏羲陵墓', x: 48.0, y: 32.5, w: 30, h: 15 },
+    { id: 'shicao', name: '蓍草园', x: 48.0, y: 18.5, w: 48, h: 17 },
+    { id: 'beilin', name: '碑林', x: 83.0, y: 44.5, w: 30, h: 23 }
   ];
 
   var INNER_SHOPS = [

@@ -3707,7 +3707,6 @@ var bagBtn = $('#bagBtn');
       '<div class="clay-shop2">' +
         '<div class="clay-shop2__frame">' +
           '<img class="clay-shop2__img" src="assets/clay-shop-web.jpg" alt="泥泥狗工坊">' +
-          '<button class="clay-shop__shelf" type="button" id="clayShelf" aria-label="看看货架上的泥泥狗"></button>' +
           dogs +
           '<div class="clay-shop2__info" id="clayShopInfo" hidden>' +
             '<div class="clay-shop2__info-head"><b id="clayInfoName">泥泥狗</b><span class="clay-shop2__info-fold">轻触收起</span></div>' +
@@ -3715,7 +3714,7 @@ var bagBtn = $('#bagBtn');
             '<p id="clayInfoPattern"></p>' +
           '</div>' +
         '</div>' +
-        '<p class="clay-shop2__hint" id="clayShopHint">点台面上的小狗听故事（0 / 6） · 点上面的货架看总述</p>' +
+        '<p class="clay-shop2__hint" id="clayShopHint">点台面上的小狗，听它们讲自己的故事（0 / 6）</p>' +
       '</div>';
     // 进入转场：把「泥泥狗工坊」标题与女娲自述合成一张文字卡，点一下进入画面
     showStoryCard(
@@ -3752,9 +3751,9 @@ var bagBtn = $('#bagBtn');
       var n = Object.keys(seenDogs).length;
       var total = CLAY_SHOP_DOGS.length;
       if (n >= total) {
-        hint.innerHTML = '六只小狗都听完了 · 收下挂件吧（点上面的货架还能看总述）';
+        hint.innerHTML = '六只小狗都听完了 · 收下挂件吧';
       } else {
-        hint.innerHTML = '点台面上的小狗听故事（' + n + ' / ' + total + '） · 点上面的货架看总述';
+        hint.innerHTML = '点台面上的小狗，听它们讲自己的故事（' + n + ' / ' + total + '）';
       }
     }
     var shelf = document.getElementById('clayShelf');

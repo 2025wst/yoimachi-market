@@ -219,7 +219,13 @@
     creak: function () { noiseBurst(0.55, 0.05, 380, 'lowpass'); tone(130, 0.5, 0.02, 'sawtooth'); },
     whoosh: function () { noiseBurst(0.35, 0.035, 700, 'bandpass'); },
     tick: function () { tone(520, 0.08, 0.02, 'triangle'); },
-    crunch: function () { noiseBurst(0.14, 0.07, 1100, 'bandpass'); tone(160, 0.12, 0.03, 'square'); },
+    crunch: function () {
+      // 更像真实咬一口：闷软的低频「噗嗤」+ 一点点面皮摩擦，不刺耳
+      noiseBurst(0.30, 0.030, 520, 'lowpass');
+      noiseBurst(0.16, 0.020, 300, 'lowpass');
+      tone(132, 0.22, 0.020, 'sine', 0.012);
+      tone(96, 0.30, 0.014, 'sine', 0.05);
+    },
     pop: function () { tone(420, 0.12, 0.025, 'sine'); tone(620, 0.1, 0.015, 'sine', 0.04); },
     snip: function () { noiseBurst(0.08, 0.04, 2400, 'highpass'); }
   };
@@ -283,6 +289,26 @@
   }
 
   var capsShown = {};
+  function showStoryCard(innerHTML) {
+    var ov = document.createElement('div');
+    ov.className = 'act-caption is-story';
+    ov.innerHTML = '<div class="act-caption__card">' + innerHTML +
+      '<p class="act-caption__hint">轻触继续</p></div>';
+    document.body.appendChild(ov);
+    requestAnimationFrame(function () { ov.classList.add('is-on'); });
+    var dismissed = false;
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      ov.classList.remove('is-on');
+      setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 380);
+    }
+    ov.addEventListener('click', dismiss);
+    ov.addEventListener('touchstart', dismiss, { passive: true });
+    window.__dismissStoryCard = dismiss;
+    return ov;
+  }
+
   function flashCaption(n) {
     if (capsShown[n]) return;
     var src = n === 2 ? document.querySelector('.act--2 .market-title')
@@ -1833,6 +1859,7 @@
 
   function openShopDetail(kind) {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-clay');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     if (kind === 'tiger') openPlush();
@@ -1843,7 +1870,7 @@
     if (_act2) _act2.classList.remove('is-shop-open', 'is-entering-shop');
     var _vid = document.getElementById('market2dVideo');
     if (_vid) { try { _vid.play(); } catch (e) {} }
-    shopDetail.classList.remove('is-open', 'is-immersive');
+    shopDetail.classList.remove('is-open', 'is-immersive', 'is-clay');
     shopDetail.setAttribute('aria-hidden', 'true');
     if (app) app.classList.remove('is-detail');
     plushGame = null;
@@ -2829,6 +2856,7 @@ var bagBtn = $('#bagBtn');
 
   function openSachet() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-clay');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     $('#shopDetailKicker').textContent = '内街 · 香薰坊';
@@ -3662,6 +3690,7 @@ var bagBtn = $('#bagBtn');
   ];
   function openClay() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.add('is-clay');
     shopDetail.classList.remove('is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
@@ -3688,6 +3717,17 @@ var bagBtn = $('#bagBtn');
         '</div>' +
         '<p class="clay-shop2__hint" id="clayShopHint">点台面上的小狗听故事（0 / 6） · 点上面的货架看总述</p>' +
       '</div>';
+    // 进入转场：把「泥泥狗工坊」标题与女娲自述合成一张文字卡，点一下进入画面
+    showStoryCard(
+      '<p class="act-caption__no">内街 · 泥泥狗工坊</p>' +
+      '<h2>泥泥狗工坊</h2>' +
+      '<p class="act-caption__story">人，你好，我是泥泥狗。<br>' +
+      '三千多年前，女娲捏你的时候，顺手也捏了我。<br>' +
+      '那时候她坐在淮阳的河边，挖起一大块黄土，<br>' +
+      '揉揉捏捏变成了人，剩下的泥点撒向地面，<br>' +
+      '变成了飞禽与走兽——我就是其中一只。<br>' +
+      '所以，说不定我们来自同一块泥巴。</p>'
+    );
     var info = document.getElementById('clayShopInfo');
     var seenDogs = {};
     document.querySelectorAll('.clay-shop__dog', shopStage).forEach(function (btn) {

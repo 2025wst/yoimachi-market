@@ -1437,7 +1437,7 @@
   /* ---------------- 午朝门近景 / 开门 ---------------- */
   function openGatePhoto() {
     if (!has('sachet') || !has('sugar')) {
-      toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
+      toast('点击互动，再往前走吧');
       return;
     }
     var gp = document.getElementById('gatePhoto');
@@ -3994,7 +3994,7 @@ var bagBtn = $('#bagBtn');
     var gate = $('#innerGate');
     if (gate) gate.addEventListener('click', function () {
       if (!has('sachet') || !has('sugar')) {
-        toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
+        toast('点击互动，再往前走吧');
         return;
       }
       if (window.__openGatePhoto) window.__openGatePhoto();
@@ -5079,7 +5079,7 @@ var bagBtn = $('#bagBtn');
           var _has = window.__hasTask || function () { return true; };
           var _toast = window.__toast || function () {};
           if (!_has('sachet') || !_has('sugar')) {
-            _toast('先把香薰坊、泥泥狗工坊的互动做完，再去午朝门吧');
+            _toast('点击互动，再往前走吧');
             return;
           }
           if (window.__openGatePhoto) window.__openGatePhoto();

@@ -4467,7 +4467,7 @@ h1, h2, h3, .intro__title, .act-title h2, .panel__title,
 @keyframes beilin-scene-in { from { opacity: 0; transform: scale(1.015); } to { opacity: 1; transform: none; } }
 
 /* ================= 八卦坛：点太极抽卦问签 ================= */
-.bagua-photo__taiji { position: absolute; left: 36.8%; top: 42.8%; width: 18.4%; height: 18.4%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; z-index: 3; }
+.bagua-photo__taiji { position: absolute; left: 43%; top: 43.5%; width: 16.5%; height: 15.5%; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; z-index: 3; }
 .bagua-photo__taiji::after { content: ""; position: absolute; inset: -8%; border-radius: 50%; background: radial-gradient(ellipse at 50% 50%, rgba(255,226,170,.36), rgba(255,226,170,0) 70%); opacity: 0; transition: opacity .22s; pointer-events: none; }
 .bagua-photo__taiji:hover::after, .bagua-photo__taiji:focus-visible::after { opacity: 1; }
 .bagua-photo__taiji.is-spinning::after { opacity: 1; animation: taiji-spin .6s ease-in-out; }

@@ -230,8 +230,6 @@
 
   function toast(msg) {
     toastEl.textContent = msg;
-    if (shopDetail && shopDetail.classList.contains('is-sachet')) toastEl.classList.add('toast--high');
-    else toastEl.classList.remove('toast--high');
     toastEl.classList.add('is-on');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toastEl.classList.remove('is-on'); }, 2400);
@@ -1845,7 +1843,7 @@
     if (_act2) _act2.classList.remove('is-shop-open', 'is-entering-shop');
     var _vid = document.getElementById('market2dVideo');
     if (_vid) { try { _vid.play(); } catch (e) {} }
-    shopDetail.classList.remove('is-open', 'is-immersive', 'is-sachet');
+    shopDetail.classList.remove('is-open', 'is-immersive');
     shopDetail.setAttribute('aria-hidden', 'true');
     if (app) app.classList.remove('is-detail');
     plushGame = null;
@@ -2831,7 +2829,6 @@ var bagBtn = $('#bagBtn');
 
   function openSachet() {
     shopDetail.classList.add('is-open');
-    shopDetail.classList.add('is-sachet');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     $('#shopDetailKicker').textContent = '内街 · 香薰坊';
@@ -2989,6 +2986,13 @@ var bagBtn = $('#bagBtn');
   }
 
   function openSachetCard() {
+    if (!sachetCardBg.naturalWidth && !sachetCardBg.__failed) {
+      var go = function () { openSachetCard(); };
+      sachetCardBg.onload = go;
+      sachetCardBg.onerror = function () { sachetCardBg.__failed = true; go(); };
+      if (sachetCardBg.complete && !sachetCardBg.naturalWidth) { sachetCardBg.__failed = true; go(); }
+      return;
+    }
     var g = state.sachet || { mats: [], hue: 0, colorName: '藕粉', combo: null };
     var names = (g.mats || []).map(function (k) { return sachetHerb(k).name; });
     var W = 620, H = 1080;
@@ -3058,8 +3062,30 @@ var bagBtn = $('#bagBtn');
     }
   }
 
+  var sachetCardBg = new Image();
+  sachetCardBg.src = 'assets/sachet/sachet-frame.jpg';
+
   function drawCardBase(ctx, W, H) {
     ctx.fillStyle = '#f8f1e2'; ctx.fillRect(0, 0, W, H);
+    if (sachetCardBg && sachetCardBg.naturalWidth) {
+      var ir = sachetCardBg.width / sachetCardBg.height, cr = W / H;
+      var dw, dh, dx, dy;
+      if (ir > cr) { dh = H; dw = H * ir; dx = (W - dw) / 2; dy = 0; }
+      else { dw = W; dh = W / ir; dx = 0; dy = (H - dh) / 2; }
+      try { ctx.drawImage(sachetCardBg, dx, dy, dw, dh); } catch (e) {}
+      var grad = ctx.createRadialGradient(W / 2, H * 0.42, W * 0.08, W / 2, H * 0.46, W * 0.92);
+      grad.addColorStop(0, 'rgba(250,245,235,.935)');
+      grad.addColorStop(0.55, 'rgba(250,245,235,.875)');
+      grad.addColorStop(1, 'rgba(250,245,235,.30)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+      // 底部落款处压一条浅色带，花纸上也看得清
+      var foot = ctx.createLinearGradient(0, H - 130, 0, H);
+      foot.addColorStop(0, 'rgba(250,245,235,0)');
+      foot.addColorStop(1, 'rgba(250,245,235,.72)');
+      ctx.fillStyle = foot;
+      ctx.fillRect(0, H - 130, W, 130);
+    }
     ctx.strokeStyle = 'rgba(176,132,86,.5)'; ctx.lineWidth = 2.5;
     ctx.strokeRect(16, 16, W - 32, H - 32);
     ctx.strokeStyle = 'rgba(176,132,86,.28)'; ctx.lineWidth = 1;
@@ -3636,7 +3662,6 @@ var bagBtn = $('#bagBtn');
   ];
   function openClay() {
     shopDetail.classList.add('is-open');
-    shopDetail.classList.remove('is-sachet');
     shopDetail.classList.remove('is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');

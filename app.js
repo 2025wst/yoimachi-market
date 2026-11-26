@@ -1498,7 +1498,7 @@
         closeGatePhoto();
         setAct(4);
         veil.classList.remove('is-on');
-        toast('入陵 · 点开五处场景，把这一趟走完');
+        toast('进入午朝门，解锁六处场景，溯源伏羲文脉');
         setTimeout(function () { veil.classList.remove('veil--warm'); }, 900);
       }, 900);
     }, 1900);
@@ -1534,7 +1534,7 @@
         closeGateway();
         setAct(4);
         veil.classList.remove('is-on');
-        toast('入陵 · 点开五处场景，把这一趟走完');
+        toast('进入午朝门，解锁六处场景，溯源伏羲文脉');
       }, 480);
     }, 1350);
   });

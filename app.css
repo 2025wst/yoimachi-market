@@ -5562,3 +5562,20 @@ html, body { overscroll-behavior-y: none; }
 .shop-detail.is-clay .clay-shop2__hint {
   top: 9.6% !important;
 }
+
+/* 街道转场字幕卡：正文小字放大一版 */
+.act-caption__card .market-title__desc,
+.act-caption__card .inner3d-title__desc {
+  margin: 0 !important;
+  font-size: 17px !important;
+  line-height: 1.9 !important;
+  letter-spacing: .015em !important;
+  color: #6b5340 !important;
+}
+.act-caption__card .act-caption__hint {
+  font-size: 12.5px !important;
+}
+@media (max-width: 380px) {
+  .act-caption__card .market-title__desc,
+  .act-caption__card .inner3d-title__desc { font-size: 15.5px !important; line-height: 1.85 !important; }
+}

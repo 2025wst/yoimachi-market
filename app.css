@@ -4837,8 +4837,14 @@ html, body { overscroll-behavior-y: none; }
   display: block;
 }
 .act--3 .inner3d__viewport,
-.act--3 .inner2d__video,
 .act--3 .inner2d__vignette { display: none !important; }
+/* 第二街道：动态视频背景（与静态内街同构图，1152x2048 画幅内铺满） */
+.act--3 .inner2d__video {
+  display: block !important;
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  object-fit: cover; object-position: center;
+}
 .act--3 .inner3d::before,
 .act--3 .inner3d::after { display: none !important; }
 .act--3 .inner2d {
@@ -5253,3 +5259,8 @@ html, body { overscroll-behavior-y: none; }
 }
 .sachet-share__box img { box-shadow: 0 24px 60px -28px rgba(40,22,10,.75) !important; }
 .sachet-share__hint { color: #5f4633 !important; text-shadow: 0 1px 2px rgba(255,252,246,.9); }
+
+/* ===== 第三幕（新动态内街视频 · 720x1280）：三个热区按视频构图贴合 ===== */
+.inner2d-hot--sachet { left: 0%;   top: 40% !important; width: 31% !important; height: 34% !important; }
+.inner2d-hot--clay   { left: 64.5%; top: 42% !important; width: 35.5% !important; height: 35% !important; }
+.inner2d-hot--gate   { left: 34.5%; top: 45% !important; width: 29% !important; height: 23% !important; }

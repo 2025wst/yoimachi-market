@@ -5247,3 +5247,106 @@ html, body { overscroll-behavior-y: none; }
 .bagua-photo__gua:active { background: rgba(255,235,190,.18) !important; }
 .bagua-photo__gua::after { opacity: 0; transition: opacity .2s; }
 .bagua-photo__gua:hover::after, .bagua-photo__gua:focus-visible::after, .bagua-photo__gua:active::after { opacity: 1; }
+
+/* ===== 香薰坊 · 配香囊：花香纸框做整屏背景，沉浸式 ===== */
+.shop-detail.is-sachet .shop-detail__scrim {
+  background:
+    linear-gradient(180deg, rgba(252,248,240,.30), rgba(250,244,233,.30)),
+    url(assets/sachet/sachet-frame.jpg) center / cover no-repeat !important;
+  backdrop-filter: blur(3px) saturate(.95);
+}
+.shop-detail.is-sachet .shop-detail__card {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  width: min(100vw, 620px) !important;
+  max-width: min(100vw, 620px) !important;
+  padding: 10px 16px 12px !important;
+  overflow: visible !important;
+}
+.shop-detail.is-sachet .shop-detail__head,
+.shop-detail.is-sachet .shop-detail__desc,
+.shop-detail.is-sachet .shop-detail__bar { display: none !important; }
+.shop-detail.is-sachet .shop-detail__close {
+  top: 14px; right: 14px;
+  background: rgba(255,250,240,.92);
+  border: 1px solid rgba(138,106,85,.4);
+}
+/* 香囊与香药卡片留一点奶白，保证在花纸上也看得清 */
+.shop-detail.is-sachet .sachet2-mat {
+  background: rgba(255,251,243,.94) !important;
+  border-color: rgba(120,96,72,.30) !important;
+  box-shadow: 0 2px 8px rgba(96,66,40,.10);
+}
+.shop-detail.is-sachet .sachet2-scene {
+  background: radial-gradient(ellipse at 50% 58%, rgba(255,250,238,.96), rgba(248,238,220,.72) 70%, rgba(248,238,220,0) 100%) !important;
+}
+.shop-detail.is-sachet .sachet2-fill,
+.shop-detail.is-sachet .sachet-label,
+.shop-detail.is-sachet .sachet2-tip,
+.shop-detail.is-sachet .sachet2-result,
+.shop-detail.is-sachet .sachet2-done-meta,
+.shop-detail.is-sachet .sachet2-done-mat,
+.shop-detail.is-sachet .sachet2-done-feel {
+  text-shadow: 0 1px 2px rgba(255,252,246,.9);
+}
+.shop-detail.is-sachet .shop-detail__actions { background: none !important; }
+.shop-detail.is-sachet .shop-detail__actions .btn {
+  box-shadow: 0 10px 24px rgba(84,52,30,.28);
+}
+
+/* 香囊沉浸式：去掉舞台奶黄底，让花纸透出来；隐藏页头，只留玩法 */
+.shop-detail.is-sachet .shop-detail__stage {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.shop-detail.is-sachet .shop-detail__kicker,
+.shop-detail.is-sachet #shopDetailTitle { display: none !important; }
+.shop-detail.is-sachet .sachet2-scene,
+.shop-detail.is-sachet .sachet2-mat { backdrop-filter: blur(1px); }
+
+/* 香囊沉浸版：已放入的香药不要整块变透明（花纸上会糊），改成淡底 + 勾选 */
+.shop-detail.is-sachet .sachet2-mat.is-added {
+  opacity: 1 !important;
+  background: rgba(250,244,232,.72) !important;
+  border-color: rgba(120,96,72,.22) !important;
+  box-shadow: none !important;
+}
+.shop-detail.is-sachet .sachet2-mat.is-added img { opacity: .30; filter: saturate(.5); }
+.shop-detail.is-sachet .sachet2-mat.is-added span { color: rgba(94,72,52,.55); }
+.shop-detail.is-sachet .sachet2-mat.is-added::after {
+  content: "已放入";
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(122,42,34,.88);
+  color: #fff6e8;
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.shop-detail.is-sachet .sachet2-mat { position: relative; }
+/* 香气结果条：保证在花纸上也清楚、且不被挤 */
+.shop-detail.is-sachet .sachet2-result {
+  max-width: min(92vw, 470px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 7px 16px !important;
+  line-height: 1.5;
+  background: rgba(252,247,238,.94) !important;
+  border: 1px solid rgba(150,116,84,.42) !important;
+  box-shadow: 0 3px 12px rgba(96,66,40,.10);
+}
+
+/* 香囊沉浸版：底部按钮上移，避开「打卡完成」提示条 */
+.shop-detail.is-sachet .shop-detail__actions {
+  padding-bottom: 64px !important;
+  margin-top: 10px !important;
+}
+
+/* 香囊沉浸版：提示条改到顶部，避免压住底部按钮 */
+.toast.toast--high { top: 86px !important; bottom: auto !important; }
+.shop-detail.is-sachet .shop-detail__actions { padding-bottom: 40px !important; }

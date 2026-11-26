@@ -230,6 +230,8 @@
 
   function toast(msg) {
     toastEl.textContent = msg;
+    if (shopDetail && shopDetail.classList.contains('is-sachet')) toastEl.classList.add('toast--high');
+    else toastEl.classList.remove('toast--high');
     toastEl.classList.add('is-on');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toastEl.classList.remove('is-on'); }, 2400);
@@ -1843,7 +1845,7 @@
     if (_act2) _act2.classList.remove('is-shop-open', 'is-entering-shop');
     var _vid = document.getElementById('market2dVideo');
     if (_vid) { try { _vid.play(); } catch (e) {} }
-    shopDetail.classList.remove('is-open', 'is-immersive');
+    shopDetail.classList.remove('is-open', 'is-immersive', 'is-sachet');
     shopDetail.setAttribute('aria-hidden', 'true');
     if (app) app.classList.remove('is-detail');
     plushGame = null;
@@ -2829,6 +2831,7 @@ var bagBtn = $('#bagBtn');
 
   function openSachet() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.add('is-sachet');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
     $('#shopDetailKicker').textContent = '内街 · 香薰坊';
@@ -3633,6 +3636,7 @@ var bagBtn = $('#bagBtn');
   ];
   function openClay() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-sachet');
     shopDetail.classList.remove('is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');

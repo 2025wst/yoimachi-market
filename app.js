@@ -1499,6 +1499,7 @@
         setAct(4);
         veil.classList.remove('is-on');
         toast('进入午朝门，解锁六处场景，溯源伏羲文脉');
+        capsShown[3] = true;
         setTimeout(function () { veil.classList.remove('veil--warm'); }, 900);
       }, 900);
     }, 1900);
@@ -1535,6 +1536,7 @@
         setAct(4);
         veil.classList.remove('is-on');
         toast('进入午朝门，解锁六处场景，溯源伏羲文脉');
+        capsShown[3] = true;
       }, 480);
     }, 1350);
   });
@@ -4040,7 +4042,7 @@ var bagBtn = $('#bagBtn');
       if (cert && cert.classList.contains('is-open')) { closeCertificate && closeCertificate(); return; }
       var actEl = document.querySelector('.act.is-active');
       var act = actEl ? parseInt(actEl.getAttribute('data-act'), 10) : 1;
-      if (act === 4) { goTo(3); return; }
+      if (act === 4) { capsShown[3] = true; goTo(3); return; }
       if (act === 3) { goTo(2); return; }
       if (act === 2) { goTo(1); return; }
     } catch (e) {}

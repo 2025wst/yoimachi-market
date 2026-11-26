@@ -5350,3 +5350,19 @@ html, body { overscroll-behavior-y: none; }
 /* 香囊沉浸版：提示条改到顶部，避免压住底部按钮 */
 .toast.toast--high { top: 86px !important; bottom: auto !important; }
 .shop-detail.is-sachet .shop-detail__actions { padding-bottom: 40px !important; }
+
+/* 香囊沉浸版：关闭按钮提到最上层，且避开手机刘海、放大点击区 */
+.shop-detail.is-sachet .shop-detail__close {
+  z-index: 40 !important;
+  top: 20px !important;
+  right: 16px !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: grid !important;
+  place-items: center;
+  background: rgba(255,250,240,.96) !important;
+  border: 1px solid rgba(120,96,72,.45) !important;
+  box-shadow: 0 4px 12px rgba(84,52,30,.18) !important;
+  pointer-events: auto !important;
+}
+.shop-detail.is-sachet .shop-detail__card { isolation: auto; }

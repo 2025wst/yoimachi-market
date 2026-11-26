@@ -563,7 +563,7 @@
       if (busy) return;
       if (currentAct !== 2) return;
       if (!has('tiger') || !has('bun')) {
-        toast('先把瑞虎坊、馍香坊的互动做完，再往前走');
+        toast('点击互动，再往前走吧');
         return;
       }
       goTo(3);
@@ -2695,7 +2695,7 @@
   };
   window.__marketForward = function () {
     if (!has('tiger') || !has('bun')) {
-      toast('点击互动再往前走吧');
+      toast('点击互动，再往前走吧');
       return;
     }
     goTo(3);

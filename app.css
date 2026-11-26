@@ -5393,3 +5393,32 @@ html, body { overscroll-behavior-y: none; }
 /* 去掉贴在视频框上的暗角层：它的下边缘会在画面底部留下一道硬线 */
 #market3d .market2d::after,
 .act--3 .inner2d::after { display: none !important; content: none !important; }
+
+/* ===== 第一街道：视频铺满整屏，手机视角无留白 ===== */
+#market3d .market2d,
+.market2d-shops {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+#market3d .market2d { z-index: 2; pointer-events: none; transform: none !important; }
+.market2d-shops { z-index: 6; }
+#market3d .market2d__video {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  transform: none !important;
+  -webkit-mask-image: none !important;
+          mask-image: none !important;
+}
+/* 两家店的热区（按新视频铺满后的画面） */
+.market2d-shops .market2d-shop--left  { left: 0% !important;  top: 49% !important; width: 46% !important; height: 23.5% !important; }
+.market2d-shops .market2d-shop--right { left: 56% !important; top: 49% !important; width: 44% !important; height: 23.5% !important; }

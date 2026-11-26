@@ -5551,3 +5551,14 @@ html, body { overscroll-behavior-y: none; }
   max-width: 100% !important;
   margin: 0 !important;
 }
+
+/* 泥泥狗：提示条移到画面上方屋梁处，给下方留白 */
+.shop-detail.is-clay .clay-shop2__hint {
+  bottom: auto !important;
+  top: 6.4% !important;
+}
+
+/* 泥泥狗提示：让开左上「上一步」与顶部状态栏，落在屋梁第一道横梁上 */
+.shop-detail.is-clay .clay-shop2__hint {
+  top: 9.6% !important;
+}

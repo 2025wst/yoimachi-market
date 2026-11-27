@@ -5732,3 +5732,6 @@ html, body { overscroll-behavior-y: none; }
   opacity: .95;
 }
 #app.is-ready .intro-start__loading { display: none; }
+
+/* 开始页没有「上一步」可回，隐藏它 */
+#app[data-act="1"] .global-back { display: none !important; }

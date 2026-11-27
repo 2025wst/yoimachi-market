@@ -5804,3 +5804,8 @@ html, body { overscroll-behavior-y: none; }
 
 /* 9 样贡品按 3×3 排，视觉更整齐 */
 .tongtian-scene__cards { grid-template-columns: repeat(3, 1fr) !important; }
+
+/* 5 个供位：缩小一点、整体上移贴住下层供桌 */
+.tongtian-scene__slots { top: 79.4% !important; }
+.tongtian-scene__slot { width: 16% !important; }
+.tongtian-scene__slot img { inset: -8% !important; width: 116% !important; height: 116% !important; }

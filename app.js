@@ -1205,6 +1205,7 @@
     btn.style.width = Math.round(w) + 'px';
     btn.style.height = Math.round(h) + 'px';
   }
+  window.__layoutIntroHot = layoutIntroHot;
   if (document.readyState !== 'loading') setTimeout(layoutIntroHot, 0); else document.addEventListener('DOMContentLoaded', layoutIntroHot);
   window.addEventListener('resize', layoutIntroHot);
   window.addEventListener('orientationchange', function () { setTimeout(layoutIntroHot, 120); });
@@ -5219,7 +5220,7 @@ var bagBtn = $('#bagBtn');
   if (_enterBtn) {
     _enterBtn.innerHTML = '点击进入游览';
     _enterBtn.disabled = false;
-    layoutIntroHot();
+    if (window.__layoutIntroHot) window.__layoutIntroHot();
   }
   })();
 

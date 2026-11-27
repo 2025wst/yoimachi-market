@@ -5684,8 +5684,8 @@ html, body { overscroll-behavior-y: none; }
 }
 .intro-start__frame {
   position: relative;
-  width: min(100vw, calc(100vh * 1159 / 2035));
-  aspect-ratio: 1159 / 2035;
+  width: min(100vw, calc(100vh * 1152 / 2048));
+  aspect-ratio: 1152 / 2048;
   box-shadow: 0 20px 60px -28px rgba(70, 44, 24, .5);
 }
 .intro-start__img {
@@ -5697,10 +5697,10 @@ html, body { overscroll-behavior-y: none; }
 /* 隐形热区：正好压在海报画的那个红色「游览」按钮上 */
 .intro-start__hot {
   position: absolute;
-  left: 30.6%;
+  left: 28.6%;
   top: 83.0%;
-  width: 39%;
-  height: 9.2%;
+  width: 42.8%;
+  height: 8.0%;
   padding: 0;
   border: 0;
   border-radius: 16px;

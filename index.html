@@ -263,7 +263,6 @@
   <!-- ============ 第一幕 · 远观 ============ -->
   <section class="act act--1 is-active" data-act="1" aria-label="第一幕 远观">
     <div class="map-camera" id="mapCamera">
-      <img class="aerial" src="assets/intro-hero.jpg" alt="太昊陵 · 云海之上" decoding="async">
     </div>
 
     <div class="intro-start">
@@ -286,7 +285,7 @@
         <canvas id="glscene" aria-label="太昊陵前的宋代集市长街"></canvas>
       </div>
       <div class="market-painted" aria-hidden="true">
-        <img src="assets/market-painted.jpg" alt="">
+        <img src="assets/market-painted.jpg" alt="" loading="lazy">
       </div>
       <svg class="walker-defs" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
         <symbol id="walkerMan" viewBox="0 0 40 92">
@@ -342,7 +341,7 @@
       </div>
       <div class="market3d__wash" aria-hidden="true"></div>
       <div class="market2d" id="market2d" aria-hidden="true">
-        <img class="market2d__img" id="market2dImg" src="assets/market2d-street.jpg" alt="集市街景 · 瑞虎坊与馍香坊" decoding="async">
+        <img class="market2d__img" id="market2dImg" src="assets/market2d-street.jpg" alt="集市街景 · 瑞虎坊与馍香坊" decoding="async" loading="lazy">
       </div>
       <div class="market2d-shops">
         <button class="market2d-shop market2d-shop--left" type="button" data-shop="tiger" aria-label="进入布老虎铺"><span>瑞虎坊 · 布艺</span></button>
@@ -390,7 +389,7 @@
         <canvas id="glsceneInner" aria-label="太昊陵内街与午朝门"></canvas>
       </div>
       <div class="inner-painted" aria-hidden="true">
-        <img src="assets/inner-painted.jpg" alt="">
+        <img src="assets/inner-painted.jpg" alt="" loading="lazy">
       </div>
       <div class="inner3d__wash" aria-hidden="true"></div>
       <div class="inner2d" id="inner2d">
@@ -814,7 +813,7 @@
 
 <script src="scene3d.js?v=20261125c" defer></script>
 <script src="scene3d-inner.js?v=20261125c" defer></script>
-<script src="app.js?v=2026112724" defer></script>
+<script src="app.js?v=2026112725" defer></script>
 <div class="clay3d" id="clay3d" aria-hidden="true">
   <canvas id="clay3dCanvas"></canvas>
   <button class="clay3d__close" type="button" id="clay3dClose" aria-label="关闭">×</button>
@@ -867,7 +866,7 @@
   <div class="pray-page pray-tree" id="prayTree" hidden aria-hidden="true">
     <div class="pray-page__bg"></div>
     <div class="pray-page__frame">
-      <img class="pray-page__img" src="assets/pray/tree.jpg" alt="祈福树" decoding="async">
+      <img class="pray-page__img" src="assets/pray/tree.jpg" alt="祈福树" decoding="async" loading="lazy">
       <button class="pray-tree__trunk" type="button" data-pray style="left:38%;top:62%;width:25%;height:30%" aria-label="点树干 · 系祈福牌"></button>
       <button class="pray-tree__tag" type="button" data-pray style="left:24.6%;top:50.6%;width:9.4%;height:10.4%" aria-label="吉星高照 · 系祈福牌"></button>
       <button class="pray-tree__tag" type="button" data-pray style="left:47.4%;top:48.1%;width:9.4%;height:11%" aria-label="岁岁平安 · 系祈福牌"></button>
@@ -880,7 +879,7 @@
   <div class="pray-page pray-card" id="prayCard" hidden aria-hidden="true">
     <div class="pray-page__bg"></div>
     <div class="pray-page__frame">
-      <img class="pray-page__img" id="prayWishImg" src="assets/pray/wish-1.jpg" alt="祈福牌">
+      <img class="pray-page__img" id="prayWishImg" src="assets/pray/wish-1.jpg" alt="祈福牌" loading="lazy">
       <div class="pray-card__actions">
         <button class="pray-card__btn pray-card__btn--ghost" type="button" id="prayAgain">再抽一次</button>
         <button class="pray-card__btn pray-card__btn--primary" type="button" id="prayKeep">收下福牌</button>

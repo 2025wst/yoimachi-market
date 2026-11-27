@@ -289,6 +289,7 @@
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
     if (n === 4) { renderSpots(); preloadNow(ACT4_IMAGES); }
+    if (n === 2) preloadNow(ACT2_IMAGES);
     if (n === 3) preloadNow(ACT3_IMAGES);
     var iv = document.getElementById('inner2dVideo');
     if (iv) {
@@ -1161,45 +1162,8 @@
     var cp = document.getElementById('prayCard');
     if (cp) { cp.hidden = true; cp.setAttribute('aria-hidden', 'true'); }
   }
-  // 预加载各关卡的图片：等首屏 ready 后空闲时慢慢下，进关卡时就不用等
-  (function preloadSceneAssets() {
-    var list = [
-      // 第四幕（碑林/伏羲陵/蓍草园/通天殿/八卦坛）大图优先，进关卡不黑屏
-      'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
-      'assets/tomb/tomb-before.jpg', 'assets/tomb/tomb-after.jpg',
-      'assets/tomb/incense-gold.jpg', 'assets/tomb/incense-red.jpg',
-      'assets/shicao/garden.jpg', 'assets/shicao/herb.jpg',
-      'assets/tongtian/hall.jpg',
-      'assets/tongtian/offer-flower.png', 'assets/tongtian/offer-pastry.png',
-      'assets/tongtian/offer-bun.png', 'assets/tongtian/offer-fruit.png',
-      'assets/tongtian/offer-grain.webp', 'assets/tongtian/offer-huamo.webp',
-      'assets/tongtian/offer-mahua.webp', 'assets/tongtian/offer-pork.webp',
-      'assets/tongtian/offer-duck.webp',
-      'assets/bagua-altar.jpg',
-      // 内街 / 集市
-      'assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg',
-      'assets/gate-door-left.jpg', 'assets/gate-door-right.jpg',
-      'assets/pray/tree.jpg',
-      // 店铺关卡
-      'assets/tiger/jigsaw/0.jpg', 'assets/tiger/jigsaw/1.jpg', 'assets/tiger/jigsaw/2.jpg',
-      'assets/tiger/jigsaw/3.jpg', 'assets/tiger/jigsaw/4.jpg', 'assets/tiger/jigsaw/5.jpg',
-      'assets/tiger/jigsaw/6.jpg', 'assets/tiger/jigsaw/7.jpg', 'assets/tiger/jigsaw/8.jpg',
-      'assets/tiger/plush-source.jpg',
-      'assets/bun/bun-main.jpg',
-      'assets/sachet/sachet-cutout.png', 'assets/sachet/sachet-frame.jpg',
-      'assets/clay-charm.jpg'
-    ];
-    var i = 0;
-    function next() {
-      if (i >= list.length) return;
-      var im = new Image();
-      im.decoding = 'async';
-      im.onload = im.onerror = function () { i++; setTimeout(next, 180); };
-      im.src = list[i];
-      setTimeout(function () { if (im.complete) { i++; next(); } }, 4000);
-    }
-    window.addEventListener('load', function () { setTimeout(next, 1200); });
-  })();
+  // 不再做「一进页面就偷偷下 40 张图」的全量预加载：
+  // 改成进到哪一幕、打开哪个场景，才并行拉那一幕要用的图（见 preloadNow / ACT*_IMAGES）
 
   // 通用：背景图按 cover 铺满后，把「图上某个百分比区域」换算成屏幕像素热区
   function layoutCoverHot(el, imgW, imgH, rect, padRatio) {
@@ -1271,7 +1235,14 @@
       try { var im = new Image(); im.decoding = 'async'; im.src = src; } catch (e) {}
     });
   }
-  var ACT3_IMAGES = ['assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg'];
+  var ACT2_IMAGES = [
+    'assets/tiger/jigsaw/0.jpg', 'assets/tiger/jigsaw/1.jpg', 'assets/tiger/jigsaw/2.jpg',
+    'assets/tiger/jigsaw/3.jpg', 'assets/tiger/jigsaw/4.jpg', 'assets/tiger/jigsaw/5.jpg',
+    'assets/tiger/jigsaw/6.jpg', 'assets/tiger/jigsaw/7.jpg', 'assets/tiger/jigsaw/8.jpg',
+    'assets/tiger/plush-source.jpg', 'assets/bun/bun-main.jpg'
+  ];
+  var ACT3_IMAGES = ['assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg',
+    'assets/gate-door-left.jpg', 'assets/gate-door-right.jpg'];
   var ACT4_IMAGES = [
     'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
     'assets/tomb/tomb-before.jpg', 'assets/tomb/tomb-after.jpg',

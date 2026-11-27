@@ -6038,3 +6038,48 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   z-index: 1;
 }
 #market3d .market2d-shops { z-index: 6; }
+
+/* ===== 碑林：新图 1152x2048 竖幅，热区与拉近视角按新图重设 ===== */
+.beilin-hall__frame {
+  width: min(96vw, calc(100vh * 1152 / 2048)) !important;
+  aspect-ratio: 1152 / 2048 !important;
+  transform-origin: 48.5% 54% !important;
+}
+.beilin-hall__img { object-fit: cover !important; }
+.beilin-hall__stele {
+  left: 34.5% !important;
+  top: 40% !important;
+  width: 29% !important;
+  height: 29% !important;
+  border-radius: 10px !important;
+}
+.beilin-hall__frame.is-zooming { transform: scale(2.55) !important; }
+
+/* ===== 祈福树：新图比例 1773x2364 ===== */
+.pray-tree .pray-page__frame {
+  width: min(100vw, calc(100vh * 1773 / 2364)) !important;
+  aspect-ratio: 1773 / 2364 !important;
+}
+.pray-tree__trunk {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  z-index: 3;
+  border-radius: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+.pray-tree__trunk::after {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  border-radius: 16px;
+  background: radial-gradient(ellipse at 50% 55%, rgba(255,240,200,.34), rgba(255,240,200,0) 72%);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+.pray-tree__trunk:hover::after,
+.pray-tree__trunk:focus-visible::after,
+.pray-tree__trunk:active::after { opacity: 1; }

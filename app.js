@@ -1116,7 +1116,7 @@
     if (!tp.dataset.bound) {
       tp.dataset.bound = '1';
       var close = document.getElementById('prayTreeClose');
-      $$('.pray-tree__tag', tp).forEach(function (el) {
+      $$('[data-pray]', tp).forEach(function (el) {
         el.addEventListener('click', openPrayCard);
       });
       if (close) close.addEventListener('click', closePrayTree);

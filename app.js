@@ -261,6 +261,20 @@
   var currentAct = 1;
   var busy = false;
 
+  // 把带 data-src 的图，等到真正要显示时再变成 src（首屏少下几 MB）
+  function hydrateImages(root) {
+    var scope = root || document;
+    var list = scope.querySelectorAll ? scope.querySelectorAll('img[data-src]') : [];
+    for (var i = 0; i < list.length; i++) {
+      var img = list[i];
+      if (img.getAttribute('data-src')) {
+        img.setAttribute('src', img.getAttribute('data-src'));
+        img.removeAttribute('data-src');
+      }
+    }
+  }
+  window.__hydrateImages = hydrateImages;
+
   function setAct(n) {
     currentAct = n;
     // 开始页没有可返回的地方，隐藏「上一步」
@@ -286,6 +300,15 @@
     }
     if (n === 2 && window.Scene3D && Scene3D.resize) Scene3D.resize();
     if (String(n) === '2' && window.__layoutMarketShops) setTimeout(window.__layoutMarketShops, 60);
+    if (n === 2) hydrateImages(document.querySelector('.act--2'));
+    if (n === 3) hydrateImages(document.querySelector('.act--3'));
+    if (n === 4) {
+      hydrateImages(document.querySelector('.act--4'));
+      hydrateImages(document.getElementById('gatePhoto'));
+      hydrateImages(document.getElementById('baguaPhoto'));
+      hydrateImages(document.getElementById('prayTree'));
+      hydrateImages(document.getElementById('templeMap') || document.querySelector('.temple-map'));
+    }
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
     if (n === 4) { renderSpots(); preloadNow(ACT4_IMAGES); }
@@ -1109,6 +1132,7 @@
     });
   }
   function openPrayTree() {
+    if (window.__hydrateImages) window.__hydrateImages(document.getElementById('prayTree'));
     var tp = document.getElementById('prayTree');
     if (!tp) return;
     preloadPrayAssets();
@@ -1272,7 +1296,7 @@
   });
 
   window.__openPrayTree = openPrayTree;
-  setTimeout(preloadPrayAssets, 1500);
+  // 祈福图等打开祈福树时再拉（原来在页面加载 1.5 秒后就会下 1.2MB）
   (function bindPrayBtn() {
     var btn = document.getElementById('prayBtn');
     if (btn) btn.addEventListener('click', openPrayTree);
@@ -1313,6 +1337,7 @@
   }
   window.__paintGuaLines = paintGuaLines;
   function openBaguaAltar() {
+    if (window.__hydrateImages) window.__hydrateImages(document.getElementById('baguaPhoto'));
     var bp = document.getElementById('baguaPhoto');
     if (!bp) return;
     bp.hidden = false;

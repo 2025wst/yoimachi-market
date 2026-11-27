@@ -6190,3 +6190,9 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   padding-left: 12px !important;
   padding-right: 12px !important;
 }
+
+/* ===== 首屏减负：没进那一幕就不生成模糊底图（避免页面一打开就下几张大图） ===== */
+.act:not(.is-active) .market-painted::before,
+.act:not(.is-active) .inner-painted::before { display: none !important; }
+/* 香囊分享卡的花纸背景，只在真正打开时才加载 */
+.sachet-share[hidden] { background-image: none !important; }

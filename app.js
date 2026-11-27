@@ -5238,6 +5238,11 @@ var bagBtn = $('#bagBtn');
   }
   window.__openTongtian = openTongtian;
 
+  /* 便捷直达：index.html?tt=1 直接进统天殿供奉（演示/自测用） */
+  if (/[?&]tt=1(&|$)/.test(location.search)) {
+    setTimeout(function () { openTongtian(); }, 500);
+  }
+
 })();
 
   (function start2dWalkers() {

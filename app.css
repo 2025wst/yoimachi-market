@@ -5792,3 +5792,12 @@ html, body { overscroll-behavior-y: none; }
   pointer-events: none;
 }
 .shop-detail.is-tiger .jigsaw2-hint { color: #7a5b42; letter-spacing: .1em; }
+
+/* 统天殿贡品：9 样可选，供位 5 个 */
+.tongtian-scene__cards {
+  max-height: 46vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+.tongtian-scene__slot { width: 18%; }

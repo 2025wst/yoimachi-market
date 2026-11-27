@@ -1167,6 +1167,9 @@
       'assets/tongtian/hall.jpg',
       'assets/tongtian/offer-flower.png', 'assets/tongtian/offer-pastry.png',
       'assets/tongtian/offer-bun.png', 'assets/tongtian/offer-fruit.png',
+      'assets/tongtian/offer-grain.webp', 'assets/tongtian/offer-huamo.webp',
+      'assets/tongtian/offer-mahua.webp', 'assets/tongtian/offer-pork.webp',
+      'assets/tongtian/offer-duck.webp',
       'assets/bagua-altar.jpg',
       // 内街 / 集市
       'assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg',
@@ -5075,8 +5078,14 @@ var bagBtn = $('#bagBtn');
     { id: 'flower', name: '花束', src: 'assets/tongtian/offer-flower.png', cls: 'tongtian-scene__card--flower' },
     { id: 'pastry', name: '点心', src: 'assets/tongtian/offer-pastry.png', cls: '' },
     { id: 'bun', name: '供饼', src: 'assets/tongtian/offer-bun.png', cls: '' },
-    { id: 'fruit', name: '果盘', src: 'assets/tongtian/offer-fruit.png', cls: '' }
+    { id: 'fruit', name: '果盘', src: 'assets/tongtian/offer-fruit.png', cls: '' },
+    { id: 'grain', name: '五谷', src: 'assets/tongtian/offer-grain.webp', cls: '' },
+    { id: 'huamo', name: '花馍', src: 'assets/tongtian/offer-huamo.webp', cls: '' },
+    { id: 'mahua', name: '麻花', src: 'assets/tongtian/offer-mahua.webp', cls: '' },
+    { id: 'pork', name: '方肉', src: 'assets/tongtian/offer-pork.webp', cls: '' },
+    { id: 'duck', name: '烧鸭', src: 'assets/tongtian/offer-duck.webp', cls: '' }
   ];
+  var TONGTIAN_SLOTS = 5;
   function openTongtian() {
     var old = document.getElementById('tongtianScene');
     if (old) old.remove();
@@ -5084,8 +5093,8 @@ var bagBtn = $('#bagBtn');
     box.className = 'tongtian-scene';
     box.id = 'tongtianScene';
     var slotsHtml = '';
-    [20, 50, 80].forEach(function (x, i) {
-      slotsHtml += '<div class="tongtian-scene__slot" id="ttSlot' + i + '" style="left:' + x + '%">' + (i + 1) + '</div>';
+    [10, 30, 50, 70, 90].forEach(function (x, i) {
+      slotsHtml += '<div class="tongtian-scene__slot" id="ttSlot' + i + '" style="left:' + x + '%;width:18%">' + (i + 1) + '</div>';
     });
     var cardsHtml = TONGTIAN_OFFERS.map(function (o) {
       return '<button class="tongtian-scene__card ' + o.cls + '" type="button" data-offer="' + o.id + '"><img src="' + o.src + '" alt="' + o.name + '"><span>' + o.name + '</span></button>';
@@ -5097,7 +5106,7 @@ var bagBtn = $('#bagBtn');
         '<div class="tongtian-scene__table" id="tongtianTable"><span class="tongtian-scene__table-hint">点击供台 · 供奉贡品</span></div>' +
         '<div class="tongtian-scene__slots">' + slotsHtml + '</div>' +
       '</div>' +
-      '<p class="tongtian-scene__hint" id="tongtianHint">点击供台 · 供奉贡品（0 / 3）</p>' +
+      '<p class="tongtian-scene__hint" id="tongtianHint">点击供台 · 供奉贡品（0 / 5）</p>' +
       '<button class="tongtian-scene__close" type="button" id="tongtianClose" aria-label="关闭">×</button>' +
       '<div class="tongtian-scene__chooser" id="tongtianChooser" hidden>' +
         '<div class="tongtian-scene__chooser-head"><b>选一样供品</b><button class="tongtian-scene__chooser-close" type="button" id="tongtianChooserClose" aria-label="收起">×</button></div>' +
@@ -5117,8 +5126,8 @@ var bagBtn = $('#bagBtn');
     }
     if (doneAlready) {
       hint.textContent = '供奉完成 · 通天殿打卡完成';
-      TONGTIAN_OFFERS.slice(0, 3).forEach(function (o, i) { fillSlot(i, o); });
-      st.count = 3;
+      TONGTIAN_OFFERS.slice(0, TONGTIAN_SLOTS).forEach(function (o, i) { fillSlot(i, o); });
+      st.count = TONGTIAN_SLOTS;
       var th = document.querySelector('.tongtian-scene__table-hint');
       if (th) th.style.display = 'none';
     }
@@ -5137,13 +5146,13 @@ var bagBtn = $('#bagBtn');
       if (chooser && !chooser.hidden && !e.target.closest('.tongtian-scene__chooser') && !e.target.closest('#tongtianTable')) closeChooser();
     });
     function chooseOffer(offer) {
-      if (!st || st.done || st.count >= 3) return;
+      if (!st || st.done || st.count >= TONGTIAN_SLOTS) return;
       fillSlot(st.count, offer);
       st.count++;
       closeChooser();
       if (sfx.pop) sfx.pop();
-      if (st.count < 3) {
-        hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 3）';
+      if (st.count < TONGTIAN_SLOTS) {
+        hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 5）';
       } else {
         st.done = true;
         hint.textContent = '供奉完成 · 通天殿打卡完成';

@@ -6144,3 +6144,15 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 @media (max-height: 700px) {
   .shop-detail.is-tiger .shop-detail__card { padding-top: 6vh !important; }
 }
+
+/* 布老虎：内容避开「上一步」，并把拼图板略收窄，尽量一屏放下 */
+.shop-detail.is-tiger .shop-detail__card {
+  padding: 12.5vh 22px 3vh !important;
+}
+.shop-detail.is-tiger .jigsaw2-game { max-width: 100% !important; }
+.shop-detail.is-tiger .jigsaw2-board { width: 86% !important; margin: 0 auto !important; }
+.shop-detail.is-tiger .jigsaw2-hint { margin-top: 6px !important; }
+@media (max-height: 700px) {
+  .shop-detail.is-tiger .shop-detail__card { padding-top: 10vh !important; }
+  .shop-detail.is-tiger .jigsaw2-board { width: 78% !important; }
+}

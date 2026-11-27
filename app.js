@@ -275,7 +275,8 @@
     if (n === 2 && window.Scene3D && Scene3D.resize) Scene3D.resize();
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
-    if (n === 4) renderSpots();
+    if (n === 4) { renderSpots(); preloadNow(ACT4_IMAGES); }
+    if (n === 3) preloadNow(ACT3_IMAGES);
     var iv = document.getElementById('inner2dVideo');
     if (iv) {
       if (String(n) === '3') { try { var ip = iv.play(); if (ip && ip.catch) ip.catch(function () {}); } catch (e) {} }
@@ -1146,23 +1147,27 @@
   // 预加载各关卡的图片：等首屏 ready 后空闲时慢慢下，进关卡时就不用等
   (function preloadSceneAssets() {
     var list = [
+      // 第四幕（碑林/伏羲陵/蓍草园/通天殿/八卦坛）大图优先，进关卡不黑屏
+      'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
+      'assets/tomb/tomb-before.jpg', 'assets/tomb/tomb-after.jpg',
+      'assets/tomb/incense-gold.jpg', 'assets/tomb/incense-red.jpg',
+      'assets/shicao/garden.jpg', 'assets/shicao/herb.jpg',
+      'assets/tongtian/hall.jpg',
+      'assets/tongtian/offer-flower.png', 'assets/tongtian/offer-pastry.png',
+      'assets/tongtian/offer-bun.png', 'assets/tongtian/offer-fruit.png',
+      'assets/bagua-altar.jpg',
+      // 内街 / 集市
+      'assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg',
+      'assets/gate-door-left.jpg', 'assets/gate-door-right.jpg',
+      'assets/pray/tree.jpg',
+      // 店铺关卡
       'assets/tiger/jigsaw/0.jpg', 'assets/tiger/jigsaw/1.jpg', 'assets/tiger/jigsaw/2.jpg',
       'assets/tiger/jigsaw/3.jpg', 'assets/tiger/jigsaw/4.jpg', 'assets/tiger/jigsaw/5.jpg',
       'assets/tiger/jigsaw/6.jpg', 'assets/tiger/jigsaw/7.jpg', 'assets/tiger/jigsaw/8.jpg',
       'assets/tiger/plush-source.jpg',
       'assets/bun/bun-main.jpg',
-      'assets/tongtian/offer-flower.png', 'assets/tongtian/offer-pastry.png',
-      'assets/tongtian/offer-bun.png', 'assets/tongtian/offer-fruit.png',
-      'assets/tongtian/hall.jpg',
-      'assets/tomb/tomb.jpg', 'assets/tomb/tomb-lit.jpg',
-      'assets/tomb/incense-gold.jpg', 'assets/tomb/incense-red.jpg',
-      'assets/gate-closeup.jpg', 'assets/gate-door-left.jpg', 'assets/gate-door-right.jpg',
-      'assets/bagua-altar.jpg', 'assets/pray/tree.jpg',
-      'assets/shicao/garden.jpg', 'assets/shicao/herb.jpg',
-      'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
-      'assets/sachet/lavender.png', 'assets/sachet/rose.png', 'assets/sachet/lemon.png',
-      'assets/sachet/mint.png', 'assets/sachet/sandalwood.png', 'assets/sachet/chamomile.png',
-      'assets/sachet/sachet.png', 'assets/clay-charm.jpg'
+      'assets/sachet/sachet-cutout.png', 'assets/sachet/sachet-frame.jpg',
+      'assets/clay-charm.jpg'
     ];
     var i = 0;
     function next() {
@@ -1175,6 +1180,27 @@
     }
     window.addEventListener('load', function () { setTimeout(next, 1200); });
   })();
+
+  // 进入某一幕时，把该幕要用的图并行拉一遍（比顺序预加载快得多）
+  function preloadNow(urls) {
+    (urls || []).forEach(function (src) {
+      try { var im = new Image(); im.decoding = 'async'; im.src = src; } catch (e) {}
+    });
+  }
+  var ACT3_IMAGES = ['assets/clay-shop-web.jpg', 'assets/gate-closeup.jpg'];
+  var ACT4_IMAGES = [
+    'assets/beilin/stele.jpg', 'assets/beilin/pavilion.jpg',
+    'assets/tomb/tomb-before.jpg', 'assets/tomb/tomb-after.jpg',
+    'assets/shicao/garden.jpg', 'assets/tongtian/hall.jpg', 'assets/bagua-altar.jpg'
+  ];
+  // 图片没加载完时先淡入，避免中途露黑底
+  function fadeInWhenReady(img) {
+    if (!img) return;
+    function done() { img.classList.add('is-ready'); }
+    if (img.complete && img.naturalWidth) { done(); return; }
+    img.addEventListener('load', done);
+    img.addEventListener('error', done);
+  }
 
   // 意外刷新恢复：等初始化完成、第一幕渲染后再切回上一幕
   window.addEventListener('load', function () {
@@ -4637,6 +4663,7 @@ var bagBtn = $('#bagBtn');
       '<p class="beilin-scene__hint" id="beilinHint">按住抹布，在石碑上移动擦拭</p>' +
       '<button class="beilin-scene__close" type="button" id="beilinClose" aria-label="关闭">×</button>';
     document.body.appendChild(box);
+    fadeInWhenReady(box.querySelector('.beilin-scene__clean'));
     var frame = document.getElementById('beilinFrame');
     var dirty = document.getElementById('beilinDirty');
     var rag = document.getElementById('beilinRag');
@@ -4787,7 +4814,8 @@ var bagBtn = $('#bagBtn');
     if (hot) hot.addEventListener('click', function () {
       if (zooming) return;
       zooming = true;
-      var frame = box.querySelector('.beilin-hall__frame');
+      fadeInWhenReady(box.querySelector('.beilin-hall__img'));
+    var frame = box.querySelector('.beilin-hall__frame');
       if (frame) frame.classList.add('is-zooming');
       box.classList.add('is-zooming');
       setTimeout(function () {

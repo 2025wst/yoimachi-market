@@ -5646,3 +5646,17 @@ html, body { overscroll-behavior-y: none; }
 @media (max-width: 380px) {
   .temple-finish { padding: 13px 24px !important; font-size: 16px !important; }
 }
+
+/* ===== 碑林：大图未就绪时不露纯黑底，图片淡入 ===== */
+.beilin-scene {
+  background: radial-gradient(60% 55% at 50% 45%, #574a39, #2b2318 76%) !important;
+}
+.beilin-scene__bg {
+  background: radial-gradient(60% 55% at 50% 45%, rgba(120, 100, 74, .55), rgba(38, 30, 20, .92) 75%) !important;
+}
+.beilin-scene__frame { background: #33291c !important; }
+.beilin-scene__clean { opacity: 0; transition: opacity .32s ease; }
+.beilin-scene__clean.is-ready { opacity: 1; }
+.beilin-hall__img { opacity: 0; transition: opacity .32s ease; }
+.beilin-hall__img.is-ready { opacity: 1; }
+.beilin-hall__frame { background: #33291c !important; }

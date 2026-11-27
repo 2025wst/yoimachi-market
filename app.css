@@ -5975,3 +5975,11 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 .bagua-photo__gua:focus-visible::after,
 .bagua-photo__gua:active::after { opacity: 1; }
 .bagua-photo__gua.is-seen::after { opacity: .25; }
+
+/* 八卦坛太极热区：按新图实测对齐 */
+.bagua-photo__taiji {
+  left: 37.56% !important;
+  top: 45.60% !important;
+  width: 23.59% !important;
+  height: 13.85% !important;
+}

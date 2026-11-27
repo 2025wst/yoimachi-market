@@ -4920,12 +4920,12 @@ var bagBtn = $('#bagBtn');
       '<p class="beilin-hall__hint">点击亭中石碑 · 走近细看</p>' +
       '<button class="beilin-hall__close" type="button" id="beilinHallClose" aria-label="关闭">×</button>';
     document.body.appendChild(box);
+    fadeInWhenReady(box.querySelector('.beilin-hall__img'));
     var hot = document.getElementById('beilinHallStele');
     var zooming = false;
     if (hot) hot.addEventListener('click', function () {
       if (zooming) return;
       zooming = true;
-      fadeInWhenReady(box.querySelector('.beilin-hall__img'));
     var frame = box.querySelector('.beilin-hall__frame');
       if (frame) frame.classList.add('is-zooming');
       box.classList.add('is-zooming');

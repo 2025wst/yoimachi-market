@@ -6156,3 +6156,8 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   .shop-detail.is-tiger .shop-detail__card { padding-top: 10vh !important; }
   .shop-detail.is-tiger .jigsaw2-board { width: 78% !important; }
 }
+
+/* 布老虎：拼图板/碎片区再收一点，390 屏可一屏放下 */
+.shop-detail.is-tiger .jigsaw2-board { width: 76% !important; max-width: 262px !important; }
+.shop-detail.is-tiger .jigsaw2-tray { max-width: 250px !important; width: 100% !important; gap: 6px !important; }
+.shop-detail.is-tiger .jigsaw2-game { gap: 8px !important; padding-bottom: 30px !important; }

@@ -1366,7 +1366,7 @@
       baguaSeen[id] = true;
       var n = Object.keys(baguaSeen).length;
       var hint = document.getElementById('baguaHint');
-      if (hint) hint.textContent = '点击八卦 · 看卦象（已看 ' + n + ' / 8）';
+      if (hint) hint.innerHTML = '点击八卦看卦象<br>看遍八卦自动抽签（已看 ' + n + ' / 8）';
       if (n >= 8) {
         var infoEl = document.getElementById('baguaInfo');
         if (infoEl) infoEl.hidden = true;

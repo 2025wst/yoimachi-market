@@ -5728,3 +5728,67 @@ html, body { overscroll-behavior-y: none; }
 
 /* 开始页没有「上一步」可回，隐藏它 */
 #app[data-act="1"] .global-back { display: none !important; }
+
+/* ===== 泥泥狗「打卡成功」：整幅设计图 + 隐形按钮 ===== */
+.clay-checkin {
+  background: #f3e6cc !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+.clay-checkin::before { display: none !important; }
+.clay-checkin__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+}
+.clay-checkin__hot {
+  position: absolute;
+  left: 25.35%;
+  top: 78.61%;
+  width: 50.26%;
+  height: 7.81%;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: transparent;
+  font-size: 0;
+  line-height: 0;
+  text-indent: -9999px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.clay-checkin__hot:active { background: rgba(255, 240, 210, .16); }
+
+/* ===== 布老虎（瑞虎坊）：纸底 + 云山纹装饰（不挡操作）===== */
+.shop-detail.is-tiger .shop-detail__scrim {
+  background: rgba(58, 42, 28, .46);
+  backdrop-filter: blur(3px) saturate(.98);
+}
+.shop-detail.is-tiger .shop-detail__card {
+  background-color: #f7efdc;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='160' viewBox='0 0 600 160'%3E%3Cg fill='none' stroke='%23b58a55' stroke-opacity='.20' stroke-width='2'%3E%3Cpath d='M0 130 L90 60 L150 110 L210 70 L300 130 L380 80 L450 125 L520 70 L600 130'/%3E%3Cpath d='M0 150 L70 110 L140 145 L220 108 L300 150 L390 112 L470 148 L560 110 L600 150'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='120' viewBox='0 0 300 120'%3E%3Cg fill='none' stroke='%23b58a55' stroke-opacity='.22' stroke-width='2'%3E%3Cpath d='M20 70c6-16 26-16 32 0'/%3E%3Cpath d='M52 70c5-12 20-12 26 0'/%3E%3Cpath d='M120 44c7-18 30-18 38 0'/%3E%3Cpath d='M156 44c6-14 24-14 31 0'/%3E%3Cpath d='M210 84c6-16 26-16 32 0'/%3E%3Cpath d='M242 84c5-12 20-12 26 0'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 249, 235, .75), rgba(246, 236, 214, 0) 62%);
+  background-position: bottom center, top center, center;
+  background-repeat: no-repeat, repeat-x, no-repeat;
+  background-size: 100% auto, 300px auto, cover;
+  border: 1px solid rgba(176, 132, 86, .5);
+  box-shadow: 0 24px 60px -24px rgba(60, 36, 20, .5), inset 0 0 0 1px rgba(255, 250, 238, .55);
+}
+.shop-detail.is-tiger .shop-detail__card::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(176, 132, 86, .3);
+  border-radius: 8px;
+  pointer-events: none;
+}
+.shop-detail.is-tiger .jigsaw2-hint { color: #7a5b42; letter-spacing: .1em; }

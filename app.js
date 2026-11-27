@@ -1184,6 +1184,23 @@
     window.addEventListener('load', function () { setTimeout(next, 1200); });
   })();
 
+  // 通用：背景图按 cover 铺满后，把「图上某个百分比区域」换算成屏幕像素热区
+  function layoutCoverHot(el, imgW, imgH, rect, padRatio) {
+    if (!el) return;
+    var W = window.innerWidth, H = window.innerHeight;
+    var scale = Math.max(W / imgW, H / imgH);
+    var dispW = imgW * scale, dispH = imgH * scale;
+    var offX = (W - dispW) / 2, offY = (H - dispH) / 2;
+    var pad = (padRatio || 0) * scale;
+    var padX = pad * imgW, padY = pad * imgH;
+    el.style.position = 'absolute';
+    el.style.left = Math.round(offX + rect.l * dispW - padX) + 'px';
+    el.style.top = Math.round(offY + rect.t * dispH - padY) + 'px';
+    el.style.width = Math.round(rect.w * dispW + padX * 2) + 'px';
+    el.style.height = Math.round(rect.h * dispH + padY * 2) + 'px';
+  }
+  window.__layoutCoverHot = layoutCoverHot;
+
   // 开始页：海报按 cover 铺满后，换算红色「游览」按钮在屏幕上的真实位置
   var INTRO_IMG_W = 1152, INTRO_IMG_H = 2048;
   var INTRO_BTN = { l: 0.2925, t: 0.835, w: 0.4167, h: 0.0688 }; // 图片内百分比（实测）
@@ -1916,6 +1933,7 @@
 
   function openShopDetail(kind) {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-tiger');
     shopDetail.classList.remove('is-clay');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
@@ -1927,7 +1945,7 @@
     if (_act2) _act2.classList.remove('is-shop-open', 'is-entering-shop');
     var _vid = document.getElementById('market2dVideo');
     if (_vid) { try { _vid.play(); } catch (e) {} }
-    shopDetail.classList.remove('is-open', 'is-immersive', 'is-clay');
+    shopDetail.classList.remove('is-open', 'is-immersive', 'is-clay', 'is-tiger');
     shopDetail.setAttribute('aria-hidden', 'true');
     if (app) app.classList.remove('is-detail');
     plushGame = null;
@@ -2913,6 +2931,7 @@ var bagBtn = $('#bagBtn');
 
   function openSachet() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-tiger');
     shopDetail.classList.remove('is-clay');
     shopDetail.setAttribute('aria-hidden', 'false');
     if (app) app.classList.add('is-detail');
@@ -3747,6 +3766,7 @@ var bagBtn = $('#bagBtn');
   ];
   function openClay() {
     shopDetail.classList.add('is-open');
+    shopDetail.classList.remove('is-tiger');
     shopDetail.classList.add('is-clay');
     shopDetail.classList.remove('is-immersive');
     shopDetail.setAttribute('aria-hidden', 'false');
@@ -3849,13 +3869,10 @@ var bagBtn = $('#bagBtn');
     box.className = 'clay-checkin';
     box.id = 'clayCheckin';
     box.innerHTML =
-      '<div class="clay-checkin__card">' +
-        '<div class="clay-checkin__title">打卡成功 <span class="clay-checkin__tick">✓</span></div>' +
-        '<img class="clay-checkin__charm" src="assets/clay-charm.jpg" alt="泥泥狗挂件">' +
-        '<p class="clay-checkin__text">传统泥泥狗统一以黑色为底，搭配红、黄、白、绿等彩色纹饰，黑底是它传承千年的典型视觉标识。市面上少量其他底色款式，多为现代文创衍生版本。</p>' +
-        '<button class="clay-checkin__btn" type="button" id="clayCheckinBtn">收下挂件放入背包</button>' +
-      '</div>';
+      '<img class="clay-checkin__img" src="assets/clay/clay-checkin-bg.jpg" alt="打卡成功 · 泥泥狗挂件">' +
+      '<button class="clay-checkin__hot" type="button" id="clayCheckinBtn" aria-label="收入纪念背包">收入纪念背包</button>';
     document.body.appendChild(box);
+    if (window.__layoutCoverHot) window.__layoutCoverHot(document.getElementById('clayCheckinBtn'), 1152, 2048, { l: 0.2535, t: 0.7861, w: 0.5026, h: 0.0781 }, 0.010);
     var btn = document.getElementById('clayCheckinBtn');
     if (btn) btn.addEventListener('click', function () {
       box.remove();
@@ -4147,6 +4164,7 @@ var bagBtn = $('#bagBtn');
     return a;
   }
   function buildPlush() {
+    shopDetail.classList.add('is-tiger');
     $('#shopDetailKicker').textContent = '集市 · 瑞虎坊';
     $('#shopDetailTitle').textContent = '拼一只布老虎';
     $('#shopDetailDesc').textContent = '把下面九块碎片拖到拼图板上，拼出这只布老虎；拼好就收进背包。';

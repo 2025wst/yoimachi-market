@@ -1184,6 +1184,31 @@
     window.addEventListener('load', function () { setTimeout(next, 1200); });
   })();
 
+  // 开始页：海报按 cover 铺满后，换算红色「游览」按钮在屏幕上的真实位置
+  var INTRO_IMG_W = 1152, INTRO_IMG_H = 2048;
+  var INTRO_BTN = { l: 0.2925, t: 0.835, w: 0.4167, h: 0.0688 }; // 图片内百分比（实测）
+  function layoutIntroHot() {
+    var btn = document.getElementById('enterBtn');
+    if (!btn) return;
+    var W = window.innerWidth, H = window.innerHeight;
+    var scale = Math.max(W / INTRO_IMG_W, H / INTRO_IMG_H);
+    var dispW = INTRO_IMG_W * scale, dispH = INTRO_IMG_H * scale;
+    var offX = (W - dispW) / 2, offY = (H - dispH) / 2;
+    // 左右各留 1.2% 余量，手指更好点
+    var padX = INTRO_IMG_W * 0.012 * scale, padY = INTRO_IMG_H * 0.010 * scale;
+    var l = offX + INTRO_BTN.l * dispW - padX;
+    var t = offY + INTRO_BTN.t * dispH - padY;
+    var w = INTRO_BTN.w * dispW + padX * 2;
+    var h = INTRO_BTN.h * dispH + padY * 2;
+    btn.style.left = Math.round(l) + 'px';
+    btn.style.top = Math.round(t) + 'px';
+    btn.style.width = Math.round(w) + 'px';
+    btn.style.height = Math.round(h) + 'px';
+  }
+  if (document.readyState !== 'loading') setTimeout(layoutIntroHot, 0); else document.addEventListener('DOMContentLoaded', layoutIntroHot);
+  window.addEventListener('resize', layoutIntroHot);
+  window.addEventListener('orientationchange', function () { setTimeout(layoutIntroHot, 120); });
+
   // 进入某一幕时，把该幕要用的图并行拉一遍（比顺序预加载快得多）
   function preloadNow(urls) {
     (urls || []).forEach(function (src) {
@@ -5194,6 +5219,7 @@ var bagBtn = $('#bagBtn');
   if (_enterBtn) {
     _enterBtn.innerHTML = '点击进入游览';
     _enterBtn.disabled = false;
+    layoutIntroHot();
   }
   })();
 

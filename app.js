@@ -316,7 +316,10 @@
     if (n === 3) preloadNow(ACT3_IMAGES);
     var iv = document.getElementById('inner2dVideo');
     if (iv) {
-      if (String(n) === '3') { try { var ip = iv.play(); if (ip && ip.catch) ip.catch(function () {}); } catch (e) {} }
+      if (String(n) === '3') {
+        if (!iv.getAttribute('poster') && iv.dataset.poster) iv.setAttribute('poster', iv.dataset.poster);
+        try { var ip = iv.play(); if (ip && ip.catch) ip.catch(function () {}); } catch (e) {}
+      }
       else { try { iv.pause(); } catch (e) {} }
     }
     var mv = document.getElementById('market2dVideo');
@@ -3222,10 +3225,16 @@ var bagBtn = $('#bagBtn');
     }
   }
 
-  var sachetCardBg = new Image();
-  sachetCardBg.src = 'assets/sachet/sachet-frame.jpg';
+  var sachetCardBg = null;
+  function ensureSachetCardBg() {
+    if (sachetCardBg) return sachetCardBg;
+    sachetCardBg = new Image();
+    sachetCardBg.src = 'assets/sachet/sachet-frame.jpg';
+    return sachetCardBg;
+  }
 
   function drawCardBase(ctx, W, H) {
+    ensureSachetCardBg();
     ctx.fillStyle = '#f8f1e2'; ctx.fillRect(0, 0, W, H);
     if (sachetCardBg && sachetCardBg.naturalWidth) {
       var ir = sachetCardBg.width / sachetCardBg.height, cr = W / H;

@@ -5924,3 +5924,31 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 }
 /* 牌面比热区略小一点，周围留出一点石面 */
 .bagua-photo__gua-plate { width: 94% !important; height: 88% !important; }
+
+/* 卦位牌面：去掉白卡片感，改成「石面轻擦 + 深色三爻」 */
+.bagua-photo__gua-plate {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(closest-side, rgba(243,237,225,.86) 0%, rgba(243,237,225,.66) 62%, rgba(243,237,225,0) 100%) !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: blur(1.2px) saturate(.98);
+  backdrop-filter: blur(1.2px) saturate(.98);
+  gap: 5px !important;
+}
+.bagua-photo__gua-plate i {
+  width: 62% !important;
+  height: 4px !important;
+  background: #7C8C99 !important;
+  box-shadow: 0 1px 1px rgba(60,50,40,.35);
+}
+.bagua-photo__gua-plate i.is-broken {
+  background: linear-gradient(90deg, #7C8C99 0 39%, transparent 39% 61%, #7C8C99 61% 100%) !important;
+}
+.bagua-photo__gua:hover .bagua-photo__gua-plate,
+.bagua-photo__gua:focus-visible .bagua-photo__gua-plate {
+  background: radial-gradient(closest-side, rgba(252,246,232,.95) 0%, rgba(250,240,214,.7) 62%, rgba(250,240,214,0) 100%) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.bagua-photo__gua.is-seen .bagua-photo__gua-plate { box-shadow: none !important; }

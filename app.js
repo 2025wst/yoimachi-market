@@ -285,6 +285,7 @@
       capsShown[1] = true;
     }
     if (n === 2 && window.Scene3D && Scene3D.resize) Scene3D.resize();
+    if (String(n) === '2' && window.__layoutMarketShops) setTimeout(window.__layoutMarketShops, 60);
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
     if (n === 4) { renderSpots(); preloadNow(ACT4_IMAGES); }
@@ -1216,6 +1217,27 @@
     el.style.height = Math.round(rect.h * dispH + padY * 2) + 'px';
   }
   window.__layoutCoverHot = layoutCoverHot;
+
+  // 第二幕街景：两家店铺热区按新图坐标换算（图 1152x2048）
+  var MARKET_SHOPS = [
+    { sel: '.market2d-shop--left',  rect: { l: 0.015, t: 0.455, w: 0.435, h: 0.325 } },  // 瑞虎坊
+    { sel: '.market2d-shop--right', rect: { l: 0.550, t: 0.470, w: 0.435, h: 0.315 } }   // 馍香坊
+  ];
+  function layoutMarketShops() {
+    var host = document.querySelector('.act--2');
+    if (!host) return;
+    MARKET_SHOPS.forEach(function (item) {
+      var el = document.querySelector(item.sel);
+      if (!el || !window.__layoutCoverHot) return;
+      var r = item.rect;
+      layoutCoverHot(el, 1152, 2048, r, 0);
+    });
+  }
+  window.__layoutMarketShops = layoutMarketShops;
+  window.addEventListener('resize', layoutMarketShops);
+  window.addEventListener('orientationchange', function () { setTimeout(layoutMarketShops, 150); });
+  if (document.readyState !== 'loading') setTimeout(layoutMarketShops, 0);
+  else document.addEventListener('DOMContentLoaded', layoutMarketShops);
 
   // 开始页：海报按 cover 铺满后，换算红色「游览」按钮在屏幕上的真实位置
   var INTRO_IMG_W = 1152, INTRO_IMG_H = 2048;

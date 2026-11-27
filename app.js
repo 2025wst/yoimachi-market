@@ -5114,6 +5114,7 @@ var bagBtn = $('#bagBtn');
       '<button class="tongtian-scene__close" type="button" id="tongtianClose" aria-label="关闭">×</button>' +
       '<div class="tongtian-scene__chooser" id="tongtianChooser" hidden>' +
         '<div class="tongtian-scene__chooser-head"><b>选一样供品</b><button class="tongtian-scene__chooser-close" type="button" id="tongtianChooserClose" aria-label="收起">×</button></div>' +
+        '<p class="tongtian-scene__cards-hint">左右滑动 · 共 ' + TONGTIAN_OFFERS.length + ' 样</p>' +
         '<div class="tongtian-scene__cards">' + cardsHtml + '</div>' +
       '</div>';
     document.body.appendChild(box);

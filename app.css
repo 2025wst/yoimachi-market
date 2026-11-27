@@ -5820,3 +5820,35 @@ body:has(.beilin-scene) .next-step,
 body:has(.clay-checkin) .next-step,
 body:has(.gateway.is-open) .next-step,
 body:has(.shop-detail.is-open) .next-step { display: none !important; }
+
+/* ===== 统天殿贡品选择：改成横向一行、可左右滑动 ===== */
+.tongtian-scene__cards {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: none !important;
+  gap: 10px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  max-height: none !important;
+  padding: 4px 14px 10px !important;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0, #000 14px, #000 calc(100% - 14px), rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0, #000 14px, #000 calc(100% - 14px), rgba(0,0,0,0) 100%);
+}
+.tongtian-scene__cards::-webkit-scrollbar { display: none; }
+.tongtian-scene__card {
+  flex: 0 0 clamp(96px, 27vw, 128px) !important;
+  scroll-snap-align: center;
+}
+.tongtian-scene__cards-hint {
+  margin: 0 0 8px;
+  color: rgba(255, 233, 194, .72);
+  font-family: var(--font-serif);
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  text-align: right;
+}

@@ -5633,3 +5633,16 @@ html, body { overscroll-behavior-y: none; }
   text-wrap: pretty;
   margin-top: 12px !important;
 }
+
+/* 第四幕「领取完赛证书」按钮放大（参考提示条字号） */
+.temple-finish {
+  padding: 15px 32px !important;
+  font-size: 18px !important;
+  letter-spacing: .1em !important;
+  bottom: 2.6% !important;
+  box-shadow: 0 14px 30px -14px rgba(40, 22, 10, .6) !important;
+}
+.temple-finish .btn__arrow { margin-left: 6px; }
+@media (max-width: 380px) {
+  .temple-finish { padding: 13px 24px !important; font-size: 16px !important; }
+}

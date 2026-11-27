@@ -6083,3 +6083,15 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 .pray-tree__trunk:hover::after,
 .pray-tree__trunk:focus-visible::after,
 .pray-tree__trunk:active::after { opacity: 1; }
+
+/* 祈福树顶部提示：宽度按内容自适应（避免被 left:50% 压成半宽而折行） */
+.pray-page__top {
+  width: max-content !important;
+  max-width: 92% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  font-size: 13.5px !important;
+}
+@media (max-width: 380px) {
+  .pray-page__top { font-size: 12.5px !important; }
+}

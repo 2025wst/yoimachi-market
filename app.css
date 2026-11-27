@@ -6175,3 +6175,6 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   .shop-detail.is-tiger .jigsaw2-game { gap: 6px !important; padding-bottom: 26px !important; }
   .shop-detail.is-tiger .shop-detail__card h2 { font-size: 20px !important; }
 }
+
+/* 布老虎：标题上方的小字会被「上一步」压住，直接隐藏；碎片提示并入正文 */
+.shop-detail.is-tiger .shop-detail__kicker { display: none !important; }

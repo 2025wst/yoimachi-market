@@ -275,6 +275,15 @@
     }
     save();
     updateChapters();
+    if (String(n) === '1') {
+      // 回到开始页：按钮恢复可点、热区重新对准、清掉残留转场卡
+      var _eb = document.getElementById('enterBtn');
+      if (_eb) { _eb.disabled = false; _eb.innerHTML = '点击进入游览'; }
+      if (window.__layoutIntroHot) window.__layoutIntroHot();
+      var _caps = document.querySelectorAll('.act-caption');
+      for (var _ci = 0; _ci < _caps.length; _ci++) { _caps[_ci].remove(); }
+      capsShown[1] = true;
+    }
     if (n === 2 && window.Scene3D && Scene3D.resize) Scene3D.resize();
     if (n === 3 && streetInner.resize) streetInner.resize();
     if (n === 3 && window.InnerScene && InnerScene.resize) InnerScene.resize();
@@ -4115,10 +4124,11 @@ var bagBtn = $('#bagBtn');
       if (bagEl && bagEl.classList.contains('is-open')) { closeBag(); return; }
       var cert = document.getElementById('certificate');
       if (cert && cert.classList.contains('is-open')) { closeCertificate && closeCertificate(); return; }
-      var actEl = document.querySelector('.act.is-active');
-      var act = actEl ? parseInt(actEl.getAttribute('data-act'), 10) : 1;
+      var capEl = document.querySelector('.act-caption');
+      if (capEl) { capEl.remove(); return; }
+      var act = currentAct;
       if (act === 4) { capsShown[3] = true; goTo(3); return; }
-      if (act === 3) { goTo(2); return; }
+      if (act === 3) { capsShown[2] = true; goTo(2); return; }
       if (act === 2) { goTo(1); return; }
     } catch (e) {}
   };

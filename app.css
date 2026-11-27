@@ -5801,3 +5801,6 @@ html, body { overscroll-behavior-y: none; }
   padding-bottom: 2px;
 }
 .tongtian-scene__slot { width: 18%; }
+
+/* 9 样贡品按 3×3 排，视觉更整齐 */
+.tongtian-scene__cards { grid-template-columns: repeat(3, 1fr) !important; }

@@ -5983,3 +5983,11 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   width: 23.59% !important;
   height: 13.85% !important;
 }
+
+/* 太极热区微调（按截图实测：圆心 386,878.5，直径 168×167 截图px） */
+.bagua-photo__taiji {
+  left: 38.70% !important;
+  top: 46.50% !important;
+  width: 21.50% !important;
+  height: 12.05% !important;
+}

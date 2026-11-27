@@ -5952,3 +5952,26 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   transform: none !important;
 }
 .bagua-photo__gua.is-seen .bagua-photo__gua-plate { box-shadow: none !important; }
+
+/* ===== 八卦坛：画面保持原图，不加任何牌面；热区隐形，仅按下有极淡暖光 ===== */
+.bagua-photo__gua-plate { display: none !important; }
+.bagua-photo__gua {
+  display: block !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.bagua-photo__gua::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,226,170,.30), rgba(255,226,170,0) 70%);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+.bagua-photo__gua:hover::after,
+.bagua-photo__gua:focus-visible::after,
+.bagua-photo__gua:active::after { opacity: 1; }
+.bagua-photo__gua.is-seen::after { opacity: .25; }

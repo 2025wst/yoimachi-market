@@ -1324,7 +1324,6 @@
     if (!bp) return;
     bp.hidden = false;
     bp.setAttribute('aria-hidden', 'false');
-    paintGuaLines();
     if (!bp.dataset.bound) {
       var taiji = document.getElementById('baguaTaiji');
       if (taiji) taiji.addEventListener('click', function () {

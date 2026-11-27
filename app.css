@@ -5862,8 +5862,8 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 .bagua-photo__img { width: 100%; height: 100%; object-fit: cover; }
 /* 太极：新图中心 (569,1075)，椭圆直径约 300x410 */
 .bagua-photo__taiji {
-  left: 44.0% !important;
-  top: 42.8% !important;
+  left: 36.4% !important;
+  top: 42.5% !important;
   width: 26.0% !important;
   height: 20.0% !important;
 }

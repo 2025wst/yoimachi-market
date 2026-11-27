@@ -6178,3 +6178,15 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 
 /* 布老虎：标题上方的小字会被「上一步」压住，直接隐藏；碎片提示并入正文 */
 .shop-detail.is-tiger .shop-detail__kicker { display: none !important; }
+
+/* ===== 转场字幕卡：真正居中（原来被容器左右 26px 内边距挤到右边） ===== */
+.act-caption {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.act-caption__card {
+  width: min(94vw, 560px) !important;
+  margin: 0 auto !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}

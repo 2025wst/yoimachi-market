@@ -6095,3 +6095,40 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 @media (max-width: 380px) {
   .pray-page__top { font-size: 12.5px !important; }
 }
+
+/* ===== 布老虎：改用「空白纸卡」作为整屏背景，内容放进卡片空白区 ===== */
+.shop-detail.is-tiger {
+  background: #f6eee0 url(assets/tiger/tiger-card-bg.jpg) center center / cover no-repeat !important;
+}
+.shop-detail.is-tiger .shop-detail__scrim { display: none !important; }
+.shop-detail.is-tiger .shop-detail__card {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 26.5vh 26px 10vh !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow-y: auto !important;
+  transform: none !important;
+}
+.shop-detail.is-tiger .shop-detail__card::after { display: none !important; }
+.shop-detail.is-tiger .shop-detail__head { padding: 0 !important; }
+.shop-detail.is-tiger .shop-detail__kicker { margin-bottom: 4px !important; }
+.shop-detail.is-tiger .shop-detail__card h2 { font-size: clamp(20px, 5.6vw, 28px) !important; }
+.shop-detail.is-tiger .shop-detail__desc { font-size: 12.5px !important; line-height: 1.7 !important; margin-top: 4px !important; }
+.shop-detail.is-tiger .shop-detail__stage { margin-top: 6px !important; }
+.shop-detail.is-tiger .shop-detail__close {
+  position: fixed !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 60 !important;
+  background: rgba(255, 250, 240, .94) !important;
+}
+@media (max-height: 700px) {
+  .shop-detail.is-tiger .shop-detail__card { padding-top: 22vh !important; }
+  .shop-detail.is-tiger .shop-detail__desc { display: none !important; }
+}

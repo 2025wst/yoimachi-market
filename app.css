@@ -5809,3 +5809,14 @@ html, body { overscroll-behavior-y: none; }
 .tongtian-scene__slots { top: 79.4% !important; }
 .tongtian-scene__slot { width: 16% !important; }
 .tongtian-scene__slot img { inset: -8% !important; width: 116% !important; height: 116% !important; }
+
+/* 全屏场景打开时，把地图右下角「下一步」藏起来，避免压住场景 / 供品 */
+body:has(.tongtian-scene) .next-step,
+body:has(.tomb-scene) .next-step,
+body:has(.tomb-intro) .next-step,
+body:has(.shicao-scene) .next-step,
+body:has(.beilin-hall) .next-step,
+body:has(.beilin-scene) .next-step,
+body:has(.clay-checkin) .next-step,
+body:has(.gateway.is-open) .next-step,
+body:has(.shop-detail.is-open) .next-step { display: none !important; }

@@ -6132,3 +6132,15 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   .shop-detail.is-tiger .shop-detail__card { padding-top: 22vh !important; }
   .shop-detail.is-tiger .shop-detail__desc { display: none !important; }
 }
+
+/* 布老虎纸卡背景：放大取中间空白区，四周装饰只露出一点，游戏内容不用让位 */
+.shop-detail.is-tiger {
+  background-size: 142% auto !important;
+  background-position: 50% 54% !important;
+}
+.shop-detail.is-tiger .shop-detail__card {
+  padding: 9vh 22px 5vh !important;
+}
+@media (max-height: 700px) {
+  .shop-detail.is-tiger .shop-detail__card { padding-top: 6vh !important; }
+}

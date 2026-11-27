@@ -5077,7 +5077,6 @@ var bagBtn = $('#bagBtn');
     [20, 50, 80].forEach(function (x, i) {
       slotsHtml += '<div class="tongtian-scene__slot" id="ttSlot' + i + '" style="left:' + x + '%">' + (i + 1) + '</div>';
     });
-    var extraHtml = '';
     var cardsHtml = TONGTIAN_OFFERS.map(function (o) {
       return '<button class="tongtian-scene__card ' + o.cls + '" type="button" data-offer="' + o.id + '"><img src="' + o.src + '" alt="' + o.name + '"><span>' + o.name + '</span></button>';
     }).join('');
@@ -5091,23 +5090,15 @@ var bagBtn = $('#bagBtn');
       '<p class="tongtian-scene__hint" id="tongtianHint">点击供台 · 供奉贡品（0 / 3）</p>' +
       '<button class="tongtian-scene__close" type="button" id="tongtianClose" aria-label="关闭">×</button>' +
       '<div class="tongtian-scene__chooser" id="tongtianChooser" hidden>' +
-        '<div class="tongtian-scene__chooser-head"><b>选一样供品</b><div class="tt-placed" id="ttPlaced"></div><button class="tongtian-scene__chooser-close" type="button" id="tongtianChooserClose" aria-label="收起">×</button></div>' +
-        '<div class="tt-spare" id="ttSpare">' +
-          '<p class="tt-choose-label">常备</p>' +
-          '<div class="tongtian-scene__cards">' + cardsHtml + '</div>' +
-        '</div>' +
-        '<div class="tt-mine-head">' +
-          '<p class="tt-choose-label">我添的</p>' +
-          '<button class="tt-shoot" type="button" id="ttShoot">＋ 拍一件</button>' +
-        '</div>' +
-        '<div class="tt-myrow" id="ttMyRow"></div>' +
+        '<div class="tongtian-scene__chooser-head"><b>选一样供品</b><button class="tongtian-scene__chooser-close" type="button" id="tongtianChooserClose" aria-label="收起">×</button></div>' +
+        '<div class="tongtian-scene__cards">' + cardsHtml + '</div>' +
       '</div>';
     document.body.appendChild(box);
     var hint = document.getElementById('tongtianHint');
     var chooser = document.getElementById('tongtianChooser');
     var table = document.getElementById('tongtianTable');
     var doneAlready = has('tongtian');
-    var st = { count: 0, done: !!doneAlready, extra: 0, extraList: [] };
+    var st = { count: 0, done: !!doneAlready };
     function fillSlot(i, offer) {
       var slot = document.getElementById('ttSlot' + i);
       if (!slot) return;
@@ -5125,76 +5116,25 @@ var bagBtn = $('#bagBtn');
       if (chooser) chooser.hidden = true;
       box.classList.remove('is-choosing');
     }
-
-    function ttBook() {
-      try { return (window.OfferingCam && window.OfferingCam.book()) || []; } catch (e) { return []; }
-    }
-
-    function renderMine() {
-      var row = document.getElementById('ttMyRow');
-      if (!row) return;
-      var items = ttBook();
-      if (!items.length) {
-        row.innerHTML = '<p class="tt-myrow__empty">还没有自己的供品。拍下身边的一件东西，它会被描成一幅小供画。</p>';
-        return;
-      }
-      row.innerHTML = items.map(function (o) {
-        return '<button class="tt-mycard" type="button" data-my="' + o.id + '">' +
-          '<img src="' + o.thumb + '" alt="' + o.name + '">' +
-          '<span>' + o.name + '</span>' +
-        '</button>';
-      }).join('');
-      row.querySelectorAll('[data-my]').forEach(function (b) {
-        b.addEventListener('click', function (e) {
-          e.stopPropagation();
-          var id = b.getAttribute('data-my');
-          var o = items.filter(function (x) { return x.id === id; })[0];
-          if (o) place({ id: o.id, name: o.name, src: o.thumb });
-        });
-      });
-    }
-
-    function renderPlaced() {
-      var p = document.getElementById('ttPlaced');
-      if (!p) return;
-      var h = '';
-      for (var i = 0; i < 3; i++) {
-        var slot = document.getElementById('ttSlot' + i);
-        var im = slot && slot.querySelector('img');
-        h += im
-          ? '<i class="is-on"><img src="' + im.getAttribute('src') + '" alt=""></i>'
-          : '<i></i>';
-      }
-      p.innerHTML = h;
-    }
-
-    function openChooser() {
+    table.addEventListener('click', function () {
+      if (st.done) { toast('供台已经摆好了'); return; }
       if (chooser) chooser.hidden = false;
       box.classList.add('is-choosing');
-      box.classList.toggle('is-extra-mode', !!st.done);
-      renderMine();
-      renderPlaced();
-    }
-    table.addEventListener('click', function () {
-      openChooser();
     });
     var chClose = document.getElementById('tongtianChooserClose');
     if (chClose) chClose.addEventListener('click', closeChooser);
     box.addEventListener('click', function (e) {
       if (chooser && !chooser.hidden && !e.target.closest('.tongtian-scene__chooser') && !e.target.closest('#tongtianTable')) closeChooser();
     });
-    function place(offer) {
-      if (!st) return;
-      if (st.count < 3 && !st.done) {
-        fillSlot(st.count, offer);
-        st.count++;
-        if (sfx.pop) sfx.pop();
-        renderPlaced();
-        if (st.count < 3) {
-          hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 3）';
-          return;
-        }
-        closeChooser();
+    function chooseOffer(offer) {
+      if (!st || st.done || st.count >= 3) return;
+      fillSlot(st.count, offer);
+      st.count++;
+      closeChooser();
+      if (sfx.pop) sfx.pop();
+      if (st.count < 3) {
+        hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 3）';
+      } else {
         st.done = true;
         hint.textContent = '供奉完成 · 通天殿打卡完成';
         var thDone = document.querySelector('.tongtian-scene__table-hint');
@@ -5202,46 +5142,20 @@ var bagBtn = $('#bagBtn');
         completeTask('tongtian');
         toast('通天殿 · 供奉完成');
         setTimeout(function () { showTongtianDone(); }, 420);
-        return;
       }
-      /* 已完成供奉：再选一样就换下最后一件，可以一直换 */
-      closeChooser();
-      fillSlot(2, offer);
-      if (sfx.pop) sfx.pop();
-      hint.textContent = '已换作 · ' + offer.name;
-      toast('换作 · ' + offer.name);
     }
     box.querySelectorAll('[data-offer]').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         var id = btn.getAttribute('data-offer');
         var offer = TONGTIAN_OFFERS.filter(function (o) { return o.id === id; })[0];
-        if (offer) place(offer);
+        if (offer) chooseOffer(offer);
       });
     });
-    var shootBtn = document.getElementById('ttShoot');
-    if (shootBtn) {
-      shootBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (!window.OfferingCam) { toast('这个版本还不支持拍照添供'); return; }
-        closeChooser();
-        window.OfferingCam.open({
-          onDone: function () {
-            openChooser();
-            toast('已收进供品册 · 点它摆上供台');
-          }
-        });
-      });
-    }
     var closeBtn = document.getElementById('tongtianClose');
     if (closeBtn) closeBtn.addEventListener('click', function () { box.remove(); });
   }
   window.__openTongtian = openTongtian;
-
-  /* 便捷直达：index.html?tt=1 直接进统天殿供奉（演示/自测用） */
-  if (/[?&]tt=1(&|$)/.test(location.search)) {
-    setTimeout(function () { openTongtian(); }, 500);
-  }
 
 })();
 

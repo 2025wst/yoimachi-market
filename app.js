@@ -5154,12 +5154,17 @@ var bagBtn = $('#bagBtn');
       if (!st || st.done || st.count >= TONGTIAN_SLOTS) return;
       fillSlot(st.count, offer);
       st.count++;
-      closeChooser();
+      // 选完不收起：可以接着往上摆，全部摆满再自动收起
+      if (st.count < TONGTIAN_SLOTS) {
+        var cw = document.querySelector('.tongtian-scene__cards');
+        if (cw) { try { cw.scrollLeft = 0; } catch (e) {} }
+      }
       if (sfx.pop) sfx.pop();
       if (st.count < TONGTIAN_SLOTS) {
         hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 5）';
       } else {
         st.done = true;
+        closeChooser();
         hint.textContent = '供奉完成 · 通天殿打卡完成';
         var thDone = document.querySelector('.tongtian-scene__table-hint');
         if (thDone) thDone.style.display = 'none';

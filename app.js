@@ -3872,10 +3872,13 @@ var bagBtn = $('#bagBtn');
       '<img class="clay-checkin__img" src="assets/clay/clay-checkin-bg.jpg" alt="打卡成功 · 泥泥狗挂件">' +
       '<button class="clay-checkin__hot" type="button" id="clayCheckinBtn" aria-label="收入纪念背包">收入纪念背包</button>';
     document.body.appendChild(box);
+    var _gb = document.getElementById('globalBack');
+    if (_gb) _gb.style.display = 'none';
     if (window.__layoutCoverHot) window.__layoutCoverHot(document.getElementById('clayCheckinBtn'), 1152, 2048, { l: 0.2535, t: 0.7861, w: 0.5026, h: 0.0781 }, 0.010);
     var btn = document.getElementById('clayCheckinBtn');
     if (btn) btn.addEventListener('click', function () {
       box.remove();
+      if (_gb && currentAct !== 1) _gb.style.display = '';
       state.sugar = {};
       save();
       completeTask('sugar');

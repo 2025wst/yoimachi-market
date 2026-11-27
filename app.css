@@ -6161,3 +6161,17 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 .shop-detail.is-tiger .jigsaw2-board { width: 76% !important; max-width: 262px !important; }
 .shop-detail.is-tiger .jigsaw2-tray { max-width: 250px !important; width: 100% !important; gap: 6px !important; }
 .shop-detail.is-tiger .jigsaw2-game { gap: 8px !important; padding-bottom: 30px !important; }
+
+/* 布老虎：再紧一点，尽量一屏放下 */
+.shop-detail.is-tiger .shop-detail__card { padding-top: 9vh !important; }
+.shop-detail.is-tiger .jigsaw2-board { width: 72% !important; max-width: 246px !important; }
+.shop-detail.is-tiger .jigsaw2-tray { max-width: 236px !important; gap: 5px !important; }
+.shop-detail.is-tiger .shop-detail__desc { line-height: 1.62 !important; }
+
+@media (max-height: 720px) {
+  .shop-detail.is-tiger .shop-detail__card { padding-top: 7vh !important; padding-bottom: 2vh !important; }
+  .shop-detail.is-tiger .jigsaw2-board { width: 60% !important; max-width: 205px !important; }
+  .shop-detail.is-tiger .jigsaw2-tray { max-width: 200px !important; gap: 4px !important; }
+  .shop-detail.is-tiger .jigsaw2-game { gap: 6px !important; padding-bottom: 26px !important; }
+  .shop-detail.is-tiger .shop-detail__card h2 { font-size: 20px !important; }
+}

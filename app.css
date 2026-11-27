@@ -5852,3 +5852,31 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   letter-spacing: .1em;
   text-align: right;
 }
+
+/* ===== 八卦坛：新图 1152x2048 整幅显示，热区按图内百分比 ===== */
+.bagua-photo__frame {
+  width: min(100vw, calc(100vh * 1152 / 2048)) !important;
+  height: min(100vh, calc(100vw * 2048 / 1152)) !important;
+  aspect-ratio: 1152 / 2048 !important;
+}
+.bagua-photo__img { width: 100%; height: 100%; object-fit: cover; }
+/* 太极：新图中心 (569,1075)，椭圆直径约 300x410 */
+.bagua-photo__taiji {
+  left: 44.0% !important;
+  top: 42.8% !important;
+  width: 26.0% !important;
+  height: 20.0% !important;
+}
+
+/* ===== 蓍草园：新图 1152x2048 ===== */
+.shicao-scene__frame {
+  width: min(96vw, calc(100vh * 1152 / 2048)) !important;
+  aspect-ratio: 1152 / 2048 !important;
+}
+.shicao-scene__img { object-fit: cover; }
+.shicao-scene__hot {
+  left: 9% !important;
+  top: 21% !important;
+  width: 82% !important;
+  height: 54% !important;
+}

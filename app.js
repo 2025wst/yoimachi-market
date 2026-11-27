@@ -957,6 +957,8 @@
   /* ---------------- 完成打卡 ---------------- */
 
   function showNextStep(onNext) {
+    // 只有十处打卡全部完成才出现「下一步」，否则退出场景直接回到地图
+    if (state.tasks.length < ORDER.length) return;
     if (document.getElementById('nextStep')) return;
     var btn = document.createElement('button');
     btn.id = 'nextStep';
@@ -982,6 +984,7 @@
     document.body.appendChild(btn);
   }
 
+  window.__showNextStep = showNextStep;
   function completeTask(id) {
     if (has(id)) return;
     state.tasks.push(id);
@@ -994,6 +997,7 @@
     toast(TASKS[id].label + ' · 打卡完成');
     if (state.tasks.length === ORDER.length) {
       setTimeout(function () { toast('全部打卡完成 · 去第四幕领完赛证书'); }, 1300);
+      setTimeout(function () { if (window.__showNextStep) window.__showNextStep(); }, 1600);
     }
   }
 

@@ -4862,10 +4862,11 @@ var bagBtn = $('#bagBtn');
     var box = document.createElement('div');
     box.className = 'tomb-scene';
     box.id = 'tombScene';
+    box.style.setProperty('--tomb-bg', "url('" + (done ? 'assets/tomb/tomb-after.jpg' : 'assets/tomb/tomb-before.jpg') + "')");
     box.innerHTML =
       '<div class="tomb-scene__bg"></div>' +
       '<div class="tomb-scene__frame">' +
-        '<img class="tomb-scene__img" id="tombSceneImg" src="' + (done ? 'assets/tomb/tomb-lit.jpg' : 'assets/tomb/tomb.jpg') + '" alt="太昊伏羲陵">' +
+        '<img class="tomb-scene__img" id="tombSceneImg" src="' + (done ? 'assets/tomb/tomb-after.jpg' : 'assets/tomb/tomb-before.jpg') + '" alt="太昊伏羲陵">' +
         '<button class="tomb-scene__altar" type="button" id="tombAltar" aria-label="伏羲陵墓"></button>' +
       '</div>' +
       '<p class="tomb-scene__hint" id="tombSceneHint">' + (done ? '已上香 · 点香炉查看' : '点击香炉 · 上香祭陵') + '</p>' +
@@ -4907,7 +4908,8 @@ var bagBtn = $('#bagBtn');
     var sc = document.getElementById('tombScene');
     if (sc) {
       var im = sc.querySelector('.tomb-scene__img');
-      if (im) im.src = 'assets/tomb/tomb-lit.jpg';
+      if (im) im.src = 'assets/tomb/tomb-after.jpg';
+      sc.style.setProperty('--tomb-bg', "url('assets/tomb/tomb-after.jpg')");
       var hint = document.getElementById('tombSceneHint');
       if (hint) hint.textContent = '已上香 · 点香炉查看';
     }

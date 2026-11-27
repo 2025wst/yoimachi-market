@@ -5579,3 +5579,42 @@ html, body { overscroll-behavior-y: none; }
   .act-caption__card .market-title__desc,
   .act-caption__card .inner3d-title__desc { font-size: 15.5px !important; line-height: 1.85 !important; }
 }
+
+/* ===== 伏羲陵：换成竖幅新图（1152x2048），香炉热区按新图重排 ===== */
+.tomb-scene__frame {
+  width: min(94vw, calc(100vh * 1152 / 2048)) !important;
+  aspect-ratio: 1152 / 2048 !important;
+  border-radius: 10px !important;
+}
+.tomb-scene__img { object-fit: cover !important; object-position: center !important; }
+.tomb-scene__altar {
+  left: 14% !important;
+  top: 66% !important;
+  width: 72% !important;
+  height: 22% !important;
+  border-radius: 50% !important;
+}
+.tomb-scene__altar::after {
+  inset: -4% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at 50% 58%, rgba(255, 214, 150, .40), rgba(255, 214, 150, 0) 72%) !important;
+}
+.tomb-scene__hint {
+  bottom: auto !important;
+  top: calc(50% + min(47vw, 100vh * 576 / 2048) - 46px) !important;
+}
+
+/* 伏羲陵：四周用同图虚化延展，提示条回到画面下方 */
+.tomb-scene__bg {
+  inset: -12% !important;
+  background-image: var(--tomb-bg) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  filter: blur(30px) saturate(1.03) brightness(.97) !important;
+  transform: scale(1.08);
+}
+.tomb-scene__hint {
+  top: auto !important;
+  bottom: 5% !important;
+}

@@ -263,6 +263,9 @@
 
   function setAct(n) {
     currentAct = n;
+    // 开始页没有可返回的地方，隐藏「上一步」
+    var gb = document.getElementById('globalBack');
+    if (gb) gb.style.display = (String(n) === '1') ? 'none' : '';
     Object.keys(actEls).forEach(function (key) {
       actEls[key].classList.toggle('is-active', String(key) === String(n));
     });

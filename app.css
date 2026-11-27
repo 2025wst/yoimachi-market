@@ -5880,3 +5880,47 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
   width: 82% !important;
   height: 54% !important;
 }
+
+/* ===== 八卦坛：每个卦位改成「石牌 + 正确三爻」，点哪块就讲哪一卦 ===== */
+.bagua-photo__gua {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.bagua-photo__gua-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  border-radius: 9px;
+  background: linear-gradient(180deg, rgba(246,241,230,.96), rgba(232,225,209,.96));
+  box-shadow: inset 0 0 0 1px rgba(150,134,108,.55), inset 0 2px 6px rgba(255,255,255,.65), 0 3px 8px rgba(70,52,34,.18);
+  transition: box-shadow .22s ease, transform .22s ease, background .22s ease;
+}
+.bagua-photo__gua-plate i {
+  display: block;
+  width: 66%;
+  height: 3px;
+  border-radius: 2px;
+  background: #8b9aa6;
+  box-shadow: 0 1px 0 rgba(255,255,255,.35);
+}
+.bagua-photo__gua-plate i.is-broken {
+  background: linear-gradient(90deg, #8b9aa6 0 40%, transparent 40% 60%, #8b9aa6 60% 100%);
+}
+.bagua-photo__gua:hover .bagua-photo__gua-plate,
+.bagua-photo__gua:focus-visible .bagua-photo__gua-plate {
+  background: linear-gradient(180deg, rgba(252,246,232,.99), rgba(240,231,213,.99));
+  box-shadow: inset 0 0 0 1.5px rgba(178,138,64,.85), 0 0 0 2px rgba(255,214,140,.5), 0 6px 14px rgba(70,52,34,.25);
+  transform: translateY(-1px);
+}
+.bagua-photo__gua.is-seen .bagua-photo__gua-plate {
+  box-shadow: inset 0 0 0 1.5px rgba(150,134,108,.75), 0 0 0 2px rgba(210,170,90,.35);
+}
+/* 牌面比热区略小一点，周围留出一点石面 */
+.bagua-photo__gua-plate { width: 94% !important; height: 88% !important; }

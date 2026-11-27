@@ -1297,11 +1297,34 @@
     kun: { name: '坤', sym: '☷', nature: '地', text: '坤为地，纯阴之卦。柔顺、承载，厚德载物。象曰：地势坤，君子以厚德载物。', hint: '记住「地势坤，君子以厚德载物」——问卦会考到。' }
   };
   var baguaSeen = {};
+  // 每个卦位的三爻（初、中、上；1=阳整条，0=阴断开）
+  var GUA_LINES = {
+    qian: [1,1,1], dui: [1,1,0], li: [1,0,1], zhen: [1,0,0],
+    xun: [0,1,1], kan: [0,1,0], gen: [0,0,1], kun: [0,0,0]
+  };
+  function paintGuaLines() {
+    var boxes = document.querySelectorAll('.bagua-photo__gua');
+    for (var i = 0; i < boxes.length; i++) {
+      var el = boxes[i];
+      if (el.dataset.painted) continue;
+      var id = el.getAttribute('data-gua');
+      var lines = GUA_LINES[id] || [1,1,1];
+      var html = '<span class="bagua-photo__gua-plate">';
+      for (var k = 2; k >= 0; k--) {           // 从上爻画到初爻
+        html += '<i class="' + (lines[k] ? 'is-solid' : 'is-broken') + '"></i>';
+      }
+      html += '</span>';
+      el.innerHTML = html;
+      el.dataset.painted = '1';
+    }
+  }
+  window.__paintGuaLines = paintGuaLines;
   function openBaguaAltar() {
     var bp = document.getElementById('baguaPhoto');
     if (!bp) return;
     bp.hidden = false;
     bp.setAttribute('aria-hidden', 'false');
+    paintGuaLines();
     if (!bp.dataset.bound) {
       var taiji = document.getElementById('baguaTaiji');
       if (taiji) taiji.addEventListener('click', function () {

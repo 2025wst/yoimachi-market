@@ -1049,7 +1049,7 @@
     toast(TASKS[id].label + ' · 打卡完成');
     if (state.tasks.length === ORDER.length) {
       setTimeout(function () { toast('全部打卡完成 · 去第四幕领完赛证书'); }, 1300);
-      setTimeout(function () { if (window.__showNextStep) window.__showNextStep(); }, 1600);
+      setTimeout(function () { if (currentAct === 4 && window.__showNextStep) window.__showNextStep(); }, 1600);
     }
   }
 
@@ -2015,7 +2015,24 @@
   var plushGame = null;
   var bunGame = null;
 
+  function resumeStreetVideo() {
+    try {
+      var mv = document.getElementById('market2dImg');
+      if (mv && mv.tagName === 'VIDEO' && currentAct === 2) { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); }
+      var iv = document.getElementById('inner2dVideo');
+      if (iv && currentAct === 3) { var ip = iv.play(); if (ip && ip.catch) ip.catch(function () {}); }
+    } catch (e) {}
+  }
+  function pauseStreetVideo() {
+    try {
+      var mv = document.getElementById('market2dImg');
+      if (mv && mv.tagName === 'VIDEO') mv.pause();
+      var iv = document.getElementById('inner2dVideo');
+      if (iv) iv.pause();
+    } catch (e) {}
+  }
   function openShopDetail(kind) {
+    pauseStreetVideo();
     shopDetail.classList.add('is-open');
     shopDetail.classList.remove('is-tiger');
     shopDetail.classList.remove('is-clay');
@@ -2027,8 +2044,7 @@
   function closeShopDetail() {
     var _act2 = document.querySelector('.act--2');
     if (_act2) _act2.classList.remove('is-shop-open', 'is-entering-shop');
-    var _vid = document.getElementById('market2dVideo');
-    if (_vid) { try { _vid.play(); } catch (e) {} }
+    resumeStreetVideo();
     shopDetail.classList.remove('is-open', 'is-immersive', 'is-clay', 'is-tiger');
     shopDetail.setAttribute('aria-hidden', 'true');
     if (app) app.classList.remove('is-detail');

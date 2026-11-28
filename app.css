@@ -6215,3 +6215,14 @@ body:has(.shop-detail.is-open) .next-step { display: none !important; }
 .inner2d-hot--sachet { left: 0% !important;    top: 44% !important; width: 34% !important; height: 33% !important; }
 .inner2d-hot--clay   { left: 66% !important;   top: 44% !important; width: 34% !important; height: 32% !important; }
 .inner2d-hot--gate   { left: 34% !important;   top: 29% !important; width: 32% !important; height: 35% !important; }
+
+/* 「下一步」要能压在场景上：这些场景互动完直接显示，不再被隐藏 */
+body:has(.tongtian-scene) .next-step,
+body:has(.tomb-scene) .next-step,
+body:has(.beilin-scene) .next-step,
+body:has(.beilin-hall) .next-step,
+body:has(.bagua-photo) .next-step {
+  display: block !important;
+  z-index: 1200 !important;
+}
+body:has(.tongtian-scene) .next-step { bottom: 96px !important; }

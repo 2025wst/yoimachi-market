@@ -988,8 +988,7 @@
   /* ---------------- 完成打卡 ---------------- */
 
   function showNextStep(onNext) {
-    // 只有十处打卡全部完成才出现「下一步」，否则退出场景直接回到地图
-    if (state.tasks.length < ORDER.length) return;
+    // 每个场景互动完成后都出现「下一步」，点它回到第四幕地图
     if (document.getElementById('nextStep')) return;
     var btn = document.createElement('button');
     btn.id = 'nextStep';
@@ -5210,10 +5209,8 @@ var bagBtn = $('#bagBtn');
       fillSlot(st.count, offer);
       st.count++;
       // 选完不收起：可以接着往上摆，全部摆满再自动收起
-      if (st.count < TONGTIAN_SLOTS) {
-        var cw = document.querySelector('.tongtian-scene__cards');
-        if (cw) { try { cw.scrollLeft = 0; } catch (e) {} }
-      }
+      // 选一个就收起选择面板：摆一个、回到场景、再点供台选下一个
+      if (st.count < TONGTIAN_SLOTS) closeChooser();
       if (sfx.pop) sfx.pop();
       if (st.count < TONGTIAN_SLOTS) {
         hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 5）';

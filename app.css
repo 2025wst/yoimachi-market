@@ -6254,3 +6254,39 @@ body:has(.shop-detail.is-open) .next-step { display: block !important; z-index: 
 .tongtian-scene__frame { transition: transform .3s cubic-bezier(.25,.8,.35,1); }
 .tongtian-scene.is-choosing .tongtian-scene__frame { transform: translateY(-19%) !important; }
 .tongtian-scene.is-choosing .tongtian-scene__slots { z-index: 6; }
+
+/* ===== 街道前字幕：行楷标题 + 楷体正文（B 版） ===== */
+@font-face {
+  font-family: "XK Caption";
+  src: url("assets/fonts/xingkai-caption.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "KT Caption";
+  src: url("assets/fonts/kaiti-caption.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+.market-title h2,
+.act-title h2,
+.act-caption__card h2 {
+  font-family: "XK Caption", "STXingkai", "华文行楷", "Xingkai SC", "STKaiti", KaiTi, serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .08em !important;
+}
+.market-title__desc,
+.act-title__desc,
+.market-title__no,
+.act-title__no,
+.act-caption__no,
+.act-caption__hint,
+.act-caption__card .market-title__desc,
+.act-caption__card .act-title__desc {
+  font-family: "KT Caption", "STKaiti", "Kaiti SC", KaiTi, serif !important;
+}
+.market-title__desc,
+.act-title__desc,
+.act-caption__card .market-title__desc,
+.act-caption__card .act-title__desc {
+  line-height: 1.95 !important;
+  letter-spacing: .03em !important;
+}

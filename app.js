@@ -3152,6 +3152,7 @@ var bagBtn = $('#bagBtn');
     return lines.length;
   }
 
+  window.__sachetCard = function () { return openSachetCard(); };
   function openSachetCard() {
     ensureSachetCardBg();
     if (!sachetCardBg.naturalWidth && !sachetCardBg.__failed) {

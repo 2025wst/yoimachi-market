@@ -322,10 +322,13 @@
       }
       else { try { iv.pause(); } catch (e) {} }
     }
-    var mv = document.getElementById('market2dVideo');
-    if (mv) {
-      if (String(n) === '2') { try { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); } catch (e) {} }
-      else { try { mv.pause(); } catch (e) {} }
+    var mv = document.getElementById('market2dImg');
+    if (mv && mv.tagName === 'VIDEO') {
+      if (String(n) === '2') {
+        if (!mv.getAttribute('poster') && mv.dataset.poster) mv.setAttribute('poster', mv.dataset.poster);
+        if (!mv.getAttribute('src') && mv.dataset.src) mv.setAttribute('src', mv.dataset.src);
+        try { var mp = mv.play(); if (mp && mp.catch) mp.catch(function () {}); } catch (e) {}
+      } else { try { mv.pause(); } catch (e) {} }
     }
   }
 
@@ -1591,6 +1594,7 @@
 
   /* ---------------- 午朝门近景 / 开门 ---------------- */
   function openGatePhoto() {
+    if (window.__hydrateImages) window.__hydrateImages(document.getElementById('gatePhoto'));
     if (!has('sachet') || !has('sugar')) {
       toast('点击互动，再往前走吧');
       return;
@@ -3149,6 +3153,7 @@ var bagBtn = $('#bagBtn');
   }
 
   function openSachetCard() {
+    ensureSachetCardBg();
     if (!sachetCardBg.naturalWidth && !sachetCardBg.__failed) {
       var go = function () { openSachetCard(); };
       sachetCardBg.onload = go;

@@ -669,7 +669,7 @@
   function playIntroVideo() {
     var ov = document.createElement('div');
     ov.className = 'intro-video';
-    ov.innerHTML = '<video class="intro-video__video" src="assets/intro-transition.mp4" playsinline muted preload="auto" aria-hidden="true"></video>';
+    ov.innerHTML = '<video class="intro-video__video" src="assets/intro-transition-v2.mp4" playsinline muted preload="auto" aria-hidden="true"></video>';
     document.body.appendChild(ov);
     var v = ov.querySelector('video');
     var finished = false;
@@ -682,7 +682,8 @@
     }
     v.addEventListener('ended', finish);
     v.addEventListener('error', finish);
-    setTimeout(finish, 2600);
+    // 新开屏动画 8 秒：等视频自然结束；万一卡住，9.5 秒后强制进入下一幕
+    setTimeout(finish, 9500);
     var p = v.play();
     if (p && p.catch) p.catch(finish);
   }

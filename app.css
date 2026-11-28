@@ -6249,3 +6249,8 @@ body:has(.tongtian-scene) .next-step { bottom: 96px !important; }
 
 /* 泥泥狗互动完的「下一步」要能显示在店铺页上 */
 body:has(.shop-detail.is-open) .next-step { display: block !important; z-index: 1200 !important; }
+
+/* 选贡品时把供台整体上移，五个供位不被选择面板挡住 */
+.tongtian-scene__frame { transition: transform .3s cubic-bezier(.25,.8,.35,1); }
+.tongtian-scene.is-choosing .tongtian-scene__frame { transform: translateY(-19%) !important; }
+.tongtian-scene.is-choosing .tongtian-scene__slots { z-index: 6; }

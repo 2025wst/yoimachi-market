@@ -6226,3 +6226,26 @@ body:has(.bagua-photo) .next-step {
   z-index: 1200 !important;
 }
 body:has(.tongtian-scene) .next-step { bottom: 96px !important; }
+
+/* ===== 通天殿：五个供位可以直接点，点哪格摆哪格 ===== */
+.tongtian-scene__slots { pointer-events: auto !important; }
+.tongtian-scene__slot {
+  pointer-events: auto !important;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+}
+.tongtian-scene__slot:not(.is-filled):hover {
+  border-color: rgba(255,226,170,.95) !important;
+  box-shadow: 0 0 0 2px rgba(255,214,140,.35), 0 0 18px rgba(255,200,120,.45) !important;
+}
+.tongtian-scene__slot.is-target {
+  border-color: #ffd98a !important;
+  box-shadow: 0 0 0 2px rgba(255,214,140,.6), 0 0 24px rgba(255,196,110,.6) !important;
+}
+.tongtian-scene__slot.is-filled { cursor: default; }
+
+/* 泥泥狗互动完的「下一步」要能显示在店铺页上 */
+body:has(.shop-detail.is-open) .next-step { display: block !important; z-index: 1200 !important; }

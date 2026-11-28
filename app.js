@@ -1015,6 +1015,28 @@
   }
 
   window.__showNextStep = showNextStep;
+
+  // 街市店铺（泥泥狗）互动完的「下一步」：关掉店铺，回到街上
+  function showStreetNext() {
+    if (document.getElementById('nextStep')) return;
+    var btn = document.createElement('button');
+    btn.id = 'nextStep';
+    btn.className = 'next-step';
+    btn.type = 'button';
+    btn.innerHTML = '下一步 <span>→</span>';
+    btn.addEventListener('click', function () {
+      btn.remove();
+      try { closeShopDetail(); } catch (e) {}
+      var cc = document.getElementById('clayCheckin');
+      if (cc) cc.remove();
+      updateHUD();
+      if (currentAct === 3 && has('sachet') && has('sugar')) {
+        setTimeout(function () { toast('两家店铺都逛完了 · 去午朝门推门入陵'); }, 280);
+      }
+    });
+    document.body.appendChild(btn);
+  }
+  window.__showStreetNext = showStreetNext;
   function completeTask(id) {
     if (has(id)) return;
     state.tasks.push(id);
@@ -3954,6 +3976,7 @@ var bagBtn = $('#bagBtn');
       completeTask('sugar');
       renderBag();
       updateHUD();
+      setTimeout(function () { if (window.__showStreetNext) window.__showStreetNext(); }, 420);
       toast('泥泥狗挂件 · 已放入背包');
     });
   }
@@ -5152,7 +5175,7 @@ var bagBtn = $('#bagBtn');
     box.id = 'tongtianScene';
     var slotsHtml = '';
     [10, 30, 50, 70, 90].forEach(function (x, i) {
-      slotsHtml += '<div class="tongtian-scene__slot" id="ttSlot' + i + '" style="left:' + x + '%;width:18%">' + (i + 1) + '</div>';
+      slotsHtml += '<button class="tongtian-scene__slot" type="button" id="ttSlot' + i + '" data-slot="' + i + '" style="left:' + x + '%;width:16%">' + (i + 1) + '</button>';
     });
     var cardsHtml = TONGTIAN_OFFERS.map(function (o) {
       return '<button class="tongtian-scene__card ' + o.cls + '" type="button" data-offer="' + o.id + '"><img src="' + o.src + '" alt="' + o.name + '"><span>' + o.name + '</span></button>';
@@ -5176,17 +5199,21 @@ var bagBtn = $('#bagBtn');
     var chooser = document.getElementById('tongtianChooser');
     var table = document.getElementById('tongtianTable');
     var doneAlready = has('tongtian');
-    var st = { count: 0, done: !!doneAlready };
+    var st = { count: 0, done: !!doneAlready, target: 0 };
+    var slotFilled = [false, false, false, false, false];
     function fillSlot(i, offer) {
       var slot = document.getElementById('ttSlot' + i);
       if (!slot) return;
       slot.classList.add('is-filled');
+      slot.classList.remove('is-target');
       slot.innerHTML = '<img src="' + offer.src + '" alt="' + offer.name + '">';
+      slotFilled[i] = true;
     }
     if (doneAlready) {
       hint.textContent = '供奉完成 · 通天殿打卡完成';
       TONGTIAN_OFFERS.slice(0, TONGTIAN_SLOTS).forEach(function (o, i) { fillSlot(i, o); });
       st.count = TONGTIAN_SLOTS;
+      slotFilled.forEach(function (v, k) { slotFilled[k] = true; });
       var th = document.querySelector('.tongtian-scene__table-hint');
       if (th) th.style.display = 'none';
     }
@@ -5194,26 +5221,46 @@ var bagBtn = $('#bagBtn');
       if (chooser) chooser.hidden = true;
       box.classList.remove('is-choosing');
     }
-    table.addEventListener('click', function () {
-      if (st.done) { toast('供台已经摆好了'); return; }
+    function openChooserFor(i) {
+      if (st.done) { toast('供台已经供奉好了'); return; }
+      if (slotFilled[i]) { toast('这一格已经摆过了 · 换一格'); return; }
+      st.target = i;
       if (chooser) chooser.hidden = false;
       box.classList.add('is-choosing');
+      var head = box.querySelector('.tongtian-scene__chooser-head b');
+      if (head) head.textContent = '第 ' + (i + 1) + ' 格 · 选一件贡品';
+      box.querySelectorAll('.tongtian-scene__slot').forEach(function (el, k) {
+        el.classList.toggle('is-target', k === i);
+      });
+    }
+    table.addEventListener('click', function () {
+      if (st.done) { toast('供台已经供奉好了'); return; }
+      var next = -1;
+      for (var k = 0; k < slotFilled.length; k++) { if (!slotFilled[k]) { next = k; break; } }
+      if (next < 0) { toast('五个供位都摆满了'); return; }
+      openChooserFor(next);
+    });
+    box.querySelectorAll('.tongtian-scene__slot').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openChooserFor(parseInt(el.getAttribute('data-slot'), 10));
+      });
     });
     var chClose = document.getElementById('tongtianChooserClose');
     if (chClose) chClose.addEventListener('click', closeChooser);
     box.addEventListener('click', function (e) {
-      if (chooser && !chooser.hidden && !e.target.closest('.tongtian-scene__chooser') && !e.target.closest('#tongtianTable')) closeChooser();
+      if (chooser && !chooser.hidden && !e.target.closest('.tongtian-scene__chooser') && !e.target.closest('#tongtianTable') && !e.target.closest('.tongtian-scene__slot')) closeChooser();
     });
     function chooseOffer(offer) {
-      if (!st || st.done || st.count >= TONGTIAN_SLOTS) return;
-      fillSlot(st.count, offer);
+      if (!st || st.done) return;
+      var i = st.target;
+      if (slotFilled[i]) { closeChooser(); return; }
+      fillSlot(i, offer);
       st.count++;
-      // 选完不收起：可以接着往上摆，全部摆满再自动收起
-      // 选一个就收起选择面板：摆一个、回到场景、再点供台选下一个
-      if (st.count < TONGTIAN_SLOTS) closeChooser();
+      closeChooser();
       if (sfx.pop) sfx.pop();
       if (st.count < TONGTIAN_SLOTS) {
-        hint.textContent = '点击供台 · 供奉贡品（' + st.count + ' / 5）';
+        hint.textContent = '点空供位 · 摆一件贡品（' + st.count + ' / 5）';
       } else {
         st.done = true;
         closeChooser();

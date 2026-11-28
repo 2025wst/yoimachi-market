@@ -5297,7 +5297,7 @@ html, body { overscroll-behavior-y: none; }
 
 /* ===== 街道视频上下留白：用同一帧虚化延展，别空着 ===== */
 .market-painted::before {
-  background-image: url(assets/market2d-poster-anim.jpg) !important;
+  background-image: url(assets/market2d-street-poster.jpg) !important;
   filter: blur(46px) saturate(1.04) brightness(.94) !important;
   transform: scale(1.16) !important;
 }
@@ -5326,7 +5326,7 @@ html, body { overscroll-behavior-y: none; }
   transform: translate(-50%, -50%) scale(1.34) !important;
   filter: blur(20px) saturate(1.05) brightness(.95) !important;
 }
-.market-painted::before { background-image: url(assets/market2d-poster-anim.jpg) !important; }
+.market-painted::before { background-image: url(assets/market2d-street-poster.jpg) !important; }
 .inner-painted::before  { background-image: url(assets/inner2d-poster-anim.jpg) !important; }
 
 /* 留白虚化再做细腻一点：降低模糊让纹理出来，边缘加一层薄雾 */
